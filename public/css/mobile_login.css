@@ -1,0 +1,123 @@
+::-webkit-input-placeholder { /* Edge */
+    color: #959595;
+    font-size: 13px;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #959595;
+    font-size: 13px;
+}
+
+::placeholder {
+    color: #959595;
+    font-size: 13px;
+}
+body{
+    background: white;
+}
+.logo-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 110px;
+    margin-top: 50px;
+}
+.company_name{
+    color: #8c8065;
+    font-family: lalehzar,'sans-serif';
+    font-size: 1.2rem;
+}
+.logo{
+    height: 60px;
+    width: auto;
+}
+.login_inputs{
+    width: 90%;
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.login_input{
+    width: 100%;
+    border: 1px solid #e7e7e7;
+    border-radius: 7px;
+    height: 50px;
+    background: #f5f5f5;
+    font-size: 1rem;
+    color: #959595;
+    transition: all 0.2s ease-in;
+    outline: transparent 0;
+}
+.login_button{
+    width: 100%;
+    border: none;
+    background: #8c8065;
+    border-radius: 15px;
+    height: 50px;
+    font-size: 0.8rem;
+    color: white;
+    transition: all 0.5ms linear;
+}
+.forget_button{
+    width: 45%;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    height: 30px;
+    font-size: 0.7rem;
+    color: #7b7b7b;
+    box-shadow: 1px 1px 2px 1px #e5e5e5;
+    transition: all 0.5ms linear;
+}
+.login_button:hover{
+    background: #837860;
+    box-shadow: 0 0 5px 1px #988f70;
+}
+.forget_button:hover{
+    background: #fcfcfc;
+    width: 44%;
+}
+.login_input:focus{
+    box-shadow: 0 0 5px -1px rgba(96,87,69,0.4);
+    border: 1px solid #d7d7d7;
+}
+.input_label{
+    width: 100px;
+    color:#959595;
+    position: absolute;
+    top:50%;
+    left: 50%;
+    z-index: 1000;
+    transition: all 0.2s ease-in-out;
+    transform: translate(-50%,-50%);
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+.active{
+    top:-25px;
+    left:74%;
+    transform:none;
+}
+.loading_window{
+    top: 0;
+    right: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 5000;
+}
+#app{
+    width: 100%;
+    height: 100%;
+}

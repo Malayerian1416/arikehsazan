@@ -1,0 +1,191 @@
+body{
+    min-height: 100vh;
+    background: #e0e0e0;
+    background: url(../img/login_bg.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+*{
+    font-size: 12px;
+}
+.button_loading{
+    display: none;
+    font-size: 2rem;
+    vertical-align: middle;
+}
+::placeholder {
+    color: #e5e5e5!important;
+    opacity: 1;
+}
+
+:-ms-input-placeholder {
+    color: #e5e5e5!important;
+}
+
+::-ms-input-placeholder {
+    color: #e5e5e5!important;
+}
+*{
+    font-size: 12px;
+}
+*{
+    font-size: 12px;
+}
+.iranYekanFont{
+    font-family: iranyekan,'sans-serif';
+}
+.login_bg{
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+}
+.login_window{
+    max-width: 100%;
+    width: 900px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 15px 15px 35px -1px #d9d9d9;
+}
+.login_body{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+.login_input{
+    width: 100%;
+    color: #969696!important;
+    background-color: transparent!important;
+    height: 40px!important;
+    font-size: 14px!important;
+    text-align: center!important;
+    padding-right: 40px!important;
+    padding-left: 40px!important;
+    border: none;
+    border-bottom: 1px solid #e7e7e7;
+    border-radius: 0;
+    transition: all 0.2s ease-in-out;
+
+}
+.login_input:focus{
+    border-bottom: 2px solid #dea734;
+}
+.side{
+    background-image: url(../img/login_window_side_img.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 35%;
+    min-height: 600px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 70px 15px 15px 15px;
+}
+.company_title{
+    font-size: 30px;
+    color: #f4da78;
+    text-shadow: 2px 1px 8px #ffd000;
+}
+.company_desc{
+    color: #f4da78;
+}
+.header{
+    padding-top: 55px;
+}
+.footer{
+    padding-bottom: 55px;
+}
+.img_logo{
+    max-width: 80px;
+    width: 100%;
+    height: auto;
+}
+.content{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 80px 100px 80px 100px!important;
+    width: 65%;
+}
+.login_input_icon{
+    color: #DBB34D;
+    position: absolute;
+    top: 8px;
+    left: 10px;
+}
+textarea:hover,
+input:hover,
+textarea:active,
+input:active,
+textarea:focus,
+input:focus,
+button:focus,
+button:active,
+button:hover,
+label:focus,
+.btn:active,
+.btn.active
+{
+    outline:0 !important;
+    -webkit-appearance:none;
+    box-shadow: none !important;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #fff4de inset !important;
+}
+.login_button{
+    height: 45px;border-radius: 25px
+}
+.button_text{
+    font-size: 15px;
+    font-weight: 500;
+}
+@media screen and (max-width: 800px){
+    .login_window{
+        width: 100%;
+        border-radius: 0;
+        height: 100vh;
+    }
+    .login_body{
+        flex-direction: column;
+    }
+    .login_bg{
+        padding: 0;
+    }
+    .side{
+        background-image: url(../img/login_side_mobile_bg.png);
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 100%;
+        min-height: calc(100vw / 3);
+        border-top-right-radius: 0;
+        border-top-left-radius: 0;
+        border-bottom-right-radius: 0;
+        padding: 0;
+    }
+    .company_desc,.footer{
+        display: none;
+    }
+    .company_title{
+        font-size: 25px;
+    }
+    .content{
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        padding: 30px 15px 30px 15px!important;
+        width: 100%;
+    }
+    .login_button{
+        height: 40px;border-radius: 15px;font-size: 13px;font-weight: 600
+    }
+}
