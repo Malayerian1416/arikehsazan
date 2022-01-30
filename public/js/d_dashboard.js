@@ -54,8 +54,4 @@ $(document).ready(function (){
         }
     });
 });
-let u = Echo.channel('messages')
-    .listen('NewInvoiceAutomation', (message) => {
-        console.log(message);
-    });
 

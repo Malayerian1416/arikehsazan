@@ -7,17 +7,30 @@ use App\Models\Bank;
 use App\Models\BankAccount;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Jenssegers\Agent\Agent;
 use Throwable;
 
 class BankAccountController extends Controller
 {
-
+    public function __construct()
+    {
+        $agent = new Agent();
+        if ($agent->isDesktop())
+            $this->agent = "desktop_dashboard";
+        else if($agent->isPhone() || $agent->isTablet())
+            $this->agent = "phone_dashboard";
+        else if ($agent->robot())
+            return view("errors/cant_detect_device");
+        else
+            return view("errors/cant_detect_device");
+        return false;
+    }
     public function index()
     {
         Gate::authorize("index","BankAccounts");
         try {
             $bank_accounts = BankAccount::query()->with(["checks","docs","user"])->get();
-            return view("desktop_dashboard.bank_accounts_index",["bank_accounts" => $bank_accounts]);
+            return view("{$this->agent}.bank_accounts_index",["bank_accounts" => $bank_accounts]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
@@ -29,7 +42,7 @@ class BankAccountController extends Controller
         Gate::authorize("create","BankAccounts");
         try {
             $banks = Bank::all();
-            return view("desktop_dashboard.create_new_bank_account",["banks" => $banks]);
+            return view("{$this->agent}.create_new_bank_account",["banks" => $banks]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
@@ -76,7 +89,7 @@ class BankAccountController extends Controller
         try {
             $banks = Bank::all();
             $bank_account = BankAccount::query()->with(["checks","docs"])->findOrFail($id);
-            return view("desktop_dashboard.edit_bank_account",["bank_account" => $bank_account,"banks" => $banks]);
+            return view("{$this->agent}.edit_bank_account",["bank_account" => $bank_account,"banks" => $banks]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);

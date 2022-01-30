@@ -57,6 +57,11 @@
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>
+            <div class="form-group col-md-12 col-lg-6">
+                <input type="checkbox" id="notifiable" name="notifiable" value="1">
+                <label class="col-form-label iran_yekan black_color" for="main">اطلاع رسانی بلادرنگ</label>
+                <input type="text" class="form-control" name="notification_channel">
+            </div>
         </div>
     </form>
 @endsection

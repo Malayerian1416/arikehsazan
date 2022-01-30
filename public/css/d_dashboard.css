@@ -702,6 +702,9 @@ input[type='radio']{
 .bootstrap-select > .dropdown-toggle{
     height: 30px!important;
 }
+textarea{
+    min-height: 80px;
+}
 @media screen and (max-width: 991px){
     .header_container{
         width: 100vw;

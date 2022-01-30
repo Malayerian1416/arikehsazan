@@ -13,18 +13,31 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Jenssegers\Agent\Agent;
 use Throwable;
 
 class InvoiceController extends Controller
 {
-
+    public function __construct()
+    {
+        $agent = new Agent();
+        if ($agent->isDesktop())
+            $this->agent = "desktop_dashboard";
+        else if($agent->isPhone() || $agent->isTablet())
+            $this->agent = "phone_dashboard";
+        else if ($agent->robot())
+            return view("errors/cant_detect_device");
+        else
+            return view("errors/cant_detect_device");
+        return false;
+    }
     public function index()
     {
         Gate::authorize("index","Invoices");
         try {
             $contracts = Contract::query()->with(["project","contractor"])->get();
             $invoices = Invoice::query()->with(["contract.project","contract.contractor","payments","automation"])->where("user_id",Auth::id())->latest()->get();
-            return view("desktop_dashboard.created_invoices_index",["invoices" => $invoices, "contracts" => $contracts]);
+            return view("{$this->agent}.created_invoices_index",["invoices" => $invoices, "contracts" => $contracts]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
@@ -35,9 +48,8 @@ class InvoiceController extends Controller
     {
         Gate::authorize("create","Invoices");
         try {
-            $allowed_projects = Auth::user()->permitted_project->pluck("id");
-            $projects = Project::query()->whereIn("id",$allowed_projects)->get();
-            return view("desktop_dashboard.create_new_invoice",["projects" => $projects]);
+            $projects = Project::get_permissions();
+            return view("{$this->agent}.create_new_invoice",["projects" => $projects]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
@@ -109,7 +121,7 @@ class InvoiceController extends Controller
                 "extras","deductions",
                 "comments" => function($query){$query->where("user_id","=",Auth::id());},
                 "automation_amounts" => function($query){$query->where("user_id","=",Auth::id());}])->findOrFail($id);
-            return view("desktop_dashboard.edit_created_invoice",["invoice" => $invoice]);
+            return view("{$this->agent}.edit_created_invoice",["invoice" => $invoice]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);

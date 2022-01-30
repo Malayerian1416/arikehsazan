@@ -29,9 +29,9 @@ class InvoicePaymentRequest extends FormRequest
             "payment_receipt_number" => "required",
             "bank_account" => "required|numeric",
             "contractor_bank" => "required_if:deposit_kind,card,account,sheba",
-            "check_id" => "required_if:deposit_kind,1",
-            "check_date" => "required_if:deposit_kind,1",
-            "check_number" => "required_if:deposit_kind,1",
+            "check_id" => "required_if:deposit_kind,check",
+            "check_date" => "required_if:deposit_kind,check",
+            "check_number" => "required_if:deposit_kind,check",
         ];
     }
     public function messages()

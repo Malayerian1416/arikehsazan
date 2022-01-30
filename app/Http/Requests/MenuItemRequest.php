@@ -27,7 +27,9 @@ class MenuItemRequest extends FormRequest
             "name" => "required|max:500",
             "menu_title_id" => "required",
             "menu_action_id" => "required",
-            "main" => "required"
+            "main" => "required",
+            "notifiable" => "sometimes|nullable",
+            "notification_channel" => "sometimes|nullable",
         ];
     }
     public function messages()

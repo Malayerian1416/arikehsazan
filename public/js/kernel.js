@@ -86,15 +86,38 @@ const app = new Vue({
         check_items: typeof check_already_information === "undefined" ? [] : check_already_information,
         current_check_number: '',
         deposit_kind_number: '',
-        sidebar_visibility: false
+        sidebar_visibility: false,
+        new_invoice_automation_show: false,
+        new_invoice_automation_text: "",
+        new_worker_payment_automation_show: false,
+        new_worker_payment_automation_text: "",
+        invoice_total_previous_quantity: 0
     },
     mounted() {
+        const self = this;
         // this.loading_window_active = false;
         // if (this.$refs.parent_select) {
         //     let elem = this.$refs.parent_select;
         //     elem.dispatchEvent(new Event("change"));
         // }
-
+        let get_notification = new EventSource("/Dashboard/Desktop/get_new_notification");
+        get_notification.onmessage = function(event) {
+            let result = JSON.parse(event.data);
+            for (const [key, value] of Object.entries(result)) {
+                switch (key){
+                    case "new_invoice_automation":{
+                        value ? self.new_invoice_automation_text = value:"";
+                        value ? self.new_invoice_automation_show = true:false;
+                        break;
+                    }
+                    case "new_worker_payment_automation":{
+                        value ? self.new_worker_payment_automation_text = value:"";
+                        value ? self.new_worker_payment_automation_show = true:false;
+                        break;
+                    }
+                }
+            }
+        }
     },
     beforeMount() {
         if ($("#invoice_automation_quantity").length && $("#invoice_automation_amount").length){
@@ -386,7 +409,6 @@ const app = new Vue({
             this.edit_input_data = target.dataset.value;
             if (target.dataset.extra_value) {
                 this.edit_select_data = target.dataset.extra_value;
-                console.log(target.dataset.extra_value);
             }
             $("#data_editing_modal").modal("show");
         },
@@ -691,6 +713,7 @@ const app = new Vue({
                         self.new_invoice_frame = true;
                         self.new_invoice_unit = response["data"]["unit"]["name"];
                         self.new_invoice_amount = response["data"]["amount"];
+                        self.invoice_total_previous_quantity = response["data"]["automation_amounts_sum_quantity"] ? response["data"]["automation_amounts_sum_quantity"] : 0;
                     });
             }
         },
@@ -841,6 +864,15 @@ const app = new Vue({
             $(".menu_header_container").removeClass("active")
             $("#" + target.dataset.slug).addClass("show");
             $("#" + target.dataset.slug + "_header").addClass("active");
+        },
+        worker_payment_process(){
+            $("#worker_payment_process").modal("show");
+        },
+        percent_check(e){
+            if (parseInt(e.target.value) > 100)
+                e.target.value = 100;
+            else if (parseInt(e.target.value) < 0)
+                e.target.value = 0;
         }
     }
 });

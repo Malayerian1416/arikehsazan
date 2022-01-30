@@ -9,11 +9,9 @@
         -
         داشبورد
     </title>
-    <!-- Styles -->
-    <link href="{{asset("/css/app.css")}}" rel="stylesheet">
-    <link href="{{asset("/css/p_dashboard.css")}}" rel="stylesheet">
+    <link href="{{asset("/css/app.css?v=".time())}}" rel="stylesheet">
+    <link href="{{asset("/css/p_dashboard.css?v=".time())}}" rel="stylesheet">
     <link href="{{asset("/css/persianDatepicker-default.css")}}" rel="stylesheet">
-    <link href="{{asset("/css/bootstrap-select.css")}}" rel="stylesheet">
     @yield('styles')
 </head>
 <body class="antialiased rtl">
@@ -78,6 +76,9 @@
                                                 <div style="height: 40%">
                                                     <span class="iran_yekan menu_item_title text-center">{{$menu_item->short_name}}</span>
                                                 </div>
+                                                @if($menu_item->notifiable)
+                                                    <span class="iran_yekan badge badge-pill badge-danger" style="font-size: 12px" v-cloak v-text="{{$menu_item->notification_channel."_text"}}" v-show="{{$menu_item->notification_channel."_show"}}"></span>
+                                                @endif
                                             </div>
                                         </div>
                                     </a>
@@ -198,13 +199,12 @@
     @endif
     @yield('modal_alerts')
 </div>
-<script type="text/javascript" src="{{asset("/js/app.js")}}"></script>
+<script type="text/javascript" src="{{asset("/js/app.js?v=".time())}}"></script>
 <script type="text/javascript" src="{{asset("/js/jquery.mask.js")}}" defer></script>
 <script type="text/javascript" src="{{asset("/js/numeral.js")}}"></script>
 <script type="text/javascript" src="{{asset("/js/persianDatepicker.min.js")}}"></script>
-<script type="text/javascript" src="{{asset("/js/bootstrap-select.min.js")}}"></script>
-<script type="text/javascript" src="{{asset("/js/p_dashboard.js")}}"></script>
-<script type="module" src="{{asset("/js/kernel.js")}}" defer></script>
+<script type="text/javascript" src="{{asset("/js/p_dashboard.js?v=".time())}}"></script>
+<script type="module" src="{{asset("/js/kernel.js?v=".time())}}" defer></script>
 @yield('scripts')
 </body>
 </html>

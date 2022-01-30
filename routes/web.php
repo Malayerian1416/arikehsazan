@@ -25,6 +25,9 @@ use \App\Http\Controllers\InvoiceController;
 use \App\Http\Controllers\InvoiceAutomationController;
 use \App\Http\Controllers\BankAccountController;
 use \App\Http\Controllers\PhoneDashboardController;
+use \App\Http\Controllers\WorkerPaymentAutomationController;
+use \App\Http\Controllers\InvoiceLimitedController;
+use \App\Http\Controllers\WorkerController;
 
 Auth::routes();
 Route::get('/', function () {
@@ -42,6 +45,7 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
         Route::post("/get_new_invoice_information",[AxiosCallController::class,"get_new_invoice_information"]);
         Route::post("/get_bank_account_information",[AxiosCallController::class,"get_bank_account_information"]);
         Route::post("/change_extra_deduction_content",[AxiosCallController::class,"change_extra_deduction_content"]);
+        Route::get("/get_new_notification",[AxiosCallController::class,"get_new_notification"]);
         Route::resource("/Contractors",ContractorController::class)->except("show");
         Route::resource("/Roles",RoleController::class)->except("show");
         Route::resource("/Users",UserController::class)->except("show");
@@ -63,6 +67,22 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
         Route::get("/InvoiceAutomation/Details/Sent/{id}",[InvoiceAutomationController::class,"view_sent_details"])->name("InvoiceAutomation.sent.details");
         Route::resource("/BankAccounts",BankAccountController::class)->except("show");
         Route::get("/CheckPrint",function (){return view("desktop_dashboard.check_print");});
+        Route::group(['prefix' => '/WorkerPayments'],function (){
+            Route::get("/create",[WorkerPaymentAutomationController::class,"create"])->name("WorkerPayments.create");
+            Route::post("/store",[WorkerPaymentAutomationController::class,"store"])->name("WorkerPayments.store");
+            Route::get("/new",[WorkerPaymentAutomationController::class,"get_new_items"])->name("WorkerPayments.new");
+            Route::put("/Agree&Send/{id}",[WorkerPaymentAutomationController::class,"automate_sending"])->name("WorkerPayments.automate_sending");
+            Route::get("/Payment/{id}",[WorkerPaymentAutomationController::class,"payment"])->name("WorkerPayments.payment");
+            Route::put("/PaymentProcess/{id}",[WorkerPaymentAutomationController::class,"payment_process"])->name("WorkerPayments.payment_process");
+            Route::get("/Sent",[WorkerPaymentAutomationController::class,"sent_worker_payments"])->name("WorkerPayments.sent");
+            Route::get("/Index",[WorkerPaymentAutomationController::class,"index"])->name("WorkerPayments.index");
+            Route::get("/Edit/{id}",[WorkerPaymentAutomationController::class,"edit"])->name("WorkerPayments.edit");
+            Route::put("/Update/{id}",[WorkerPaymentAutomationController::class,"update"])->name("WorkerPayments.update");
+            Route::delete("/Destroy/{id}",[WorkerPaymentAutomationController::class,"destroy"])->name("WorkerPayments.destroy");
+        });
+        Route::resource("/InvoicesLimited",InvoiceLimitedController::class);
+        Route::get("/Worker/create",[WorkerController::class,"create"])->name("Workers.create");
+        Route::post("/Worker/store",[WorkerController::class,"store"])->name("Workers.store");
         Route::group(['prefix' => 'Admin','middleware' => ['AdminCheck']],function (){
             Route::get("/SystemStatus",[SystemStatusController::class,"index"])->name("system_status_index");
             Route::post("/ChangeSystemStatus",[SystemStatusController::class,"change_status"])->name("system_status_change");
@@ -82,11 +102,11 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
     });
     Route::group(['prefix'=>'Phone'],function (){
         Route::get("/",[PhoneDashboardController::class,"index"])->name("idle");
-        Route::resource("/Projects",ProjectController::class)->except("show");
     });
 });
 Route::get("/f",function (){
-    event(new \App\Events\NewInvoiceAutomation(\auth()->user(), "masoud"));
+    dd(Contract::query()->with(["category.branch","contractor","unit"])->withSum(["automation_amounts" => function($query){$query->where("is_main",1);}],"quantity")
+        ->withCount("invoices")->findOrFail(4));
 });
 Route::get("/m",function (){
     $r = ["بانک آینده","بانک اقتصادنوین","بانک ایران زمین","بانک پارسیان","بانک پاسارگاد","بانک تجارت"

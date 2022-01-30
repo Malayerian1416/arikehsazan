@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\CompanyInformation;
+use App\Models\InvoiceAutomation;
+use Illuminate\Support\Facades\Auth;
 
 class DesktopDashboardController extends Controller
 {

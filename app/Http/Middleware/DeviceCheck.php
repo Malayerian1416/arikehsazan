@@ -20,7 +20,7 @@ class DeviceCheck
         $agent = new Agent();
         if ($agent->isDesktop())
             return redirect("/Dashboard/Desktop/");
-        else if($agent->isPhone())
+        else if($agent->isPhone() || $agent->isTablet())
             return view("phone_dashboard/p_dashboard");
         else
             return view("home");

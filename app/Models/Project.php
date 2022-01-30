@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Project extends Model
 {
@@ -22,5 +24,9 @@ class Project extends Model
     public function contracts(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Contract::class,"project_id");
+    }
+    public static function get_permissions(): Collection
+    {
+        return self::query()->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());})->orderBy("id")->get();
     }
 }

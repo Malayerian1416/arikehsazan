@@ -11,7 +11,7 @@ class DashboardController extends Controller
         $agent = new Agent();
         if ($agent->isDesktop())
             return redirect("/Dashboard/Desktop/");
-        else if($agent->isPhone())
+        else if($agent->isPhone() || $agent->isTablet())
             return redirect("/Dashboard/Phone/");
         else if ($agent->robot())
             return view("errors/cant_detect_device");

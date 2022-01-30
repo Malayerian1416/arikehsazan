@@ -23,6 +23,7 @@ class InvoiceRequest extends FormRequest
      */
     public function rules()
     {
+
         if ($this->isMethod("put")) {
             return [
                 "quantity" => "required|numeric|min:0.1",

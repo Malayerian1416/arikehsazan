@@ -9,7 +9,7 @@ class MenuItem extends Model
 {
     use HasFactory;
     protected $table = "menu_items";
-    protected $fillable = ["name","menu_title_id","main_route"];
+    protected $fillable = ["name","menu_title_id","main_route","notification_channel","notifiable"];
 
     public function menu_title(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

@@ -48,7 +48,7 @@ class LoginController extends Controller
         $agent = new Agent();
         if ($agent->isDesktop())
             return view('auth.login',["company_information" => $company_information]);
-        else if($agent->isPhone())
+        else if($agent->isPhone() || $agent->isTablet())
             return view('auth.mobile_login',["company_information" => $company_information]);
         else if ($agent->robot())
             return view("errors/cant_detect_device");
@@ -85,7 +85,7 @@ class LoginController extends Controller
     {
         return redirect("/Dashboard");
     }
-    public function redirectPath()
+    public function redirectPath(): string
     {
         if (method_exists($this, 'redirectTo')) {
             return $this->redirectTo();

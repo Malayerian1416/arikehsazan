@@ -52,8 +52,5 @@ $(document).ready(function (){
             $(".doc_expand_icon").removeClass("fa-arrow-alt-circle-left").toggleClass("fa-arrow-alt-circle-down")
         }
     });
-    echo.channel("new_invoice_automation").listen("NewInvoiceAutomation",(e) => {
-        console.log(e.message);
-    })
 });
 

@@ -76,6 +76,18 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
+        'worker_payments_receipt' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/worker_payments_receipt'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+        'invoice_images' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/invoice_images'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
 
     ],
 

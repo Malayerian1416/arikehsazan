@@ -9,7 +9,6 @@
         -
         داشبورد
     </title>
-    <!-- Styles -->
     <link href="{{asset("/css/app.css?v=".time())}}" rel="stylesheet">
     <link href="{{asset("/css/d_dashboard.css")}}" rel="stylesheet">
     <link href="{{asset("/css/persianDatepicker-default.css")}}" rel="stylesheet">
@@ -51,9 +50,12 @@
     <div class="dashboard_container p-0 m-0 rtl">
         <aside class="sidenav bg-dark">
             <div class="sidenav_title" style="border-bottom: 1px solid rgba(77,77,77,0.67)">
-                <h6 class="iran_yekan text-center m-0 p-0" style="color: #bd8525;font-size: 12px">
+                <h6 class="laleh text-center m-0 p-0" style="color: #eca62f;font-size: 15px">
                     {{$company_information->name}}
-                    <span class="pt-2 d-block" style="font-size: 10px;color: rgba(191,191,191,0.67)">داشبورد مدیریتی</span>
+                    <span class="iran_yekan pt-2 d-block text-muted" style="font-size: 10px">
+                        نسخه سیستمی
+                        ({{env("APP_VERSION")}})
+                    </span>
                 </h6>
             </div>
             <div class="sidenav_body">
@@ -126,7 +128,11 @@
                                     </button>
                                     <div class="dropdown-container {{(Route::is($menu_title->main_route)) ? 'active':null}}">
                                         @forelse($menu_title->menu_items as $menu_item)
-                                            <a class="iran_yekan {{(Route::is($menu_item->actions->pluck('action')->toArray())) ? 'dropdown-item_active':null}}" href="{{route($menu_title->route.".".$menu_item->main_route)}}">{{$menu_item->name}}</a>
+                                            <a class="iran_yekan {{(Route::is($menu_item->actions->pluck('action')->toArray())) ? 'dropdown-item_active':null}}" href="{{route($menu_title->route.".".$menu_item->main_route)}}">{{$menu_item->name}}
+                                                @if($menu_item->notifiable)
+                                                    <span class="badge badge-pill badge-danger" style="font-size: 12px" v-cloak v-text="{{$menu_item->notification_channel."_text"}}" v-show="{{$menu_item->notification_channel."_show"}}"></span>
+                                                @endif
+                                            </a>
                                         @empty
                                         @endforelse
                                     </div>
@@ -240,7 +246,7 @@
 <script src="{{asset("/js/numeral.js")}}"></script>
 <script src="{{asset("/js/persianDatepicker.min.js")}}"></script>
 <script src="{{asset("/js/d_dashboard.js?v=".time())}}"></script>
-<script src="{{asset("/js/kernel.js?v=".time())}}"></script>
+<script src="{{asset("/js/kernel.js?v=".time())}}" defer></script>
 @yield('scripts')
 </body>
 </html>

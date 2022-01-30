@@ -6,11 +6,15 @@ use App\Models\AbilityCategory;
 use App\Models\BankAccount;
 use App\Models\Contract;
 use App\Models\ContractCategory;
+use App\Models\InvoiceAutomation;
 use App\Models\InvoiceDeduction;
 use App\Models\InvoiceExtra;
 use App\Models\Project;
 use App\Models\Unit;
+use App\Models\WorkerPaymentAutomation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 class AxiosCallController extends Controller
@@ -39,7 +43,9 @@ class AxiosCallController extends Controller
     }
     function get_new_invoice_information(Request $request): array
     {
-        return Contract::query()->with(["category.branch","contractor","unit"])->withCount("invoices")->findOrFail($request->input("contract_id"))->toArray();
+        return Contract::query()->with(["category.branch","contractor","unit"])
+            ->withSum(["automation_amounts" => function($query){$query->where("is_main",1);}],"quantity")
+            ->withCount("invoices")->findOrFail($request->input("contract_id"))->toArray();
     }
     function live_data_adding(Request $request): array
     {
@@ -117,5 +123,28 @@ class AxiosCallController extends Controller
         catch (Throwable $ex){
             return $ex;
         }
+    }
+    function get_new_notification(){
+        $response = new StreamedResponse();
+        $response->headers->set('Content-Type', 'text/event-stream');
+        $response->headers->set('Cache-Control', 'no-cache');
+        $response->headers->set('Connection', 'keep-alive');
+        $response->setCallback(
+            function() {
+                echo "retry: 5000\n\n";
+                $invoice = InvoiceAutomation::query()
+                    ->where("current_role_id","=",Auth::user()->role->id)
+                    ->where("is_read","=",0)->where("is_finished","=",0)->get();
+                $worker = WorkerPaymentAutomation::query()
+                    ->where("current_role_id","=",Auth::user()->role->id)
+                    ->where("is_read","=",0)->where("is_finished","=",0)->get();
+                $response = [];
+                $response["new_invoice_automation"] = $invoice->count();
+                $response["new_worker_payment_automation"] = $worker->count();
+                $response = json_encode($response);
+                echo "data: {$response}\n\n";
+                ob_flush();
+            });
+        $response->send();
     }
 }

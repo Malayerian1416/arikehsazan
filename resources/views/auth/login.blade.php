@@ -10,11 +10,11 @@
         صفحه ورود
     </title>
     <!-- Styles -->
-    <link href="{{asset("/css/app.css")}}" rel="stylesheet">
-    <link href="{{asset("/css/login.css")}}" rel="stylesheet">
+    <link href="{{asset("/css/app.css?v=".time())}}" rel="stylesheet">
+    <link href="{{asset("/css/login.css?v=".time())}}" rel="stylesheet">
 </head>
 <body class="antialiased">
-<div class="container-fluid login_bg rtl">
+<div class="rtl container-fluid login_bg">
     <div class="login_window">
         <div class="w-100 login_body">
             <div class="side">
@@ -82,8 +82,8 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="{{asset("/js/app.js")}}"></script>
-<script type="text/javascript" src="{{asset("/js/login.js")}}"></script>
-<script src="https://www.google.com/recaptcha/api.js?hl=fa&render=explicit" async defer></script>
+<script type="text/javascript" src="{{asset("/js/app.js?v=".time())}}"></script>
+<script type="text/javascript" src="{{asset("/js/login.js?v=".time())}}"></script>
+<script async src="https://www.google.com/recaptcha/api.js?hl=fa"></script>
 </body>
 </html>

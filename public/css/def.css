@@ -40,3 +40,4 @@
 .ltr{
     direction: ltr;!important;
 }
+[v-cloak] {display: none}

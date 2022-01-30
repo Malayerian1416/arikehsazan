@@ -21,7 +21,7 @@ class ProjectController extends Controller
         $agent = new Agent();
         if ($agent->isDesktop())
             $this->agent = "desktop_dashboard";
-        else if($agent->isPhone())
+        else if($agent->isPhone() || $agent->isTablet())
             $this->agent = "phone_dashboard";
         else if ($agent->robot())
             return view("errors/cant_detect_device");

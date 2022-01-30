@@ -35,6 +35,10 @@ class Contract extends Model
     {
         return $this->belongsTo(Unit::class,"unit_id");
     }
+    public function automation_amounts(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(InvoiceAutomationAmounts::class,Invoice::class);
+    }
     public function change_activation(){
         if($this->is_active == 0) {
             $this->update(["is_active" => 1]);
