@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MenuTitleRequest;
+use App\Models\Icon;
 use App\Models\MenuHeader;
 use App\Models\MenuTitle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class MenuTitleController extends Controller
@@ -28,8 +30,9 @@ class MenuTitleController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            $icons = Icon::all();
             $menu_headers = MenuHeader::query()->with("icon")->get();
-            return view("desktop_dashboard.create_new_menu_title", ["menu_headers" => $menu_headers]);
+            return view("desktop_dashboard.create_new_menu_title", ["menu_headers" => $menu_headers,"icons" => $icons]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
@@ -40,7 +43,6 @@ class MenuTitleController extends Controller
     {
         Gate::authorize("adminUser");
         try {
-
             $validated = $request->validated();
             MenuTitle::query()->create($validated);
             return redirect()->back()->with(["result" => "saved"]);
@@ -54,9 +56,10 @@ class MenuTitleController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            $icons = Icon::all();
             $menu_headers = MenuHeader::query()->with("icon")->get();
             $menu_title = MenuTitle::query()->with("menu_header")->findOrFail($id);
-            return view("desktop_dashboard.edit_menu_title", ["menu_headers" => $menu_headers, "menu_title" => $menu_title]);
+            return view("desktop_dashboard.edit_menu_title", ["menu_headers" => $menu_headers, "menu_title" => $menu_title, "icons" => $icons]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);

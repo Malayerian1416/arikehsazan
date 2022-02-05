@@ -67,15 +67,19 @@
                             </div>
                             <div class="menu_row">
                                 @forelse($menu_title->menu_items as $menu_item)
-                                    <a class="menu_link" href="{{route($menu_title->route.".".$menu_item->main_route)}}" style="width: {{100/count($menu_title->menu_items->toArray())."%"}}">
+                                    <a class="menu_link" href="{{route($menu_title->route.".".$menu_item->main_route)}}">
                                         <div class="menu_col" style="width: 100%">
                                             <div class="menu_item">
-                                                <div style="height: 60%;display: flex;align-items: center;justify-content: center">
-                                                    <img alt="img" class="menu_item_icon" src="{{asset("/img/menu_icons/$menu_item->icon.png")}}"/>
-                                                </div>
-                                                <div style="height: 40%">
-                                                    <span class="iran_yekan menu_item_title text-center">{{$menu_item->short_name}}</span>
-                                                </div>
+                                                @if($menu_item->icon != "" && $menu_item->icon != null)
+                                                    <div style="height: 60%;display: flex;align-items: center;justify-content: center">
+                                                        <img alt="img" class="menu_item_icon" src="{{asset("/storage/menu_item_icons/{$menu_item->id}/{$menu_item->icon}")}}"/>
+                                                    </div>
+                                                @endif
+                                                @if($menu_item->short_name != "" && $menu_item->short_name != null)
+                                                    <div style="height: 40%">
+                                                        <span class="iran_yekan menu_item_title text-center">{{$menu_item->short_name}}</span>
+                                                    </div>
+                                                @endif
                                                 @if($menu_item->notifiable)
                                                     <span class="iran_yekan badge badge-pill badge-danger" style="font-size: 12px" v-cloak v-text="{{$menu_item->notification_channel."_text"}}" v-show="{{$menu_item->notification_channel."_show"}}"></span>
                                                 @endif

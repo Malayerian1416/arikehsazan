@@ -88,6 +88,12 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
+        'menu_item_icons' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/menu_item_icons'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
 
     ],
 

@@ -7,7 +7,9 @@ use App\Models\MenuAction;
 use App\Models\MenuItem;
 use App\Models\MenuTitle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class MenuItemsController extends Controller
@@ -42,6 +44,7 @@ class MenuItemsController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $menu_action_ids = $validated["menu_action_id"];
             unset($validated["menu_action_id"]);
@@ -50,6 +53,11 @@ class MenuItemsController extends Controller
             unset($validated["main"]);
             $menu_item = MenuItem::query()->create($validated);
             $menu_item->actions()->sync($menu_action_ids);
+            if ($request->hasFile('icon')) {
+                $menu_item->update(["icon" => $request->file('icon')->hashName()]);
+                Storage::disk('menu_item_icons')->put($menu_item->id, $request->file('icon'));
+            }
+            DB::commit();
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
@@ -75,6 +83,7 @@ class MenuItemsController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $menu_action_ids = $validated["menu_action_id"];
             unset($validated["menu_action_id"]);
@@ -85,6 +94,12 @@ class MenuItemsController extends Controller
             $menu_item->update($validated);
             $menu_item->actions()->detach();
             $menu_item->actions()->sync($menu_action_ids);
+            if ($request->hasFile('icon')) {
+                Storage::disk("menu_item_icons")->delete("{$menu_item->id}/$menu_item->icon");
+                $menu_item->update(["icon" => $request->file('icon')->hashName()]);
+                Storage::disk('menu_item_icons')->put($menu_item->id, $request->file('icon'));
+            }
+            DB::commit();
             return redirect()->back()->with(["result" => "updated"]);
         }
         catch (Throwable $ex){
@@ -96,9 +111,13 @@ class MenuItemsController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $menu_item = MenuItem::query()->findOrFail($id);
             $menu_item->actions()->detach();
             $menu_item->delete();
+            if (Storage::disk("menu_item_icons")->exists("{$menu_item->id}"))
+                Storage::disk("menu_item_icons")->deleteDirectory("{$menu_item->id}");
+            DB::commit();
             return redirect()->back()->with(["result" => "deleted"]);
         }
         catch (Throwable $ex){

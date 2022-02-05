@@ -21,6 +21,9 @@ window.imask = require('imask');
  */
 require('bootstrap-select/dist/js/bootstrap-select');
 require('bootstrap-select/js/i18n/defaults-ar_AR');
+require('owl.carousel');
+require('chart.js/dist/chart.min');
+require('chart.js/dist/helpers.esm')
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 // // Vue.component('example-component', require('./components/ExampleComponent.vue').default);

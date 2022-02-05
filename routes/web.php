@@ -105,8 +105,7 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
     });
 });
 Route::get("/f",function (){
-    dd(Contract::query()->with(["category.branch","contractor","unit"])->withSum(["automation_amounts" => function($query){$query->where("is_main",1);}],"quantity")
-        ->withCount("invoices")->findOrFail(4));
+   dd(\Illuminate\Support\Facades\Hash::make("Masoud@5012140"));
 });
 Route::get("/m",function (){
     $r = ["بانک آینده","بانک اقتصادنوین","بانک ایران زمین","بانک پارسیان","بانک پاسارگاد","بانک تجارت"

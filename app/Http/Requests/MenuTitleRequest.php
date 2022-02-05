@@ -27,7 +27,8 @@ class MenuTitleRequest extends FormRequest
             "name" => "required|max:500",
             "route" => "required|max:500",
             "main_route" => "required|max:500",
-            "menu_header_id" => "required"
+            "menu_header_id" => "required",
+            "icon" => "sometimes|nullable"
         ];
     }
     public function messages()

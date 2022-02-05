@@ -30,10 +30,12 @@
         "bootbox": "^5.5.2",
         "bootstrap-select": "^1.13.18",
         "bootstrap-v4-rtl": "^4.6.0-3",
+        "chart.js": "^3.7.0",
         "imask": "^6.2.2",
         "jquery": "^3.6.0",
         "jquery-mask-plugin": "^1.14.16",
         "laravel-echo": "^1.11.3",
+        "owl.carousel": "^2.3.4",
         "pusher-js": "^7.0.3"
     }
 }

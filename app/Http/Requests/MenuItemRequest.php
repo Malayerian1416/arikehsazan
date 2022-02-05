@@ -27,6 +27,7 @@ class MenuItemRequest extends FormRequest
             "name" => "required|max:500",
             "menu_title_id" => "required",
             "menu_action_id" => "required",
+            "short_name" => "required|max:255",
             "main" => "required",
             "notifiable" => "sometimes|nullable",
             "notification_channel" => "sometimes|nullable",
@@ -37,6 +38,8 @@ class MenuItemRequest extends FormRequest
         return [
             "name.required" => "درج نام الزامی می باشد.",
             "name.max" => "حداکثر طول نام 500 کاراگتر می باشد.",
+            "short_name.required" => "درج نام مختصر الزامی می باشد.",
+            "short_name.max" => "حداکثر طول نام مختصر 500 کاراگتر می باشد.",
             "menu_title_id.required" => "انتخاب منوی اصلی الزامی می باشد.",
             "menu_action_id.required" => "انتخاب حداقل یک عنوان از عملیات وابسته الزامی می باشد.",
             "main.required" => "انتخاب عنوان اصلی الزامی می باشد.",

@@ -1,3 +1,4 @@
+@import "fontiran.css";
 *{
     font-size: 11px;
 }
@@ -117,6 +118,8 @@ body{
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    flex-grow: 1;
+    flex-wrap: wrap;
 }
 .menu_col{
     padding-right: 10px;!important;
@@ -132,6 +135,12 @@ body{
 .menu_item_icon{
     height: 40px;
     width: auto;
+}
+.menu_link{
+    width: 50%;
+}
+.menu_link:not(:nth-last-child(1)),.menu_link:not(:nth-last-child(2)){
+    margin-bottom: 0.75rem;
 }
 .menu_link:active{
     text-decoration: none;!important;

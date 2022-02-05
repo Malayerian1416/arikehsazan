@@ -1,4 +1,30 @@
 $(document).ready(function (){
+    $(".owl-carousel").owlCarousel({
+        rtl: true,
+        margin: 20,
+        nav: false,
+        dots: false,
+        loop: true,
+        autoplay: 1000,
+        autoplayHoverPause: false,
+        autoplaySpeed: 2000,
+        autoplayTimeout: 10000,
+        responsive: {
+            0: {
+                items: 1
+            },
+            650: {
+                items: 1
+            },
+            900: {
+                items: 1
+            },
+            1000: {
+                items: 1
+            }
+        }
+
+    });
     if ($(".number_format").length > 0)
         new AutoNumeric.multiple('.number_format',['integer',{'digitGroupSeparator':',','watchExternalChanges':true}]);
     if ($('.number_format_dec').length > 0)

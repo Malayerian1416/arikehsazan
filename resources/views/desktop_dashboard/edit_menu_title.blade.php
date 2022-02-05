@@ -1,10 +1,4 @@
 @extends('desktop_dashboard.d_dashboard')
-@section('styles')
-    <link href="{{asset("/css/bootstrap-select.css")}}" rel="stylesheet">
-@endsection
-@section('scripts')
-    <script type="text/javascript" src="{{asset("/js/bootstrap-select.min.js")}}" defer></script>
-@endsection
 @section('page_title')
     {{"ویرایش عنوان اصلی منو - ".$menu_title->name}}
 @endsection
@@ -13,7 +7,7 @@
         @csrf
         @method('put')
         <div class="form-row">
-            <div class="form-group col-md-12 col-lg-6">
+            <div class="form-group col-md-12 col-lg-3">
                 <label class="col-form-label iran_yekan black_color" for="name">
                     نام
                     <strong class="red_color">*</strong>
@@ -23,7 +17,7 @@
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>
-            <div class="form-group col-md-12 col-lg-6">
+            <div class="form-group col-md-12 col-lg-3">
                 <label class="col-form-label iran_yekan black_color" for="menu_header_id">گروه منو</label>
                 <select class="form-control iran_yekan text-center select_picker @error('menu_header_id') is-invalid @enderror" data-live-search="true" id="menu_header_id" name="menu_header_id" title="انتخاب کنید" data-size="20">
                     @forelse($menu_headers as $menu_header)
@@ -36,7 +30,7 @@
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>
-            <div class="form-group col-md-12 col-lg-6">
+            <div class="form-group col-md-12 col-lg-3">
                 <label class="col-form-label iran_yekan black_color" for="main_route">
                     مسیر اصلی
                     <strong class="red_color">*</strong>
@@ -46,13 +40,26 @@
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>
-            <div class="form-group col-md-12 col-lg-6">
+            <div class="form-group col-md-12 col-lg-3">
                 <label class="col-form-label iran_yekan black_color" for="route">
                     مسیر
                     <strong class="red_color">*</strong>
                 </label>
                 <input type="text" class="form-control iran_yekan text-center @error('route') is-invalid @enderror" id="route" name="route" value="{{$menu_title->route}}">
                 @error('route')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-3">
+                <label class="col-form-label iran_yekan black_color" for="icon_id">آیکون</label>
+                <select class="form-control iran_yekan text-center select_picker @error('icon') is-invalid @enderror" data-live-search="true" id="icon" name="icon" title="انتخاب کنید" data-size="20">
+                    @forelse($icons as $icon)
+                        <option @if($icon->name == $menu_title->icon) selected @endif value="{{$icon->name}}" data-icon="{{$icon->name}}">{{$icon->name}}</option>
+                    @empty
+                        <option>آیکونی وجود ندارد</option>
+                    @endforelse
+                </select>
+                @error('icon')
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>

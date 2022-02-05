@@ -9,10 +9,10 @@
     ایجاد عنوان فرعی منو
 @endsection
 @section('content')
-    <form id="create_form" action="{{route("MenuItems.store")}}" method="post" v-on:submit="submit_create_form">
+    <form id="create_form" action="{{route("MenuItems.store")}}" method="post" v-on:submit="submit_create_form" enctype="multipart/form-data">
         @csrf
         <div class="form-row">
-            <div class="form-group col-md-12 col-lg-6">
+            <div class="form-group col-md-12 col-lg-3">
                 <label class="col-form-label iran_yekan black_color" for="name">
                     نام
                     <strong class="red_color">*</strong>
@@ -22,7 +22,17 @@
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>
-            <div class="form-group col-md-12 col-lg-6">
+            <div class="form-group col-md-12 col-lg-3">
+                <label class="col-form-label iran_yekan black_color" for="short_name">
+                    نام مختصر
+                    <strong class="red_color">*</strong>
+                </label>
+                <input type="text" class="form-control iran_yekan text-center @error('short_name') is-invalid @enderror" id="short_name" name="short_name" value="{{old("name")}}">
+                @error('short_name')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-3">
                 <label class="col-form-label iran_yekan black_color" for="menu_title_id">منوی اصلی</label>
                 <select class="form-control iran_yekan text-center select_picker @error('menu_title_id') is-invalid @enderror" data-live-search="true" id="menu_title_id" name="menu_title_id" title="انتخاب کنید" data-size="20">
                     @forelse($menu_titles as $menu_title)
@@ -35,7 +45,7 @@
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>
-            <div class="form-group col-md-12 col-lg-6">
+            <div class="form-group col-md-12 col-lg-3">
                 <label class="col-form-label iran_yekan black_color" for="menu_action_id">عملیات وابسته</label>
                 <select class="form-control iran_yekan text-center select_picker @error('menu_action_id') is-invalid @enderror" v-on:change="main_route_change" multiple data-live-search="true" id="menu_action_id" name="menu_action_id[]" title="انتخاب کنید" data-size="20">
                     @forelse($menu_actions as $menu_action)
@@ -48,7 +58,7 @@
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>
-            <div class="form-group col-md-12 col-lg-6">
+            <div class="form-group col-md-12 col-lg-3">
                 <label class="col-form-label iran_yekan black_color" for="main">عنوان اصلی</label>
                 <select class="form-control iran_yekan text-center select_picker @error('main') is-invalid @enderror" data-live-search="true" id="main" name="main" title="انتخاب کنید" data-size="20">
 
@@ -57,7 +67,15 @@
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>
-            <div class="form-group col-md-12 col-lg-6">
+            <div class="form-group col-md-12 col-lg-3">
+                <label class="col-form-label iran_yekan black_color" for="icon">آیکون</label>
+                <input type="file" hidden class="form-control iran_yekan text-center @error('icon') is-invalid @enderror" v-on:change="file_browser_change" id="icon" name="icon" accept=".jpg,.png,.bmp,.jpeg">
+                <input type="text" class="form-control iran_yekan text-center file_selector_box" v-on:click="popup_file_browser" id="file_browser_box" readonly value="فایلی انتخاب نشده است">
+                @error('icon')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-3">
                 <input type="checkbox" id="notifiable" name="notifiable" value="1">
                 <label class="col-form-label iran_yekan black_color" for="main">اطلاع رسانی بلادرنگ</label>
                 <input type="text" class="form-control" name="notification_channel">

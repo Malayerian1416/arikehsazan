@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Contract extends Model
 {
@@ -38,6 +39,10 @@ class Contract extends Model
     public function automation_amounts(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
     {
         return $this->hasManyThrough(InvoiceAutomationAmounts::class,Invoice::class);
+    }
+    public static function get_permissions()
+    {
+        return self::query()->whereHas("project",function ($query){$query->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());});})->orderBy("id")->get();
     }
     public function change_activation(){
         if($this->is_active == 0) {
