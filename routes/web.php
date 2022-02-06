@@ -101,7 +101,7 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
         });
     });
     Route::group(['prefix'=>'Phone'],function (){
-        Route::get("/",[PhoneDashboardController::class,"index"])->name("idle");
+        Route::get("/",[PhoneDashboardController::class,"index"])->name("phone_idle");
     });
 });
 Route::get("/f",function (){

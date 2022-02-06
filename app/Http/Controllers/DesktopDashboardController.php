@@ -13,7 +13,7 @@ class DesktopDashboardController extends Controller
 {
     public function index(){
         $company_information = CompanyInformation::all()->first();
-        $projects = Project::get_permissions();
+        $projects = Project::get_permissions(["contracts.invoices.payments","worker_automations.payments"]);
         $contracts = Contract::get_permissions();
         return view("desktop_dashboard/d_dashboard",["company_information" => $company_information,"projects" => $projects,"contracts" => $contracts]);
     }

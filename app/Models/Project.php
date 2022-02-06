@@ -25,8 +25,12 @@ class Project extends Model
     {
         return $this->hasMany(Contract::class,"project_id");
     }
-    public static function get_permissions(): Collection
+    public function worker_automations(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return self::query()->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());})->orderBy("id")->get();
+        return $this->hasMany(WorkerPaymentAutomation::class,"project_id");
+    }
+    public static function get_permissions(array $relation): Collection
+    {
+        return self::query()->with($relation)->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());})->orderBy("id")->get();
     }
 }

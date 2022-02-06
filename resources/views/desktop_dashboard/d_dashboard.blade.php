@@ -10,7 +10,7 @@
         داشبورد
     </title>
     <link href="{{asset("/css/app.css?v=".time())}}" rel="stylesheet">
-    <link href="{{asset("/css/d_dashboard.css")}}" rel="stylesheet">
+    <link href="{{asset("/css/d_dashboard.css?v=".time())}}" rel="stylesheet">
     <link href="{{asset("/css/persianDatepicker-default.css")}}" rel="stylesheet">
     @yield('styles')
 </head>
@@ -151,14 +151,14 @@
     </div>
     <div class="pages_container">
         @if(Route::is("idle"))
-            <div class="gadget_container owl-carousel owl-theme">
-                @forelse($projects as $project)
-                    <div class="gadget_item bg-dark">
-                        <div class="gadget_title">
-                            <h6 class="iran_yekan mb-3">پروژه {{$project->name}}</h6>
-                        </div>
-                        <div class="gadget-body">
-                            <div>
+            <div class="gadget_container">
+                <div class="gadget d-flex flex-row align-items-center justify-content-start" style="width: 33%;">
+                    <h6 class="p-3 text-center h-100 bg-dark" style="margin:0;width: 35px;writing-mode: vertical-lr;background: #ffffff;border-top-right-radius: 5px;border-bottom-right-radius: 5px">
+                        <span class="iran_yekan white_color" style="font-size: 1.3rem">اطلاعات پروژه ها</span>
+                    </h6>
+                    <div class="owl-carousel owl-theme" style="width: calc(100% - 35px);height: 100%">
+                        @forelse($projects as $project)
+                            <div class="item w-100 p-3 h-100">
                                 @php
                                     $start = explode("/",$project->project_start_date);
                                     $end = explode("/",$project->project_completion_date);
@@ -169,132 +169,174 @@
                                     $remain = $total_diff - $percent_diff >= 1 ? $total_diff - $percent_diff : 0;
                                     $percent = ceil(($percent_diff / $total_diff) * 100) <= 100 ? ceil(($percent_diff / $total_diff) * 100) : 100;
                                     $color = ceil(($percent / 100) * 255);
+                                    $invoice_sum = 0;
+                                    $worker_sum = 0;
                                 @endphp
-                                <h6 class="iran_yekan mb-3 white_color text-muted-light">زمانبندی پروژه {{$project->name}}</h6>
-                                <div class="w-100 border mb-3 d-flex justify-content-center align-items-center progress_bar_container">
-                                    <div class="progress_bar" style="background: rgb({{$color}},{{255-$color}},0);width: {{$percent}}%">
-                                    </div>
-                                    <span class="iran_yekan white_color" style="z-index: 100">{{$percent."%"}}</span>
+                                <div class="gadget_title">
+                                    <h6 class="iran_yekan mb-4" style="font-size: 1.5rem">{{$project->name}}</h6>
                                 </div>
-                                <table class="w-100 iran_yekan table table-bordered text-center project_gadget_table">
-                                    <tr>
-                                        <td>{{$project->project_start_date}}</td>
-                                        <td>کل روزها</td>
-                                        <td>{{"$total_diff روز"}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>لغایت</td>
-                                        <td>سپری شده</td>
-                                        <td>{{"$percent_diff روز"}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{$project->project_completion_date}}</td>
-                                        <td>باقیمانده</td>
-                                        <td>{{"$remain روز"}}</td>
-                                    </tr>
-                                </table>
+                                <div class="mb-4">
+                                    <h6 class="iran_yekan mb-3 white_color text-muted-light">مدت زمان سپری شده</h6>
+                                    <div class="w-100 border mb-3 d-flex justify-content-center align-items-center progress_bar_container">
+                                        <div class="progress_bar" style="background: rgb({{$color}},{{255-$color}},0);width: {{$percent}}%">
+                                        </div>
+                                        <span class="iran_yekan" style="z-index: 100">{{$percent."%"}}</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h6 class="iran_yekan mb-3 white_color text-muted-light">کل هزینه های وضعیتی</h6>
+                                        <div class="mb-3">
+                                            <h6 class="iran_yekan" style="font-size: 1.5rem">
+                                                @forelse($project->contracts as $contract)
+                                                    @forelse($contract->invoices as $invoice)
+                                                        @php
+                                                            $invoice_sum += array_sum($invoice->payments->pluck("amount_payed")->toArray())
+                                                        @endphp
+                                                    @empty
+                                                    @endforelse
+                                                @empty
+                                                @endforelse
+                                                {{number_format($invoice_sum)." ریال"}}
+                                            </h6>
+                                        </div>
+                                        <h6 class="iran_yekan mb-3 white_color text-muted-light">کل هزینه های کارگری</h6>
+                                        <div>
+                                            <h6 class="iran_yekan" style="font-size: 1.5rem">
+                                                @forelse($project->worker_automations as $worker_automation)
+                                                    @if($worker_automation->payments != null)
+                                                        @php
+                                                            $worker_sum += $worker_automation->payments->amount_payed;
+                                                        @endphp
+                                                    @endif
+                                                @empty
+                                                @endforelse
+                                                {{number_format($worker_sum)." ریال"}}
+                                            </h6>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <table class="w-100 iran_yekan table table-bordered text-center project_gadget_table">
+                                            <tr>
+                                                <td>{{$project->project_start_date}}</td>
+                                                <td>کل روزها</td>
+                                                <td>{{"$total_diff روز"}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>لغایت</td>
+                                                <td>سپری شده</td>
+                                                <td>{{"$percent_diff روز"}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>{{$project->project_completion_date}}</td>
+                                                <td>باقیمانده</td>
+                                                <td>{{"$remain روز"}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        @empty
+                            <h6 class="iran_yekan" style="font-size: 1.5rem">پروژه ای یافت نشد!</h6>
+                        @endforelse
                     </div>
-                @empty
-                @endforelse
-            </div>
-        @else
-            <div class="page_content">
-                <div class="w-100 bg-dark page_title_container">
+                </div>
+                @else
+                    <div class="page_content">
+                        <div class="w-100 bg-dark page_title_container">
                 <span class="iran_yekan white_color h-100 pl-3 m-0 page_title">
                     @yield('page_title')
                 </span>
-                </div>
-                <div class="page_content_body">
-                    @if(session()->has("action_error"))
-                        <div class="iran_yekan alert alert-danger alert-dismissible fade show" role="alert">
-                            <h6 style="font-weight: 700">
-                                <i class="fa fa-times-circle" style="color: #ff0000;min-width: 30px;vertical-align: middle;text-align:center;font-size: 1.5rem"></i>
-                                در هنگام انجام عملیات، خطای زیر رخ داده است :
-                            </h6>
-                            <ul>
-                                <li>{{session("action_error")}}</li>
-                            </ul>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
                         </div>
-                    @endif
-                    @yield('content')
-                </div>
-                <div class="w-100 bg-dark page_footer_container d-flex justify-content-center align-items-center">
-                    @yield('page_footer')
-                </div>
+                        <div class="page_content_body">
+                            @if(session()->has("action_error"))
+                                <div class="iran_yekan alert alert-danger alert-dismissible fade show" role="alert">
+                                    <h6 style="font-weight: 700">
+                                        <i class="fa fa-times-circle" style="color: #ff0000;min-width: 30px;vertical-align: middle;text-align:center;font-size: 1.5rem"></i>
+                                        در هنگام انجام عملیات، خطای زیر رخ داده است :
+                                    </h6>
+                                    <ul>
+                                        <li>{{session("action_error")}}</li>
+                                    </ul>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            @endif
+                            @yield('content')
+                        </div>
+                        <div class="w-100 bg-dark page_footer_container d-flex justify-content-center align-items-center">
+                            @yield('page_footer')
+                        </div>
+                    </div>
+                @endif
+            </div>
+            @yield('modal_alerts')
+    </div>
+    @if(session()->has('result'))
+        @if(session("result") == "saved")
+            <div class="alert_container">
+                <h6 class="iran_yekan">
+                    <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
+                    <span class="white_color">عملیات ذخیره سازی با موفقیت انجام شد</span>
+                </h6>
             </div>
         @endif
-    </div>
-    @yield('modal_alerts')
-</div>
-@if(session()->has('result'))
-    @if(session("result") == "saved")
-        <div class="alert_container">
-            <h6 class="iran_yekan">
-                <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
-                <span class="white_color">عملیات ذخیره سازی با موفقیت انجام شد</span>
-            </h6>
-        </div>
+        @if(session("result") == "updated")
+            <div class="alert_container">
+                <h6 class="iran_yekan">
+                    <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
+                    <span class="white_color">عملیات ویرایش با موفقیت انجام شد</span>
+                </h6>
+            </div>
+        @endif
+        @if(session("result") == "deleted")
+            <div class="alert_container">
+                <h6 class="iran_yekan">
+                    <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
+                    <span class="white_color">عملیات حذف رکورد با موفقیت انجام شد</span>
+                </h6>
+            </div>
+        @endif
+        @if(session("result") == "deactivated")
+            <div class="alert_container">
+                <h6 class="iran_yekan">
+                    <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
+                    <span class="white_color">رکورد مورد نظر با موفقیت غیرفعال شد</span>
+                </h6>
+            </div>
+        @endif
+        @if(session("result") == "activated")
+            <div class="alert_container">
+                <h6 class="iran_yekan">
+                    <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
+                    <span class="white_color">رکورد مورد نظر با موفقیت فعال شد</span>
+                </h6>
+            </div>
+        @endif
+        @if(session("result") == "sent")
+            <div class="alert_container">
+                <h6 class="iran_yekan">
+                    <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
+                    <span class="white_color">عملیات تایید و ارسال با موفقیت انجام شد</span>
+                </h6>
+            </div>
+        @endif
+        @if(session("result") == "payed")
+            <div class="alert_container">
+                <h6 class="iran_yekan">
+                    <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
+                    <span class="white_color">عملیات تایید و پرداخت با موفقیت انجام شد</span>
+                </h6>
+            </div>
+        @endif
     @endif
-    @if(session("result") == "updated")
-        <div class="alert_container">
-            <h6 class="iran_yekan">
-                <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
-                <span class="white_color">عملیات ویرایش با موفقیت انجام شد</span>
-            </h6>
-        </div>
-    @endif
-    @if(session("result") == "deleted")
-        <div class="alert_container">
-            <h6 class="iran_yekan">
-                <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
-                <span class="white_color">عملیات حذف رکورد با موفقیت انجام شد</span>
-            </h6>
-        </div>
-    @endif
-    @if(session("result") == "deactivated")
-        <div class="alert_container">
-            <h6 class="iran_yekan">
-                <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
-                <span class="white_color">رکورد مورد نظر با موفقیت غیرفعال شد</span>
-            </h6>
-        </div>
-    @endif
-    @if(session("result") == "activated")
-        <div class="alert_container">
-            <h6 class="iran_yekan">
-                <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
-                <span class="white_color">رکورد مورد نظر با موفقیت فعال شد</span>
-            </h6>
-        </div>
-    @endif
-    @if(session("result") == "sent")
-        <div class="alert_container">
-            <h6 class="iran_yekan">
-                <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
-                <span class="white_color">عملیات تایید و ارسال با موفقیت انجام شد</span>
-            </h6>
-        </div>
-    @endif
-    @if(session("result") == "payed")
-        <div class="alert_container">
-            <h6 class="iran_yekan">
-                <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
-                <span class="white_color">عملیات تایید و پرداخت با موفقیت انجام شد</span>
-            </h6>
-        </div>
-    @endif
-@endif
-<script src="{{asset("js/app.js?v=".time())}}"></script>
-<script src="{{asset("/js/jquery.mask.js")}}"></script>
-<script src="{{asset("/js/numeral.js")}}"></script>
-<script src="{{asset("/js/persianDatepicker.min.js")}}"></script>
-<script src="{{asset("/js/d_dashboard.js?v=".time())}}"></script>
-<script src="{{asset("/js/kernel.js?v=".time())}}" defer></script>
+    <script src="{{asset("js/app.js?v=".time())}}"></script>
+    <script src="{{asset("/js/jquery.mask.js")}}"></script>
+    <script src="{{asset("/js/numeral.js")}}"></script>
+    <script src="{{asset("/js/persianDatepicker.min.js")}}"></script>
+    <script src="{{asset("/js/d_dashboard.js?v=".time())}}"></script>
+    <script src="{{asset("/js/kernel.js?v=".time())}}" defer></script>
 @yield('scripts')
 </body>
 </html>

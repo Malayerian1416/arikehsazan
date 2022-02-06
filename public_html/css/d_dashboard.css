@@ -764,9 +764,11 @@ textarea{
     height: 100%;
     overflow-y: auto;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
+    flex-direction: row;
+    align-items: start;
+    justify-content: start;
+    flex-wrap: wrap;
+    flex-grow: 1;
 
 }
 .gadget_container::-webkit-scrollbar {
@@ -779,8 +781,8 @@ textarea{
     background-color: darkgrey;
     outline: 1px solid slategrey;
 }
-.gadget_item{
-    width: 50%;padding: 10px 15px;border-radius: 5px;box-shadow: 3px 3px 5px 1px #989898;display: flex;align-items: center;justify-content: center;background-color: white;
+.gadget{
+    border-radius: 5px;display: flex;align-items: stretch;justify-content: center;background-color: white;height: 22rem;
 }
 .gadget_parent:not(:last-child){
     margin-right: 15px;
@@ -793,18 +795,6 @@ textarea{
 }
 .progress_bar{
     position: absolute;top: -25%;right: 0;height: 150%;
-}
-.progress_bar:after {
-    content: '';
-    width: 50px;
-    height: 20px;
-    background: repeating-linear-gradient(
-        45deg,
-        #606dbc,
-        #606dbc 10px,
-        #465298 10px,
-        #465298 20px
-    );
 }
 @media screen and (max-width: 991px){
     .header_container{
