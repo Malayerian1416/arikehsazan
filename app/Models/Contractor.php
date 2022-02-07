@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Contractor extends Model
 {
@@ -25,5 +26,9 @@ class Contractor extends Model
     public function docs(): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
         return $this->morphMany(Doc::class,"docable","docable_type","docable_id");
+    }
+    public static function get_permissions(array $relations)
+    {
+        return self::query()->with($relations)->whereHas("contract",function ($query){$query->whereHas("project",function ($query){$query->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());});});})->orderBy("id")->get();
     }
 }

@@ -14,7 +14,10 @@ class DesktopDashboardController extends Controller
     public function index(){
         $company_information = CompanyInformation::all()->first();
         $projects = Project::get_permissions(["contracts.invoices.payments","worker_automations.payments"]);
-        $contracts = Contract::get_permissions();
-        return view("desktop_dashboard/d_dashboard",["company_information" => $company_information,"projects" => $projects,"contracts" => $contracts]);
+        $contracts = Contract::get_permissions(["project","contractor","invoices.payments"]);
+        $contractors=Contractor::get_permissions(["docs","contract.invoices" => function($query){$query->with("payments")->where("invoices.is_final","=",0);}]);
+        return view("desktop_dashboard.idle",[
+            "company_information" => $company_information,"projects" => $projects,"contracts" => $contracts, "contractors" => $contractors
+        ]);
     }
 }

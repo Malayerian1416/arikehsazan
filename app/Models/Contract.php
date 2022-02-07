@@ -40,9 +40,9 @@ class Contract extends Model
     {
         return $this->hasManyThrough(InvoiceAutomationAmounts::class,Invoice::class);
     }
-    public static function get_permissions()
+    public static function get_permissions(array $relations)
     {
-        return self::query()->whereHas("project",function ($query){$query->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());});})->orderBy("id")->get();
+        return self::query()->with($relations)->whereHas("project",function ($query){$query->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());});})->orderBy("id")->get();
     }
     public function change_activation(){
         if($this->is_active == 0) {

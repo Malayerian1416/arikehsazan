@@ -25,7 +25,7 @@ body{
     margin-top: 50px;
 }
 .company_name{
-    color: #8c8065;
+    color: #ffc445;
     font-family: lalehzar,'sans-serif';
     font-size: 1.2rem;
 }
@@ -55,35 +55,34 @@ body{
 .login_button{
     width: 100%;
     border: none;
-    background: #8c8065;
-    border-radius: 15px;
+    background: #ffb71b;
+    border-radius: 10px;
     height: 50px;
     font-size: 0.8rem;
-    color: white;
+    color: black;
     transition: all 0.5ms linear;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #bebebe inset !important;
 }
 .forget_button{
-    width: 45%;
-    border: none;
-    background: transparent;
-    border-radius: 10px;
-    height: 30px;
     font-size: 0.7rem;
-    color: #7b7b7b;
-    box-shadow: 1px 1px 2px 1px #e5e5e5;
+    color: #a4a4a4;
     transition: all 0.5ms linear;
+    text-decoration: none;
 }
 .login_button:hover{
-    background: #837860;
-    box-shadow: 0 0 5px 1px #988f70;
+    background: #d9980d;
+    box-shadow: 0 0 5px 1px #ffad00;
 }
 .forget_button:hover{
-    background: #fcfcfc;
-    width: 44%;
+    color: #fcfcfc;
 }
-.login_input:focus{
-    box-shadow: 0 0 5px -1px rgba(96,87,69,0.4);
-    border: 1px solid #d7d7d7;
+.forget_button:focus,.forget_button:hover{
+    text-decoration: none;
 }
 .input_label{
     width: 100px;
@@ -97,11 +96,14 @@ body{
     margin: 0;
     padding: 0;
     user-select: none;
+    text-align: right;
+    font-size: 0.9rem;
 }
 .active{
-    top:-25px;
-    left:74%;
+    top:-26px;
+    left:68%;
     transform:none;
+    color: #ffc445;
 }
 .loading_window{
     top: 0;

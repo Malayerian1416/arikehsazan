@@ -40,7 +40,7 @@ const app = new Vue({
     el:"#app",
     data:{
         account_info_active: false,
-        loading_window_active: false,
+        loading_window_active: true,
         button_loading: false,
         button_not_loading: true,
         live_data_adding_modal_title: "",
@@ -95,7 +95,7 @@ const app = new Vue({
     },
     mounted() {
         const self = this;
-        // this.loading_window_active = false;
+        this.loading_window_active = false;
         // if (this.$refs.parent_select) {
         //     let elem = this.$refs.parent_select;
         //     elem.dispatchEvent(new Event("change"));
@@ -873,6 +873,12 @@ const app = new Vue({
                 e.target.value = 100;
             else if (parseInt(e.target.value) < 0)
                 e.target.value = 0;
+        },
+        sidenav_visibility(){
+            $(".sidenav").toggleClass("disappear");
+            $(".header_container, .pages_container, .gadget_container").toggleClass("full-width");
+            $(".header_menu_button").toggleClass("fa-times").toggleClass("fa-bars");
+            window.dispatchEvent(new Event('resize'));
         }
     }
 });

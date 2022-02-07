@@ -1,7 +1,6 @@
 $(document).ready(function (){
-    $(".owl-carousel").owlCarousel({
+    const owl_elements = $(".owl-carousel").owlCarousel({
         rtl: true,
-        margin: 20,
         nav: false,
         dots: false,
         loop: true,
@@ -24,6 +23,9 @@ $(document).ready(function (){
             }
         }
 
+    });
+    $(window).on("resize",function (){
+        owl_elements.trigger('refresh.owl.carousel');
     });
     if ($(".number_format").length > 0)
         new AutoNumeric.multiple('.number_format',['integer',{'digitGroupSeparator':',','watchExternalChanges':true}]);

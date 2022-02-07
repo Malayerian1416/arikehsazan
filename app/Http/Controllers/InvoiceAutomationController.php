@@ -114,7 +114,7 @@ class InvoiceAutomationController extends Controller
                 "amount" => $invoice_flow_permissions->amount ? $request->input("amount") : $invoice->automation_amounts[0]->amount,
                 "payment_offer" => $invoice_flow_permissions->payment_offer ? $request->input("payment_offer") : $invoice->automation_amounts[0]->payment_offer,
                 "payment_offer_percent" => $invoice_flow_permissions->payment_offer ? $request->input("payment_offer_percent") : $invoice->automation_amounts[0]->payment_offer_percent,
-                "is_main" => ($main_role && Auth::user()->role->id == $main_role) ? 1 : 0
+                "is_main" => ($main_role != null && Auth::user()->role->id == $main_role) ? 1 : 0
             ]);
             return redirect()->back()->with(["result" => "saved"]);
         }

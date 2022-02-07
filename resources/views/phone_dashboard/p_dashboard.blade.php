@@ -18,12 +18,12 @@
 <button id="select_refresher" onclick="$('.select_picker').selectpicker('refresh')" hidden>
 </button>
 <div id="app" v-on:click="account_information_open">
-    <div class="loading_window" v-cloak v-show="loading_window_active">
+    <div class="loading_window" v-show="loading_window_active">
         <i class="fas fa-circle-notch fa-spin white_color fa-3x"></i>
         <span class="iran_yekan white_color mt-2">لطفا منتظر بمانید</span>
     </div>
     <div class="header_section">
-        @if(Route::is("idle"))
+        @if(Route::is("phone_idle"))
             <div>
                 <span class="laleh white_color company_name">{{$company_information->name}}</span>
             </div>
@@ -46,7 +46,7 @@
             </div>
         @else
             <div>
-                <a style="text-decoration: none" href="{{route("idle")}}">
+                <a style="text-decoration: none" href="{{route("phone_idle")}}">
                     <i class="fa fa-arrow-right return_icon white_color"></i>
                     <span class="iran_yekan white_color">بازگشت</span>
                 </a>
@@ -56,8 +56,8 @@
             </div>
         @endif
     </div>
-    <div class="content_section @if(Route::is("idle") && count($user_menu->toArray()) <= 1) no_footer @elseif(!Route::is("idle")) low_footer @endif">
-        @if(Route::is("idle"))
+    <div class="content_section @if(Route::is("phone_idle") && count($user_menu->toArray()) <= 1) no_footer @elseif(!Route::is("phone_idle")) low_footer @endif">
+        @if(Route::is("phone_idle"))
             <div class="menu">
                 @forelse($user_menu as $menu_header)
                     <div id="{{$menu_header->slug}}" class="menu_header @if($loop->first) show @endif">
@@ -120,11 +120,11 @@
             </div>
         @endif
     </div>
-    @if(Route::is("idle"))
+    @if(Route::is("phone_idle"))
         @if(count($user_menu->toArray()) > 1)
             <div class="footer_section">
                 @forelse($user_menu as $menu_header)
-                    <div id="{{$menu_header->slug}}_header" class="menu_header_container @if(Route::is("idle") || $loop->first) active @elseif(Route::is($menu_header->menu_titles->pluck("main_route")->toArray())) active @else {{null}} @endif">
+                    <div id="{{$menu_header->slug}}_header" class="menu_header_container @if(Route::is("phone_idle") || $loop->first) active @elseif(Route::is($menu_header->menu_titles->pluck("main_route")->toArray())) active @else {{null}} @endif">
                         <div class="menu_header_footer">
                             <i class="{{$menu_header->icon->name}} menu_header_icon"></i>
                             <span class="iran_yekan menu_header_title">{{$menu_header->name}}</span>
@@ -140,7 +140,7 @@
             @yield('page_footer')
         </div>
     @endif
-    <div class="sidebar_section @if(Route::is("idle") && count($user_menu->toArray()) <= 1) no_footer @elseif(!Route::is("idle")) low_footer @endif" v-cloak v-show="sidebar_visibility">
+    <div class="sidebar_section @if(Route::is("phone_idle") && count($user_menu->toArray()) <= 1) no_footer @elseif(!Route::is("phone_idle")) low_footer @endif" v-cloak v-show="sidebar_visibility">
 
     </div>
     @if(session()->has('result'))

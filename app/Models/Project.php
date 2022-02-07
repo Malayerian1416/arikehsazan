@@ -29,8 +29,8 @@ class Project extends Model
     {
         return $this->hasMany(WorkerPaymentAutomation::class,"project_id");
     }
-    public static function get_permissions(array $relation): Collection
+    public static function get_permissions(array $relations): Collection
     {
-        return self::query()->with($relation)->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());})->orderBy("id")->get();
+        return self::query()->with($relations)->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());})->orderBy("id")->get();
     }
 }

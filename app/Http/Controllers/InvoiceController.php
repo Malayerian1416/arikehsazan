@@ -48,7 +48,7 @@ class InvoiceController extends Controller
     {
         Gate::authorize("create","Invoices");
         try {
-            $projects = Project::get_permissions();
+            $projects = Project::get_permissions([]);
             return view("{$this->agent}.create_new_invoice",["projects" => $projects]);
         }
         catch (Throwable $ex){

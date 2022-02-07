@@ -24,6 +24,18 @@ body{
     vertical-align: middle;
     color: white;
 }
+.loading_window{
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 5000;
+}
 .menu_icon{
     width: 30px;
     font-size: 1.5rem;

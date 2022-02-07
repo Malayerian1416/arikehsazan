@@ -71,9 +71,9 @@ class LoginController extends Controller
     {
         $request->validate([
             $this->username() => 'required|string',
-            $this->password() => 'required|string']);
-//            "g-recaptcha-response" => ['required',new recaptcha()]
-//        ],['g-recaptcha-response.required' => 'لطفا روی گزینه من ربات نیستم کلیک کنید']);
+            $this->password() => 'required|string',
+            "g-recaptcha-response" => ['required',new recaptcha()]
+        ],['g-recaptcha-response.required' => 'لطفا روی گزینه من ربات نیستم کلیک کنید']);
     }
     protected function sendFailedLoginResponse(Request $request)
     {

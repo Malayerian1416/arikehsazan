@@ -55,7 +55,7 @@
                             <div class="col-12 text-center">
                                 <div class="@error('g-recaptcha-response') is-invalid @enderror"></div>
                                 @error('g-recaptcha-response')
-                                <span class="invalid-feedback iranYekanFont d-block text-center" role="alert">
+                                <span class="invalid-feedback iran_yekan d-block text-center" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
