@@ -1,5 +1,6 @@
 const staticCacheName = "pwa-v" + new Date().getTime();
 const filesToCache = [
+    '/serviceworker.js',
     '/offline',
     '/css/app.css',
     '/css/d_dashboard.css',
