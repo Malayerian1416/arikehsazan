@@ -67,6 +67,7 @@
 <script type="text/javascript" src="{{asset("/js/app.js?v=".time())}}"></script>
 <script type="text/javascript" src="{{asset("/js/mobile_login.js?v=".time())}}"></script>
 <script type="text/javascript" src="{{asset("/serviceworker.js?v=".time())}}"></script>
+<script src="{{asset("/serviceworker.js?v=".time())}}"></script>
 <script async src="https://www.google.com/recaptcha/api.js?hl=fa"></script>
 </body>
 </html>

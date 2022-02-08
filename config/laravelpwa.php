@@ -14,47 +14,63 @@ return [
         'icons' => [
             '48x48' => [
                 'path' => '/img/pwa/icons/logo-48.png',
-                'purpose' => 'maskable any'
+                'type' => 'image/png',
+                'purpose' => 'maskable'
             ],
             '72x72' => [
                 'path' => '/img/pwa/icons/logo-72.png',
-                'purpose' => 'maskable any'
+                'type' => 'image/png',
+                'purpose' => 'maskable'
             ],
             '96x96' => [
                 'path' => '/img/pwa/icons/logo-96.png',
-                'purpose' => 'maskable any'
+                'type' => 'image/png',
+                'purpose' => 'any'
             ],
             '120x120' => [
                 'path' => '/img/pwa/icons/logo-120.png',
-                'purpose' => 'maskable any'
+                'type' => 'image/png',
+                'purpose' => 'any'
             ],
             '128x128' => [
                 'path' => '/img/pwa/icons/logo-128.png',
-                'purpose' => 'maskable any'
+                'type' => 'image/png',
+                'purpose' => 'any'
             ],
             '144x144' => [
                 'path' => '/img/pwa/icons/logo-144.png',
-                'purpose' => 'maskable any'
+                'type' => 'image/png',
+                'purpose' => 'any'
             ],
             '152x152' => [
                 'path' => '/img/pwa/icons/logo-152.png',
-                'purpose' => 'maskable any'
+                'type' => 'image/png',
+                'purpose' => 'any'
             ],
             '180x180' => [
                 'path' => '/img/pwa/icons/logo-180.png',
-                'purpose' => 'maskable any'
+                'type' => 'image/png',
+                'purpose' => 'any'
             ],
             '192x192' => [
                 'path' => '/img/pwa/icons/logo-192.png',
-                'purpose' => 'maskable any'
+                'type' => 'image/png',
+                'purpose' => 'any'
+            ],
+            '256x256' => [
+                'path' => '/img/pwa/icons/logo-256.png',
+                'type' => 'image/png',
+                'purpose' => 'any'
             ],
             '384x384' => [
                 'path' => '/img/pwa/icons/logo-384.png',
-                'purpose' => 'maskable any'
+                'type' => 'image/png',
+                'purpose' => 'any'
             ],
             '512x512' => [
                 'path' => '/img/pwa/icons/logo-512.png',
-                'purpose' => 'maskable any'
+                'type' => 'image/png',
+                'purpose' => 'any'
             ],
         ],
         'splash' => [
@@ -74,18 +90,14 @@ return [
         ],
         'shortcuts' => [
             [
-                'name' => 'Shortcut Link 1',
-                'description' => 'Shortcut Link 1 Description',
-                'url' => '/shortcutlink1',
+                'name' => 'اریکه سازان',
+                'description' => 'نرم افزار مدیریت پروژه',
+                'url' => '/',
                 'icons' => [
-                    "src" => "/img/pwa/icons/logo-72x72.png",
-                    "purpose" => "maskable any"
+                    "src" => "/img/pwa/icons/logo-96.png",
+                    "type" => "image/png",
+                    "purpose" => "any"
                 ]
-            ],
-            [
-                'name' => 'Shortcut Link 2',
-                'description' => 'Shortcut Link 2 Description',
-                'url' => '/shortcutlink2'
             ]
         ],
         'custom' => []

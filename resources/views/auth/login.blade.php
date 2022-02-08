@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    @laravelPWA
     <title>
         {{$company_information->name}}
         -
@@ -12,6 +11,7 @@
     <!-- Styles -->
     <link href="{{asset("/css/app.css?v=".time())}}" rel="stylesheet">
     <link href="{{asset("/css/login.css?v=".time())}}" rel="stylesheet">
+    @laravelPWA
 </head>
 <body class="antialiased">
 <div class="rtl container-fluid login_bg">
@@ -84,6 +84,7 @@
 </div>
 <script type="text/javascript" src="{{asset("/js/app.js?v=".time())}}"></script>
 <script type="text/javascript" src="{{asset("/js/login.js?v=".time())}}"></script>
+<script src="{{asset("/serviceworker.js?v=".time())}}"></script>
 <script async src="https://www.google.com/recaptcha/api.js?hl=fa"></script>
 </body>
 </html>
