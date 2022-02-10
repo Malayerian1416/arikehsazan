@@ -6,6 +6,7 @@ use App\Http\Requests\BankAccountRequest;
 use App\Models\Bank;
 use App\Models\BankAccount;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Jenssegers\Agent\Agent;
 use Throwable;
@@ -53,6 +54,7 @@ class BankAccountController extends Controller
     {
         Gate::authorize("create","BankAccounts");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $validated["user_id"] = Auth::id();
             $bank = BankAccount::query()->create($validated);
@@ -76,9 +78,11 @@ class BankAccountController extends Controller
                     ++$counter;
                 }
             }
+            DB::commit();
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -100,6 +104,7 @@ class BankAccountController extends Controller
     {
         Gate::authorize("edit","BankAccounts");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $validated["user_id"] = Auth::id();
             $bank = BankAccount::query()->findOrFail($id);
@@ -129,9 +134,11 @@ class BankAccountController extends Controller
                     ++$counter;
                 }
             }
+            DB::commit();
             return redirect()->back()->with(["result" => "updated"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -140,13 +147,16 @@ class BankAccountController extends Controller
     {
         Gate::authorize("destroy","BankAccounts");
         try {
+            DB::beginTransaction();
             $bank = BankAccount::query()->findOrFail($id);
             $bank->docs()->delete();
             $bank->checks()->delete();
             $bank->delete();
+            DB::commit();
             return redirect()->back()->with(["result" => "updated"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }

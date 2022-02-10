@@ -102,6 +102,7 @@ class InvoiceAutomationController extends Controller
     public function register_invoice_amounts(Request $request,$id): \Illuminate\Http\RedirectResponse
     {
         try {
+            DB::beginTransaction();
             $invoice = Invoice::query()->findOrFail($id);
             $invoice_flow_permissions = InvoiceFlow::query()->where("role_id","=",Auth::user()->role->id)->first();
             $main_role = InvoiceFlow::query()->where("is_main","=",1)->value("role_id");
@@ -116,9 +117,11 @@ class InvoiceAutomationController extends Controller
                 "payment_offer_percent" => $invoice_flow_permissions->payment_offer ? $request->input("payment_offer_percent") : $invoice->automation_amounts[0]->payment_offer_percent,
                 "is_main" => ($main_role != null && Auth::user()->role->id == $main_role) ? 1 : 0
             ]);
+            DB::commit();
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -127,6 +130,7 @@ class InvoiceAutomationController extends Controller
     {
         Gate::authorize("send","InvoiceAutomation");
         try {
+            DB::beginTransaction();
             $invoice = Invoice::query()->findOrFail($id);
             $automation = InvoiceAutomation::query()->findOrFail($invoice->automation->id);
             $current_role = InvoiceFlow::query()->where("role_id", "=", Auth::user()->role->id)->first();
@@ -158,17 +162,19 @@ class InvoiceAutomationController extends Controller
             ]);
 
             $invoice->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
+            DB::commit();
             return redirect()->route("InvoiceAutomation.new")->with(["result" => "sent"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
     public function payment_process(InvoicePaymentRequest $request,$id): \Illuminate\Http\RedirectResponse
     {
         Gate::authorize("pay","InvoiceAutomation");
-        DB::beginTransaction();
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $invoice = Invoice::query()->findOrFail($id);
             $main_amounts = InvoiceAutomationAmounts::main_amounts($invoice->id);

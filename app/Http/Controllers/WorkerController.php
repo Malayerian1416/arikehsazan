@@ -6,6 +6,7 @@ use App\Http\Requests\ContractorRequest;
 use App\Models\Bank;
 use App\Models\Contractor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Jenssegers\Agent\Agent;
@@ -41,6 +42,7 @@ class WorkerController extends Controller
     {
         Gate::authorize("create","Workers");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $validated["user_id"] = auth()->id();
             $contractor = Contractor::query()->create($validated);
@@ -61,9 +63,11 @@ class WorkerController extends Controller
                     ++$index;
                 }
             }
+            DB::commit();
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }

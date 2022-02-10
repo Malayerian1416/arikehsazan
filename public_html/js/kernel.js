@@ -879,6 +879,9 @@ const app = new Vue({
             $(".header_container, .pages_container, .gadget_container").toggleClass("full-width");
             $(".header_menu_button").toggleClass("fa-times").toggleClass("fa-bars");
             window.dispatchEvent(new Event('resize'));
+        },
+        submit_login(){
+            this.loading_window_active = true;
         }
     }
 });

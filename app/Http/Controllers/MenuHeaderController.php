@@ -6,6 +6,7 @@ use App\Http\Requests\MenuHeaderRequest;
 use App\Models\Icon;
 use App\Models\MenuHeader;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Throwable;
 
@@ -40,11 +41,14 @@ class MenuHeaderController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             MenuHeader::query()->create($validated);
+            DB::commit();
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -66,12 +70,15 @@ class MenuHeaderController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $menu_header = MenuHeader::query()->findOrFail($id);
             $menu_header->update($validated);
+            DB::commit();
             return redirect()->back()->with(["result" => "updated"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -80,6 +87,7 @@ class MenuHeaderController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $menu_header = MenuHeader::query()->findOrFail($id);
             if ($menu_header->menu_titles()->get()->isNotEmpty()) {
                 $related_menu_titles = "";
@@ -90,9 +98,11 @@ class MenuHeaderController extends Controller
                 return redirect()->back()->with(["action_error" => "عنوان اصلی یا عناوین اصلی شماره $related_titles دارای وابستگی به رکورد مورد نظر می باشد."]);
             }
             $menu_header->delete();
+            DB::commit();
             return redirect()->back()->with(["result" => "deleted"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\InvoiceFlow;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Throwable;
 
@@ -40,6 +41,7 @@ class InvoiceFlowController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             if ($request->has("final_starter") && $request->has("final_inductor") && $request->input("final_finisher") != null && $request->input("is_main") != null) {
                 InvoiceFlow::query()->truncate();
                 $items = [];
@@ -50,12 +52,14 @@ class InvoiceFlowController extends Controller
                     $items[] = ["role_id" => $value, "is_starter" => 0, "is_finisher" => 0, "priority" => $position++, "is_main" => $request->input("is_main") == $value?1:0];
                 $items[] = ["role_id" => $request->input("final_finisher"), "is_starter" => 0, "is_finisher" => 1, "priority" => $position, "is_main" => $request->input("is_main") == $request->input("final_finisher")?1:0];
                 InvoiceFlow::query()->insert($items);
+                DB::commit();
                 return redirect()->route("InvoiceFlow.index")->with(["result" => "saved"]);
 
             } else
                 return redirect()->back()->with(["action_error" => "برای ثبت جریان صورت وضعیت باید حداقل یک ثبت کننده، یک واسطه و یک خاتمه دهنده و تعیین کننده نهایی انتخاب شده باشند."]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -75,6 +79,7 @@ class InvoiceFlowController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $values = $request->except('_method', '_token');
             if ($values) {
                 foreach ($values as $key => $value) {
@@ -91,11 +96,13 @@ class InvoiceFlowController extends Controller
                     foreach ($columns as $column)
                         $record->update([$column => 0]);
                 }
+                DB::commit();
                 return redirect()->back()->with(["result" => "saved"]);
             } else
                 return redirect()->back()->with(["action_error" => "اطلاعاتی انتخاب نشده است."]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }

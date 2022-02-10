@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ContractBranch;
 use App\Models\ContractCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Throwable;
 
@@ -28,17 +29,20 @@ class ContractCategoryController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             if ($request->input("category") != null && $request->input("contract_branch_id") != null) {
                 ContractCategory::query()->create([
                     "category" => $request->input("category"),
                     "contract_branch_id" => $request->input("contract_branch_id"),
                     "user_id" => auth()->id()
                 ]);
+                DB::commit();
                 return redirect()->back()->with(["result" => "saved"]);
             } else
                 return redirect()->back()->with(["action_error" => "درج عنوان سرفصل پیمان و انتخاب رشته پیمان الزامی می باشد."]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -47,6 +51,7 @@ class ContractCategoryController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             if ($request->input("category") != null && $request->input("contract_branch_id") != null) {
                 $contract_category = ContractCategory::query()->findOrFail($id);
                 $contract_category->update([
@@ -54,12 +59,14 @@ class ContractCategoryController extends Controller
                     "contract_branch_id" => $request->input("contract_branch_id"),
                     "user_id" => auth()->id()
                 ]);
+                DB::commit();
                 return redirect()->back()->with(["result" => "updated"]);
             }
             else
                 return redirect()->back()->with(["action_error" => "درج عنوان سرفصل پیمان و انتخاب رشته پیمان الزامی می باشد."]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -68,6 +75,7 @@ class ContractCategoryController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $contract_category = ContractCategory::query()->findOrFail($id);
             if ($contract_category->contract()->get()->isNotEmpty()) {
                 $related_contracts = "";
@@ -78,9 +86,11 @@ class ContractCategoryController extends Controller
                 return redirect()->back()->with(["action_error" => "پیمان یا پیمان های شماره $related_contracts دارای وابستگی به رکورد مورد نظر می باشد."]);
             }
             $contract_category->delete();
+            DB::commit();
             return redirect()->back()->with(["result" => "deleted"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }

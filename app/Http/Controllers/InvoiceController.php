@@ -60,6 +60,7 @@ class InvoiceController extends Controller
     {
         Gate::authorize("create","Invoices");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $invoice = Invoice::query()->create([
                 "number" => $validated["invoice_number"],
@@ -102,9 +103,11 @@ class InvoiceController extends Controller
             $next_role_id = $next_role_id ?: 0;
             $invoice_automation = ["previous_role_id" => Auth::user()->role->id,"current_role_id" => $current_role_id,"next_role_id" => $next_role_id];
             $invoice->automation()->create($invoice_automation);
+            DB::commit();
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -131,8 +134,8 @@ class InvoiceController extends Controller
     public function update(InvoiceRequest $request, $id): \Illuminate\Http\RedirectResponse
     {
         Gate::authorize("edit","Invoices");
-        DB::beginTransaction();
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $invoice = Invoice::query()->findOrFail($id);
             $invoice->update(["is_final" => $request->has("final_invoice") ? 1 : 0]);
@@ -176,8 +179,8 @@ class InvoiceController extends Controller
     public function destroy($id): \Illuminate\Http\RedirectResponse
     {
         Gate::authorize("destroy","Invoices");
-        DB::beginTransaction();
         try {
+            DB::beginTransaction();
             Invoice::query()->findOrFail($id)->delete();
             DB::commit();
             return redirect()->back()->with(["result" => "deleted"]);

@@ -10,6 +10,7 @@ use App\Models\MenuItem;
 use App\Models\MenuTitle;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Throwable;
 use function Symfony\Component\Translation\t;
@@ -45,6 +46,7 @@ class RoleController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $role = Role::query()->create([
                 "name" => $validated["name"],
@@ -54,9 +56,11 @@ class RoleController extends Controller
                 $exploded = explode("#",$menu_string);
                 $role->menu_items()->attach([$exploded[0] => ["menu_action_id" => $exploded[1],"route" =>  $exploded[2]]]);
             }
+            DB::commit();
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -79,6 +83,7 @@ class RoleController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $role = Role::query()->findOrFail($id);
             $role->update([
@@ -90,9 +95,11 @@ class RoleController extends Controller
                 $exploded = explode("#",$menu_string);
                 $role->menu_items()->attach([$exploded[0] => ["menu_action_id" => $exploded[1],"route" =>  $exploded[2]]]);
             }
+            DB::commit();
             return redirect()->back()->with(["result" => "updated"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -101,6 +108,7 @@ class RoleController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $role = Role::query()->findOrFail($id);
             if ($role->users()->get()->isNotEmpty()){
                 $related_users = "";
@@ -111,9 +119,11 @@ class RoleController extends Controller
                 return redirect()->back()->with(["action_error" => "کاربر یا کاربران شماره $related_users دارای وابستگی به رکورد مورد نظر می باشد."]);
             }
             $role->delete();
+            DB::commit();
             return redirect()->back()->with(["result" => "deleted"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }

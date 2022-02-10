@@ -61,6 +61,7 @@ class MenuItemsController extends Controller
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -103,6 +104,7 @@ class MenuItemsController extends Controller
             return redirect()->back()->with(["result" => "updated"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -121,6 +123,7 @@ class MenuItemsController extends Controller
             return redirect()->back()->with(["result" => "deleted"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }

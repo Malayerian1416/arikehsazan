@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProjectRequest;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
@@ -60,6 +61,7 @@ class ProjectController extends Controller
     {
         Gate::authorize('create',"Projects");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $validated["contract_amount"] = str_replace(",", '', $validated["contract_amount"]);
             $validated["user_id"] = auth()->id();
@@ -68,8 +70,10 @@ class ProjectController extends Controller
                 foreach ($request->file('agreement_sample') as $file)
                     Storage::disk('projects_doc')->put($project->id, $file);
             }
+            DB::commit();
             return redirect()->back()->with(["result" => "saved"]);
         } catch (Throwable $ex) {
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -92,6 +96,7 @@ class ProjectController extends Controller
     {
         Gate::authorize("edit","Projects");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $validated["contract_amount"] = str_replace(",", '', $validated["contract_amount"]);
             $validated["user_id"] = auth()->id();
@@ -103,8 +108,10 @@ class ProjectController extends Controller
                 foreach ($request->file('agreement_sample') as $file)
                     Storage::disk('projects_doc')->put($id, $file);
             }
+            DB::commit();
             return redirect()->back()->with(["result" => "updated"]);
         } catch (Throwable $ex) {
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -113,15 +120,18 @@ class ProjectController extends Controller
     {
         Gate::authorize("destroy","Projects");
         try {
+            DB::beginTransaction();
             $project = Project::query()->findOrFail($id);
             $project->delete();
             if (Storage::disk("projects_doc")->exists($id))
                 Storage::disk("projects_doc")->deleteDirectory($id);
             if (Storage::disk("projects_doc")->exists("zip/{$id}"))
                 Storage::disk("projects_doc")->deleteDirectory("zip/{$id}");
+            DB::commit();
             return redirect()->back()->with(["result" => "deleted"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }

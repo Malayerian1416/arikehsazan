@@ -6,8 +6,10 @@ use App\Http\Requests\UserRequest;
 use App\Models\Project;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class UserController extends Controller
@@ -42,14 +44,21 @@ class UserController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $validated["password"] = Hash::make($validated["password"]);
             $validated["user_id"] = auth()->id();
             $user = User::query()->create($validated);
             $user->permitted_project()->sync($validated["project_id"]);
+            if ($request->hasFile('sign')){
+                Storage::disk('signs')->put($user->id,$request->file('sign'));
+                $user->update(["sign" => $request->file("sign")->hashName()]);
+            }
+            DB::commit();
             return redirect()->back()->with(["result" => "saved"]);
         }
-        catch (Throwable $ex){
+        catch (Throwable$ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -72,6 +81,7 @@ class UserController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             if ($validated["password"])
                 $validated["password"] = Hash::make($validated["password"]);
@@ -81,9 +91,17 @@ class UserController extends Controller
             $user = User::query()->findOrFail($id);
             $user->update($validated);
             $user->permitted_project()->sync($validated["project_id"]);
+            if ($request->hasFile('sign')){
+                if (Storage::disk("signs")->exists("$user->id/$user->sign"))
+                    Storage::disk("signs")->delete("$user->id/$user->sign");
+                Storage::disk('signs')->put($user->id,$request->file('sign'));
+                $user->update(["sign" => $request->file("sign")->hashName()]);
+            }
+            DB::commit();
             return redirect()->back()->with(["result" => "updated"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -92,11 +110,16 @@ class UserController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $user = User::query()->findOrFail($id);
             $user->delete();
+            if (Storage::disk("signs")->exists("$user->id/$user->sign"))
+                Storage::disk("signs")->deleteDirectory($user->id);
+            DB::commit();
             return redirect()->back()->with(["result" => "deleted"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }

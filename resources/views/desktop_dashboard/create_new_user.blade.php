@@ -11,7 +11,7 @@
     ایجاد کاربر جدید
 @endsection
 @section('content')
-    <form id="create_form" action="{{route("Users.store")}}" method="post" v-on:submit="submit_create_form">
+    <form id="create_form" action="{{route("Users.store")}}" method="post" v-on:submit="submit_create_form" enctype="multipart/form-data">
         @csrf
         <div class="form-row">
             <div class="form-group col-md-12 col-lg-4 col-xl-3">
@@ -90,6 +90,14 @@
                 <strong class="red_color">*</strong>
                 <input type="text" class="form-control iran_yekan text-center @error('mobile') is-invalid @enderror" id="mobile" name="mobile" value="{{old("mobile")}}">
                 @error('mobile')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="sign">اسکن امضاء</label>
+                <input type="file" hidden class="form-control iran_yekan text-center @error('sign') is-invalid @enderror" v-on:change="file_browser_change" id="sign" name="sign" accept=".jpg,.png,.bmp,.jpeg">
+                <input type="text" class="form-control iran_yekan text-center file_selector_box" v-on:click="popup_file_browser" id="file_browser_box" readonly value="فایلی انتخاب نشده است">
+                @error('sign')
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>

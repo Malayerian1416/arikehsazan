@@ -6,6 +6,7 @@ use App\Http\Requests\ContractorRequest;
 use App\Models\Bank;
 use App\Models\Contractor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Response;
@@ -62,6 +63,7 @@ class ContractorController extends Controller
     {
         Gate::authorize("create","Contractors");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $validated["user_id"] = auth()->id();
             $contractor = Contractor::query()->create($validated);
@@ -82,9 +84,11 @@ class ContractorController extends Controller
                     ++$index;
                 }
             }
+            DB::commit();
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -111,6 +115,7 @@ class ContractorController extends Controller
     {
         Gate::authorize("edit","Contractors");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $validated["user_id"] = auth()->id();
             $contractor = Contractor::query()->findOrFail($id);
@@ -129,9 +134,11 @@ class ContractorController extends Controller
                     ++$index;
                 }
             }
+            DB::commit();
             return redirect()->back()->with(["result" => "updated"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -140,6 +147,7 @@ class ContractorController extends Controller
     {
         Gate::authorize("destroy","Contractors");
         try {
+            DB::beginTransaction();
             $contractor = Contractor::query()->findOrFail($id);
             if ($contractor->contract()->get()->isNotEmpty()){
                 $related_contracts = "";
@@ -150,9 +158,11 @@ class ContractorController extends Controller
                 return redirect()->back()->with(["action_error" => "پیمان یا پیمان های شماره $related_contracts دارای وابستگی به رکورد مورد نظر می باشد."]);
             }
             $contractor->delete();
+            DB::commit();
             return redirect()->back()->with(["result" => "deleted"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }

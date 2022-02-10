@@ -11,7 +11,7 @@
     {{"ویرایش کاربر ".$user->name}}
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("Users.update",$user->id)}}" method="post" v-on:submit="submit_update_form">
+    <form id="update_form" action="{{route("Users.update",$user->id)}}" method="post" v-on:submit="submit_update_form" enctype="multipart/form-data">
         @csrf
         @method('put')
         <div class="form-row">
@@ -89,6 +89,18 @@
                 <strong class="red_color">*</strong>
                 <input type="text" class="form-control iran_yekan text-center @error('mobile') is-invalid @enderror" id="mobile" name="mobile" value="{{$user->mobile}}">
                 @error('mobile')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="sign">اسکن امضاء</label>
+                <input type="file" hidden class="form-control iran_yekan text-center @error('sign') is-invalid @enderror" v-on:change="file_browser_change" id="sign" name="sign" accept=".jpg,.png,.bmp,.jpeg">
+                @if($user->sign == null)
+                    <input type="text" class="form-control iran_yekan text-center file_selector_box" v-on:click="popup_file_browser" id="file_browser_box" readonly value="فایلی انتخاب نشده است">
+                @else
+                    <input type="text" class="form-control iran_yekan text-center file_selector_box" v-on:click="popup_file_browser" id="file_browser_box" readonly value="امضاء آپلود شده است">
+                @endif
+                @error('sign')
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>

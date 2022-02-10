@@ -24,7 +24,7 @@
                     <h6 class="company_desc iran_yekan white_color" style="padding-top: 15px">سامانه جامع مدیریت شرکت های عمرانی</h6>
                 </div>
                 <div class="text-center footer">
-                    <img class="img_logo" src="{{asset($company_information->logo)}}">
+                    <img class="img_logo" src="{{asset("/img/mainlogo.png")}}">
                 </div>
             </div>
             <div class="content text-center">
@@ -84,7 +84,7 @@
 </div>
 <script type="text/javascript" src="{{asset("/js/app.js?v=".time())}}"></script>
 <script type="text/javascript" src="{{asset("/js/login.js?v=".time())}}"></script>
-<script src="{{asset("/serviceworker.js?v=".time())}}"></script>
+<script type="text/javascript" src="{{asset("/serviceworker.js?v=".time())}}"></script>
 <script async src="https://www.google.com/recaptcha/api.js?hl=fa"></script>
 </body>
 </html>

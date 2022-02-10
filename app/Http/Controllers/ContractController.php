@@ -10,6 +10,7 @@ use App\Models\Project;
 use App\Models\Unit;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Response;
@@ -102,6 +103,7 @@ class ContractController extends Controller
     {
         Gate::authorize("create","Contracts");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             unset($validated["contract_branch_id"]);
             $validated["amount"] = str_replace(',','',$validated["amount"]);
@@ -117,9 +119,11 @@ class ContractController extends Controller
                 foreach ($request->file('agreement_sample') as $file)
                     Storage::disk('contracts_doc')->put($contract->id,$file);
             }
+            DB::commit();
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -156,6 +160,7 @@ class ContractController extends Controller
     {
         Gate::authorize("edit","Contracts");
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
             $validated["amount"] = str_replace(",",'',$validated["amount"]);
             if ($request->has("contract_category_id") and $request->input("contract_category_id") != null and $request->input("contract_category_id") != 0)
@@ -177,9 +182,11 @@ class ContractController extends Controller
                 foreach ($request->file('agreement_sample') as $file)
                     Storage::disk('contracts_doc')->put($id,$file);
             }
+            DB::commit();
             return redirect()->back()->with(["result" => "updated"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -188,11 +195,14 @@ class ContractController extends Controller
     {
         Gate::authorize("destroy","Contracts");
         try {
+            DB::beginTransaction();
             $contract = Contract::query()->findOrFail($id);
             $contract->delete();
+            DB::commit();
             return redirect()->back()->with(["result" => "deleted"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }

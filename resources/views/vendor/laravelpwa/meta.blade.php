@@ -31,13 +31,13 @@
 <meta name="msapplication-TileImage" content="{{ data_get(end($config['icons']), 'src') }}">
 <div id="loading" style="width: 100vw;height: 100vh;background: rgba(0,0,0,0.8);position: absolute;top: 0;left: 0;overflow: hidden;z-index: 1000;display: none;align-items: center;justify-content: center;flex-direction: column">
     <i class="fa fa-circle-notch fa-2x fa-spin white_color"></i>
-    <span class="mb-2 white_color iran_yekan">لطفا منتظر بمانید</span>
 </div>
 <script type="text/javascript">
     window.addEventListener('load', function () {
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/serviceworker.js', {scope: '.'})
-                .then(function (registration) {
+            navigator.serviceWorker.register('/serviceworker.js', {scope: '.'}).then(
+                function (registration)
+                {
                     registration.onupdatefound = function () {
                         const loading = document.getElementById("loading");
                         loading.style.display = "flex"
@@ -46,7 +46,7 @@
                             switch (installingWorker.state) {
                                 case 'installed':
                                     if (!navigator.serviceWorker.controller) {
-                                        loading.style.display = "none"
+                                        loading.style.display = "none";
                                     }
                                     break;
 
@@ -55,7 +55,8 @@
                             }
                         };
                     }
-                })
+                }
+            );
         }
     });
 </script>

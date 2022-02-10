@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Throwable;
 
@@ -26,16 +27,19 @@ class UnitController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             if ($request->input("name") != null) {
                 Unit::query()->create([
                     "name" => $request->input("name"),
                     "user_id" => auth()->id()
                 ]);
+                DB::commit();
                 return redirect()->back()->with(["result" => "saved"]);
             } else
                 return redirect()->back()->with(["action_error" => "درج عنوان واحد شمارش الزامی می باشد."]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -44,18 +48,21 @@ class UnitController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             if ($request->input("name") != null) {
                 $unit = Unit::query()->findOrFail($id);
                 $unit->update([
                     "name" => $request->input("name"),
                     "user_id" => auth()->id()
                 ]);
+                DB::commit();
                 return redirect()->back()->with(["result" => "updated"]);
             }
             else
                 return redirect()->back()->with(["action_error" => "درج عنوان واحد شمارش الزامی می باشد."]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -64,6 +71,7 @@ class UnitController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $unit = Unit::query()->findOrFail($id);
             if ($unit->contract()->get()->isNotEmpty()) {
                 $related_contracts = "";
@@ -74,9 +82,11 @@ class UnitController extends Controller
                 return redirect()->back()->with(["action_error" => "پیمان یا پیمان های شماره $related_contracts دارای وابستگی به رکورد مورد نظر می باشد."]);
             }
             $unit->delete();
+            DB::commit();
             return redirect()->back()->with(["result" => "deleted"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }

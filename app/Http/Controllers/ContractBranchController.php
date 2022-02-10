@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ContractBranchRequest;
 use App\Models\ContractBranch;
+use Illuminate\Support\Facades\DB;
 use \Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Throwable;
@@ -27,16 +28,19 @@ class ContractBranchController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             if ($request->input("branch") != null) {
                 ContractBranch::query()->create([
                     "branch" => $request->input("branch"),
                     "user_id" => auth()->id()
                 ]);
+                DB::commit();
                 return redirect()->back()->with(["result" => "saved"]);
             } else
                 return redirect()->back()->with(["action_error" => "درج عنوان رشته پیمان الزامی می باشد."]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -45,18 +49,21 @@ class ContractBranchController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             if ($request->input("branch") != null) {
                 $contract_branch = ContractBranch::query()->findOrFail($id);
                 $contract_branch->update([
                     "branch" => $request->input("branch"),
                     "user_id" => auth()->id()
                 ]);
+                DB::commit();
                 return redirect()->back()->with(["result" => "updated"]);
             }
             else
                 return redirect()->back()->with(["action_error" => "درج عنوان رشته پیمان الزامی می باشد."]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -65,6 +72,7 @@ class ContractBranchController extends Controller
     {
         Gate::authorize("adminUser");
         try {
+            DB::beginTransaction();
             $contract_branch = ContractBranch::query()->findOrFail($id);
             if ($contract_branch->categories()->get()->isNotEmpty()) {
                 $related_categories = "";
@@ -75,9 +83,11 @@ class ContractBranchController extends Controller
                 return redirect()->back()->with(["action_error" => "سرفصل پیمان(های) شماره $related_categories دارای وابستگی به رکورد مورد نظر می باشد."]);
             }
             $contract_branch->delete();
+            DB::commit();
             return redirect()->back()->with(["result" => "deleted"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }

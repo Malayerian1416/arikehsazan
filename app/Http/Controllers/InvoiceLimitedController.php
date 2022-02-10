@@ -111,14 +111,15 @@ class InvoiceLimitedController extends Controller
             $next_role_id = $next_role_id ?: 0;
             $invoice_automation = ["previous_role_id" => Auth::user()->role->id,"current_role_id" => $current_role_id,"next_role_id" => $next_role_id];
             $invoice->automation()->create($invoice_automation);
-            DB::commit();
             if ($request->hasFile('invoice_images')){
                 foreach ($request->file('invoice_images') as $file)
                     Storage::disk('invoice_images')->put($invoice->id,$file);
             }
+            DB::commit();
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
+            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
@@ -196,8 +197,8 @@ class InvoiceLimitedController extends Controller
     public function destroy($id): \Illuminate\Http\RedirectResponse
     {
         Gate::authorize("destroy","InvoicesLimited");
-        DB::beginTransaction();
         try {
+            DB::beginTransaction();
             Invoice::query()->findOrFail($id)->delete();
             DB::commit();
             return redirect()->back()->with(["result" => "deleted"]);

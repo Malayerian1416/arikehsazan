@@ -69,11 +69,19 @@ class LoginController extends Controller
     }
     protected function validateLogin(Request $request)
     {
-        $request->validate([
-            $this->username() => 'required|string',
-            $this->password() => 'required|string',
-            "g-recaptcha-response" => ['required',new recaptcha()]
-        ],['g-recaptcha-response.required' => 'لطفا روی گزینه من ربات نیستم کلیک کنید']);
+        $agent = new Agent();
+        if ($agent->isDesktop()) {
+            $request->validate([
+                $this->username() => 'required|string',
+                $this->password() => 'required|string',
+                "g-recaptcha-response" => ['required', new recaptcha()]
+            ], ['g-recaptcha-response.required' => 'لطفا روی گزینه من ربات نیستم کلیک کنید']);
+        }
+        else if($agent->isPhone() || $agent->isTablet()) {
+            $request->validate([
+                $this->username() => 'required|string',
+                $this->password() => 'required|string']);
+        }
     }
     protected function sendFailedLoginResponse(Request $request)
     {

@@ -94,7 +94,12 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
-
+        'signs' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/signs'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
     ],
 
     /*

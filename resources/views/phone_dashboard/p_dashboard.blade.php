@@ -20,7 +20,6 @@
 <div id="app" v-on:click="account_information_open">
     <div class="loading_window" v-show="loading_window_active">
         <i class="fas fa-circle-notch fa-spin white_color fa-3x"></i>
-        <span class="iran_yekan white_color mt-2">لطفا منتظر بمانید</span>
     </div>
     <div class="header_section">
         @if(Route::is("phone_idle"))
