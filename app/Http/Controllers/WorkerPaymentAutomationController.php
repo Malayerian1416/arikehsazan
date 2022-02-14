@@ -50,7 +50,7 @@ class WorkerPaymentAutomationController extends Controller
     public function create(){
         Gate::authorize("create","WorkerPayments");
         try {
-            $projects = Project::get_permissions();
+            $projects = Project::get_permissions([]);
             $workers = Contractor::query()->where("type","=",1)->get();
             return view("{$this->agent}.create_new_worker_payment",["projects" => $projects,"workers" => $workers]);
         }

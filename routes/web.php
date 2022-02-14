@@ -6,6 +6,7 @@ use App\Http\Controllers\MenuHeaderController;
 use App\Http\Controllers\MenuItemsController;
 use App\Models\Contract;
 use App\Models\Project;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\DesktopDashboardController;
@@ -103,40 +104,6 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
         Route::get("/",[PhoneDashboardController::class,"index"])->name("phone_idle");
     });
 });
-Route::get("/f",function (){
-   dd(\Illuminate\Support\Facades\Hash::make("Masoud@5012140"));
-});
-Route::get("/m",function (){
-    $r = ["بانک آینده","بانک اقتصادنوین","بانک ایران زمین","بانک پارسیان","بانک پاسارگاد","بانک تجارت"
-,"بانک تجارتی ایران و اروپا"
-,"بانک توسعه تعاون"
-,"بانک توسعه صادرات ایران"
-,"بانک خاورمیانه"
-,"بانک دی"
-,"بانک رفاه کارگران"
-,"بانک سامان"
-,"بانک سپه"
-,"بانک سرمایه"
-,"بانک سینا"
-,"بانک شهر"
-,"بانک صادرات ایران"
-,"بانک صنعت و معدن"
-,"بانک قرض‌الحسنه رسالت"
-,"بانک قرض‌الحسنه مهر ایران"
-,"بانک گردشگری"
-,"بانک مسکن"
-,"بانک مشترک ایران - ونزوئلا"
-,"بانک ملت"
-,"بانک ملی ایران"
-,"بانک کارآفرین"
-,"بانک کشاورزی"
-,"پست بانک ایران"
-,"مؤسسه اعتباری غیربانکی كاسپین"
-,"مؤسسه اعتباری غیربانکی توسعه"
-,"مؤسسه اعتباری غیربانکی ملل"
-,"موسسه اعتباری غیربانکی نور"];
-    foreach ($r as $t){
-        \App\Models\Bank::query()->create(["name" => $t]);
-    }
-
+Route::get('/linkstorage', function () {
+    Artisan::call('storage:link');
 });
