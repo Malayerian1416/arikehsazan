@@ -62,9 +62,9 @@ class ContractController extends Controller
                     }
                 }
             } else
-                $contracts = Contract::query()->with(["contractor", "user", "unit"])->get();
-            $contractors = Contractor::all();
-            $projects = Project::all();
+                $contracts = Contract::get_permissions(["contractor", "user", "unit"]);
+            $contractors = Contractor::get_permissions([]);
+            $projects = Project::get_permissions([]);
             $docs = [];
             foreach ($contracts as $contract) {
                 if (Storage::disk('contracts_doc')->exists("$contract->id"))

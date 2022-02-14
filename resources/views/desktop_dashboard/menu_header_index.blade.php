@@ -7,9 +7,14 @@
     ایجاد، مشاهده و ویرایش سرفصل منو
 @endsection
 @section('content')
-    <div class="table-responsive pt-4">
-        <table class="table table-hover iran_yekan index_table">
-            <thead>
+    <div class="row pt-1 pb-3">
+        <div class="col-12">
+            <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام و یا برچسب" v-on:input="search_input_filter" aria-describedby="basic-addon3">
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover iran_yekan index_table" id="main_table" data-filter='[1,2]'>
+            <thead class="thead-bg-color">
             <tr>
                 <th scope="col">شماره</th>
                 <th scope="col">نام</th>
@@ -28,8 +33,8 @@
                     <td><span>{{$menu_header->name}}</span></td>
                     <td><span>{{$menu_header->slug}}</span></td>
                     <td><i class="{{$menu_header->icon->name}}"></i></td>
-                    <td><span>{{verta($menu_header->created_date)->format("Y/n/d")}}</span></td>
-                    <td><span>{{verta($menu_header->updated_date)->format("Y/n/d")}}</span></td>
+                    <td><span>{{verta($menu_header->created_at)->format("Y/n/d")}}</span></td>
+                    <td><span>{{verta($menu_header->updated_at)->format("Y/n/d")}}</span></td>
                     <td>
                         <a class="index_action" href="{{route("MenuHeaders.edit",$menu_header->id)}}"><i class="fa fa-pen index_edit_icon"></i></a>
                     </td>

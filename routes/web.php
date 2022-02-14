@@ -28,7 +28,6 @@ use \App\Http\Controllers\PhoneDashboardController;
 use \App\Http\Controllers\WorkerPaymentAutomationController;
 use \App\Http\Controllers\InvoiceLimitedController;
 use \App\Http\Controllers\WorkerController;
-
 Auth::routes();
 Route::get('/', function () {
     return redirect("login");

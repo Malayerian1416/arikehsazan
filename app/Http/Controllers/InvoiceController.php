@@ -35,7 +35,7 @@ class InvoiceController extends Controller
     {
         Gate::authorize("index","Invoices");
         try {
-            $contracts = Contract::query()->with(["project","contractor"])->get();
+            $contracts = Contract::get_permissions(["project","contractor"]);
             $invoices = Invoice::query()->with(["contract.project","contract.contractor","payments","automation"])->where("user_id",Auth::id())->latest()->get();
             return view("{$this->agent}.created_invoices_index",["invoices" => $invoices, "contracts" => $contracts]);
         }

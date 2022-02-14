@@ -69,7 +69,7 @@
                         </div>
                         <div class="form-row pb-3">
                             <div class="form-group col-12 text-left">
-                                <a href="" class="iran_yekan black_font">گذرواژه خود را فراموش کرده اید؟</a>
+                                <a href="{{route("password.request")}}" class="iran_yekan black_font">گذرواژه خود را فراموش کرده اید؟</a>
                             </div>
                         </div>
                     </form>

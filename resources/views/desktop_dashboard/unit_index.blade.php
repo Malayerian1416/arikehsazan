@@ -7,9 +7,14 @@
     ایجاد، مشاهده و ویرایش واحد های اندازه گیری
 @endsection
 @section('content')
-    <div class="table-responsive pt-4">
-        <table class="table table-hover iran_yekan index_table">
-            <thead>
+    <div class="row pt-1 pb-3">
+        <div class="col-12">
+            <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام" v-on:input="search_input_filter" aria-describedby="basic-addon3">
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover iran_yekan index_table" id="main_table" data-filter='[1]'>
+            <thead class="thead-bg-color">
             <tr>
                 <th scope="col">شماره</th>
                 <th scope="col">نام</th>
@@ -26,8 +31,8 @@
                     <td><span>{{$unit->id}}</span></td>
                     <td><span>{{$unit->name}}</span></td>
                     <td><span>{{$unit->user->name}}</span></td>
-                    <td><span>{{verta($unit->created_date)->format("Y/n/d")}}</span></td>
-                    <td><span>{{verta($unit->updated_date)->format("Y/n/d")}}</span></td>
+                    <td><span>{{verta($unit->created_at)->format("Y/n/d")}}</span></td>
+                    <td><span>{{verta($unit->updated_at)->format("Y/n/d")}}</span></td>
                     <td>
                         <i class="fa fa-pen index_edit_icon" data-route="{{route("Units.update",$unit->id)}}" data-value="{{$unit->unit}}" v-on:click="static_data_edit_modal"></i>
                     </td>

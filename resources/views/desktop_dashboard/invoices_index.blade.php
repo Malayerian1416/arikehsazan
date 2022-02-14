@@ -9,13 +9,7 @@
 @section('content')
     <div class="row pt-1 pb-3">
         <div class="col-12">
-            <input type="search" class="form-control iran_yekan text-center" list="contractor_data" placeholder="جستجو در جدول با نام پروژه" v-on:input="search_input_filter" aria-describedby="basic-addon3">
-            <datalist id="contractor_data" class="iran_yekan">
-{{--                @forelse($projects as $project)--}}
-{{--                    <option value="{{$project->name}}">{{$project->name}}</option>--}}
-{{--                @empty--}}
-{{--                @endforelse--}}
-            </datalist>
+            <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام پروژه" v-on:input="search_input_filter" aria-describedby="basic-addon3">
         </div>
     </div>
     <div class="table-responsive">
@@ -49,8 +43,8 @@
                     @else
                         <td><i class="fa fa-times red_color" style="font-size: 1.3rem"></i></td>
                     @endif
-                    <td><span>{{verta($project->created_date)->format("Y/n/d")}}</span></td>
-                    <td><span>{{verta($project->updated_date)->format("Y/n/d")}}</span></td>
+                    <td><span>{{verta($project->created_at)->format("Y/n/d")}}</span></td>
+                    <td><span>{{verta($project->updated_at)->format("Y/n/d")}}</span></td>
                     <td>
                         <a class="index_action" href="{{route("Projects.edit",$project->id)}}"><i class="fa fa-pen index_edit_icon"></i></a>
                     </td>

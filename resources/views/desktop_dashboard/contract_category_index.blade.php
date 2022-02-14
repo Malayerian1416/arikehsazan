@@ -7,9 +7,14 @@
     ایجاد، مشاهده و ویرایش سرفصل های پیمان
 @endsection
 @section('content')
-    <div class="table-responsive pt-4">
-        <table class="table table-hover iran_yekan index_table">
-            <thead>
+    <div class="row pt-1 pb-3">
+        <div class="col-12">
+            <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام سرفصل پیمان" v-on:input="search_input_filter" aria-describedby="basic-addon3">
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover iran_yekan index_table" id="main_table" data-filter='[1]'>
+            <thead class="thead-bg-color">
             <tr>
                 <th scope="col">شماره</th>
                 <th scope="col">نام</th>
@@ -28,8 +33,8 @@
                     <td><span>{{$category->category}}</span></td>
                     <td><span>{{$category->branch->branch}}</span></td>
                     <td><span>{{$category->user->name}}</span></td>
-                    <td><span>{{verta($category->created_date)->format("Y/n/d")}}</span></td>
-                    <td><span>{{verta($category->updated_date)->format("Y/n/d")}}</span></td>
+                    <td><span>{{verta($category->created_at)->format("Y/n/d")}}</span></td>
+                    <td><span>{{verta($category->updated_at)->format("Y/n/d")}}</span></td>
                     <td>
                         <i class="fa fa-pen index_edit_icon" data-route="{{route("ContractCategories.update",$category->id)}}" data-value="{{$category->category}}" data-extra_value="{{$category->branch->id}}" v-on:click="static_data_edit_modal"></i>
                     </td>

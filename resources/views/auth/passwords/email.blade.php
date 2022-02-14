@@ -1,6 +1,16 @@
-@extends('layouts.app')
-
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{csrf_token()}}">
+    <title>
+        بازنشانی گذرواژه
+    </title>
+    <link href="{{asset("/css/app.css?v=".time())}}" rel="stylesheet">
+    @yield('styles')
+</head>
+<body class="antialiased rtl" style="background: #F8F8F8">
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -44,4 +54,5 @@
         </div>
     </div>
 </div>
-@endsection
+</body>
+</html>

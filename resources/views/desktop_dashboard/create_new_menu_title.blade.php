@@ -1,10 +1,4 @@
 @extends('desktop_dashboard.d_dashboard')
-@section('styles')
-    <link href="{{asset("/css/bootstrap-select.css")}}" rel="stylesheet">
-@endsection
-@section('scripts')
-    <script type="text/javascript" src="{{asset("/js/bootstrap-select.min.js")}}" defer></script>
-@endsection
 @section('page_title')
     ایجاد عنوان اصلی منو
 @endsection

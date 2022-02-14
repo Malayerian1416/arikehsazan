@@ -3,7 +3,6 @@ const filesToCache = [
     '/serviceworker.js',
     '/offline',
     '/css/app.css',
-    '/css/fontiran.css',
     '/css/d_dashboard.css',
     '/css/p_dashboard.css',
     '/css/login.css',

@@ -38,7 +38,7 @@ class InvoiceAutomationController extends Controller
         try {
             $invoice_automations = InvoiceAutomation::query()
                 ->with(["invoice.contract.project" => function ($query) {
-                    $query->orderBy('id', 'asc');
+                    $query->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());})->orderBy('id', 'asc');
                 }, "invoice.contract.contractor", "invoice.user.role"])
                 ->where("current_role_id", "=", Auth::user()->role->id)->where("is_finished", "<>", 1)
                 ->orderBy("updated_at", "DESC")->get();
@@ -295,7 +295,7 @@ class InvoiceAutomationController extends Controller
         $invoice_automations = InvoiceAutomation::query()
             ->with(["invoice.contract.project" => function($query)
             {
-                $query->orderBy('id', 'asc');
+                $query->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());})->orderBy('id', 'asc');
             },"invoice.contract.contractor","invoice.user.role"])
             ->whereHas("invoice.signs",function ($query){$query->where("user_id","=",Auth::id());})
             ->orderBy("updated_at","DESC")->get();

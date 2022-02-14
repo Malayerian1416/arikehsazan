@@ -13,15 +13,7 @@
 @section('content')
     <div class="row pt-1 pb-3">
         <div class="col-12">
-            <input type="search" class="form-control iran_yekan text-center" list="contract_data" placeholder="جستجو در جدول با نام پیمان، پروژه و یا پیمانکار" v-on:input="search_input_filter" aria-describedby="basic-addon3">
-            <datalist id="contract_data" class="iran_yekan">
-                @forelse($contracts as $contract)
-                    <option value="{{$contract->name}}">{{$contract->name}}</option>
-                    <option value="{{$contract->contractor->name}}">{{$contract->contractor->name}}</option>
-                    <option value="{{$contract->project->name}}">{{$contract->project->name}}</option>
-                @empty
-                @endforelse
-            </datalist>
+            <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام پیمان، پروژه و یا پیمانکار" v-on:input="search_input_filter" aria-describedby="basic-addon3">
         </div>
     </div>
     <div class="table-responsive">

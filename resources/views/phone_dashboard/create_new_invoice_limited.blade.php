@@ -56,8 +56,8 @@
                 <input class="form-control iran_yekan text-center" readonly type="text" name="invoice_number" v-bind:value="invoices_count">
             </div>
             <div class="form-group col-md-12 col-lg-4 col-xl-2">
-                <label class="col-form-label iran_yekan black_color" for="invoice_number">مجموع کارکرد قبلی</label>
-                <input class="form-control iran_yekan text-center" readonly type="text" name="invoice_number" v-bind:value="invoice_total_previous_quantity">
+                <label class="col-form-label iran_yekan black_color">مجموع کارکرد قبلی</label>
+                <input class="form-control iran_yekan text-center" readonly type="text" v-bind:value="invoice_total_previous_quantity">
             </div>
         </div>
         <div class="form-row border rounded mt-5" id="invoice_information" v-cloak v-show="new_invoice_frame">
@@ -78,7 +78,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon1">%</span>
                     </div>
-                    <input class="form-control iran_yekan text-center number_format" type="text" name="payment_offer_percent" v-on:input="percent_check">
+                    <input class="form-control iran_yekan text-center number_format" type="text" name="payment_offer_percent" v-on:input="percent_check" value="100">
                 </div>
             </div>
             <div class="form-group col-md-12 col-lg-6">

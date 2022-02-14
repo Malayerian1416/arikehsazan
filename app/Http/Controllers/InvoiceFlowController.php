@@ -41,7 +41,6 @@ class InvoiceFlowController extends Controller
     {
         Gate::authorize("adminUser");
         try {
-            DB::beginTransaction();
             if ($request->has("final_starter") && $request->has("final_inductor") && $request->input("final_finisher") != null && $request->input("is_main") != null) {
                 InvoiceFlow::query()->truncate();
                 $items = [];
@@ -52,14 +51,12 @@ class InvoiceFlowController extends Controller
                     $items[] = ["role_id" => $value, "is_starter" => 0, "is_finisher" => 0, "priority" => $position++, "is_main" => $request->input("is_main") == $value?1:0];
                 $items[] = ["role_id" => $request->input("final_finisher"), "is_starter" => 0, "is_finisher" => 1, "priority" => $position, "is_main" => $request->input("is_main") == $request->input("final_finisher")?1:0];
                 InvoiceFlow::query()->insert($items);
-                DB::commit();
                 return redirect()->route("InvoiceFlow.index")->with(["result" => "saved"]);
 
             } else
                 return redirect()->back()->with(["action_error" => "برای ثبت جریان صورت وضعیت باید حداقل یک ثبت کننده، یک واسطه و یک خاتمه دهنده و تعیین کننده نهایی انتخاب شده باشند."]);
         }
         catch (Throwable $ex){
-            DB::rollBack();
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }

@@ -1,12 +1,4 @@
 @extends('desktop_dashboard.d_dashboard')
-@section('styles')
-    <link href="{{asset("/css/persianDatepicker-default.css")}}" rel="stylesheet">
-    <link href="{{asset("/css/bootstrap-select.css")}}" rel="stylesheet">
-@endsection
-@section('scripts')
-    <script type="text/javascript" src="{{asset("/js/persianDatepicker.min.js")}}"></script>
-    <script type="text/javascript" src="{{asset("/js/bootstrap-select.min.js")}}"></script>
-@endsection
 @section('page_title')
     ایجاد پیمان جدید
 @endsection

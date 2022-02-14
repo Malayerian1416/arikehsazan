@@ -7,9 +7,14 @@
     مشاهده لیست کاربران سامانه و ویرایش
 @endsection
 @section('content')
-    <div class="table-responsive pt-4">
-        <table class="table table-hover iran_yekan index_table">
-            <thead>
+    <div class="row pt-1 pb-3">
+        <div class="col-12">
+            <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام پروژه و یا سمت" v-on:input="search_input_filter" aria-describedby="basic-addon3">
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover iran_yekan index_table" id="main_table" data-filter='[1,2]'>
+            <thead class="thead-bg-color">
             <tr>
                 <th scope="col">شماره</th>
                 <th scope="col">نام</th>
@@ -44,7 +49,7 @@
                     @elseif($user->is_active == 0)
                         <td><span><i class="fa fa-times-circle fa-2x red_color fa-1_4x"></i></span></td>
                     @endif
-                    <td><span>{{verta($user->created_date)->format("Y/n/d")}}</span></td>
+                    <td><span>{{verta($user->created_at)->format("Y/n/d")}}</span></td>
                     <td>
                         <a class="index_action" href="{{route("Users.edit",$user->id)}}"><i class="fa fa-pen index_edit_icon"></i></a>
                     </td>

@@ -46,8 +46,10 @@
         @else
             <div>
                 <a style="text-decoration: none" href="{{route("phone_idle")}}">
-                    <i class="fa fa-arrow-right return_icon white_color"></i>
-                    <span class="iran_yekan white_color">بازگشت</span>
+                    <button class="btn btn-outline-info">
+                        <i class="fa fa-arrow-right return_icon white_color"></i>
+                        <span class="iran_yekan white_color">صفحه اصلی</span>
+                    </button>
                 </a>
             </div>
             <div>
@@ -123,7 +125,7 @@
         @if(count($user_menu->toArray()) > 1)
             <div class="footer_section">
                 @forelse($user_menu as $menu_header)
-                    <div id="{{$menu_header->slug}}_header" class="menu_header_container @if(Route::is("phone_idle") || $loop->first) active @elseif(Route::is($menu_header->menu_titles->pluck("main_route")->toArray())) active @else {{null}} @endif">
+                    <div id="{{$menu_header->slug}}_header" class="menu_header_container @if(Route::is("phone_idle") && $loop->first || Route::is($menu_header->menu_titles->pluck("main_route")->toArray())) active @else {{null}} @endif">
                         <div class="menu_header_footer">
                             <i class="{{$menu_header->icon->name}} menu_header_icon"></i>
                             <span class="iran_yekan menu_header_title">{{$menu_header->name}}</span>
@@ -139,8 +141,44 @@
             @yield('page_footer')
         </div>
     @endif
-    <div class="sidebar_section @if(Route::is("phone_idle") && count($user_menu->toArray()) <= 1) no_footer @elseif(!Route::is("phone_idle")) low_footer @endif" v-cloak v-show="sidebar_visibility">
-
+    <div class="sidebar_section sidenav_body @if(Route::is("phone_idle") && count($user_menu->toArray()) <= 1) no_footer @elseif(!Route::is("phone_idle")) low_footer @endif" v-cloak v-show="sidebar_visibility">
+        @forelse($user_menu as $menu_header)
+            <li class="nav-item" role="presentation">
+                <a class="nav-link menu_tab_link @if(Route::is("idle") && $loop->first) active @elseif(Route::is($menu_header->menu_titles->pluck("main_route")->toArray())) active @else {{null}} @endif" id="{{$menu_header->slug}}-tab" data-toggle="tab" href="#{{$menu_header->slug}}" role="tab" aria-controls="{{$menu_header->slug}}" aria-selected="true">
+                    <i class="{{$menu_header->icon->name}} menu_header_icon"></i>
+                </a>
+            </li>
+        @empty
+        @endforelse
+            <div class="tab-content" id="myTabContent">
+                @forelse($user_menu as $menu_header)
+                    <div class="tab-pane fade @if(Route::is("idle") && $loop->first) show active @elseif(Route::is($menu_header->menu_titles->pluck("main_route")->toArray())) show active @else {{null}} @endif" id="{{$menu_header->slug}}" role="tabpanel" aria-labelledby="{{$menu_header->slug}}-tab">
+                        @forelse($menu_header->menu_titles as $menu_title)
+                            <button class="dropdown-btn iran_yekan {{(Route::is($menu_title->main_route)) ? 'menu_dropdown_active':null}}">
+                                       <span>
+                                            @if($menu_title->icon != null)
+                                               <i class="menu_title_icon {{$menu_title->icon}}"></i>
+                                           @endif
+                                           {{$menu_title->name}}
+                                       </span>
+                                <i class="fa fa-caret-down" style="vertical-align: middle"></i>
+                            </button>
+                            <div class="dropdown-container {{(Route::is($menu_title->main_route)) ? 'active':null}}">
+                                @forelse($menu_title->menu_items as $menu_item)
+                                    <a class="iran_yekan {{(Route::is($menu_item->actions->pluck('action')->toArray())) ? 'dropdown-item_active':null}}" href="{{route($menu_title->route.".".$menu_item->main_route)}}">{{$menu_item->name}}
+                                        @if($menu_item->notifiable)
+                                            <span class="badge badge-pill badge-danger" style="font-size: 12px" v-cloak v-text="{{$menu_item->notification_channel."_text"}}" v-show="{{$menu_item->notification_channel."_show"}}"></span>
+                                        @endif
+                                    </a>
+                                @empty
+                                @endforelse
+                            </div>
+                        @empty
+                        @endforelse
+                    </div>
+                @empty
+                @endforelse
+            </div>
     </div>
     @if(session()->has('result'))
         @if(session("result") == "saved")
@@ -207,7 +245,7 @@
 <script type="text/javascript" src="{{asset("/js/numeral.js")}}"></script>
 <script type="text/javascript" src="{{asset("/js/persianDatepicker.min.js")}}"></script>
 <script type="text/javascript" src="{{asset("/js/p_dashboard.js?v=".time())}}"></script>
-<script type="module" src="{{asset("/js/kernel.js?v=".time())}}" defer></script>
+<script src="{{asset("/js/kernel.js?v=".time())}}" defer></script>
 @yield('scripts')
 </body>
 </html>

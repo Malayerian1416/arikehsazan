@@ -47,7 +47,7 @@
                     <i class="fas fa-sign-in-alt login_button_icon" ></i>
                     ورود به داشبورد
                 </button>
-                <a class="iran_yekan forget_button">گذرواژه خود را فراموش کرده ام</a>
+                <a class="iran_yekan forget_button" href="{{route("password.request")}}">گذرواژه خود را فراموش کرده ام</a>
             </div>
         </form>
     </div>

@@ -19,8 +19,7 @@
 </button>
 <div id="app" v-on:click="account_information_open">
     <div class="loading_window" v-show="loading_window_active">
-        <i class="fas fa-cog fa-spin white_color fa-3x"></i>
-        <span class="iran_yekan white_color mt-2">لطفا منتظر بمانید</span>
+        <i class="fas fa-cog fa-spin white_color"></i>
     </div>
     <div class="header_container">
         <i class="fa fa-times header_menu_button" v-on:click="sidenav_visibility"></i>

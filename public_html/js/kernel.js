@@ -91,29 +91,32 @@ const app = new Vue({
         new_invoice_automation_text: "",
         new_worker_payment_automation_show: false,
         new_worker_payment_automation_text: "",
-        invoice_total_previous_quantity: 0
+        invoice_total_previous_quantity: 0,
+        linklist:'',
     },
     mounted() {
         const self = this;
         this.loading_window_active = false;
-        // if (this.$refs.parent_select) {
-        //     let elem = this.$refs.parent_select;
-        //     elem.dispatchEvent(new Event("change"));
-        // }
-        let get_notification = new EventSource("/Dashboard/Desktop/get_new_notification");
-        get_notification.onmessage = function(event) {
-            let result = JSON.parse(event.data);
-            for (const [key, value] of Object.entries(result)) {
-                switch (key){
-                    case "new_invoice_automation":{
-                        value ? self.new_invoice_automation_text = value:"";
-                        value ? self.new_invoice_automation_show = true:false;
-                        break;
-                    }
-                    case "new_worker_payment_automation":{
-                        value ? self.new_worker_payment_automation_text = value:"";
-                        value ? self.new_worker_payment_automation_show = true:false;
-                        break;
+        this.linkList = document.getElementsByTagName('a');
+        for( let i=0; i < this.linkList.length; i++ )
+            this.linkList[i].onclick = this.linkAction;
+        let notification = document.getElementsByClassName("badge");
+        if (notification.length !== 0) {
+            let get_notification = new EventSource("/Dashboard/Desktop/get_new_notification");
+            get_notification.onmessage = function (event) {
+                let result = JSON.parse(event.data);
+                for (const [key, value] of Object.entries(result)) {
+                    switch (key) {
+                        case "new_invoice_automation": {
+                            value ? self.new_invoice_automation_text = value : "";
+                            value ? self.new_invoice_automation_show = true : false;
+                            break;
+                        }
+                        case "new_worker_payment_automation": {
+                            value ? self.new_worker_payment_automation_text = value : "";
+                            value ? self.new_worker_payment_automation_show = true : false;
+                            break;
+                        }
                     }
                 }
             }
@@ -152,7 +155,7 @@ const app = new Vue({
                 $(".masked_account").mask("000000000000000000000000000000");
                 $(".masked_sheba").mask("IR00-0000-0000-0000-0000-0000-00");
             });
-        }
+        },
     },
     methods: {
         account_information_show(event) {
@@ -163,6 +166,7 @@ const app = new Vue({
             (this.account_info_active === true) ? this.account_info_active = false : this.account_info_active = false;
         },
         submit_create_form(e) {
+            console.log(this.linklist.length);
             let form = e.target;
             e.preventDefault();
             bootbox.confirm({
@@ -882,6 +886,11 @@ const app = new Vue({
         },
         submit_login(){
             this.loading_window_active = true;
+        },
+        linkAction (e) {
+            if (e.currentTarget.getAttribute('href') !== "" && e.currentTarget.getAttribute('href') !== null && e.currentTarget.getAttribute('href').startsWith("#") === false) {
+                this.loading_window_active = true;
+            }
         }
     }
 });
