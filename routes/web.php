@@ -5,6 +5,7 @@ use App\Http\Controllers\MenuActionController;
 use App\Http\Controllers\MenuHeaderController;
 use App\Http\Controllers\MenuItemsController;
 use App\Models\Contract;
+use App\Models\Invoice;
 use App\Models\Project;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -62,6 +63,7 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
         Route::get("/InvoiceAutomation/Details/{id}",[InvoiceAutomationController::class,"view_details"])->name("InvoiceAutomation.details");
         Route::post("/InvoiceAutomation/NewAmounts/{id}",[InvoiceAutomationController::class,"register_invoice_amounts"])->name("InvoiceAutomation.amounts");
         Route::post("/InvoiceAutomation/Agree&Send/{id}",[InvoiceAutomationController::class,"automate_sending"])->name("InvoiceAutomation.automate_sending");
+        Route::post("/InvoiceAutomation/Refer/{id}",[InvoiceAutomationController::class,"refer"])->name("InvoiceAutomation.refer");
         Route::post("/InvoiceAutomation/PaymentProcess/{id}",[InvoiceAutomationController::class,"payment_process"])->name("InvoiceAutomation.payment_process");
         Route::get("/InvoiceAutomation/Sent",[InvoiceAutomationController::class,"sent_invoices"])->name("InvoiceAutomation.sent");
         Route::get("/InvoiceAutomation/Details/Sent/{id}",[InvoiceAutomationController::class,"view_sent_details"])->name("InvoiceAutomation.sent.details");

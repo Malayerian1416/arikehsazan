@@ -58,7 +58,7 @@ class AxiosCallController extends Controller
                     $tmp = [];
                     $tmp["id"] = $item->id;
                     $tmp["title"] = $item->category;
-                    array_push($response,$tmp);
+                    $response[] = $tmp;
                 }
                 break;
             }
@@ -69,7 +69,7 @@ class AxiosCallController extends Controller
                     $tmp = [];
                     $tmp["id"] = $item->id;
                     $tmp["title"] = $item->name;
-                    array_push($response,$tmp);
+                    $response[] = $tmp;
                 }
                 break;
             }

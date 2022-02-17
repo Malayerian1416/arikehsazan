@@ -368,11 +368,11 @@
     <div class="form-row pt-3 pb-3 m-0 d-flex flex-row justify-content-end">
         <button class="iran_yekan btn btn-outline-info mr-2" v-on:click="show_contract_details_modal">
             <i class="fa fa-list-alt button_icon"></i>
-            <span>اطلاعات پیمان</span>
+            <span>پیمان</span>
         </button>
         <button class="iran_yekan btn btn-outline-info mr-2" v-on:click="show_contractor_details_modal">
             <i class="fa fa-user button_icon"></i>
-            <span>اطلاعات پیمانکار</span>
+            <span>پیمانکار</span>
         </button>
         @if($invoice->automation->next_role_id == 0)
             @if($main_amounts)
@@ -389,6 +389,13 @@
                 <span v-show="button_not_loading">تایید و ارسال</span>
             </button>
         @endif
+        <form>
+            <button type="submit" form="refer_form" class="btn btn-outline-danger iran_yekan mr-2 submit_button">
+                <i v-show="button_loading" class="button_loading fa fa-spinner fa-spin mr-2"></i>
+                <i v-show="button_not_loading" class="fa fa-arrow-left button_icon"></i>
+                <span v-show="button_not_loading">ارجاع</span>
+            </button>
+        </form>
     </div>
 @endsection
 @section('modal_alerts')

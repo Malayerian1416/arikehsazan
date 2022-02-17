@@ -389,6 +389,14 @@
                 <span v-show="button_not_loading">تایید و ارسال</span>
             </button>
         @endif
+        <form id="refer_form" action="{{route("InvoiceAutomation.refer",$invoice->id)}}" v-on:submit="submit_refer_form" method="post">
+            @csrf
+            <button type="submit" form="refer_form" class="btn btn-outline-danger iran_yekan mr-2 submit_button">
+                <i v-show="button_loading" class="button_loading fa fa-spinner fa-spin mr-2"></i>
+                <i v-show="button_not_loading" class="fa fa-arrow-left button_icon"></i>
+                <span v-show="button_not_loading">ارجاع</span>
+            </button>
+        </form>
         <a href="{{route("idle")}}">
             <button type="button" class="btn btn-outline-light iran_yekan">
                 <i class="fa fa-backspace button_icon"></i>

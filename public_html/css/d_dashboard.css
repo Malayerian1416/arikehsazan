@@ -797,7 +797,7 @@ textarea{
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    justify-content: space-around;
+    justify-content: space-evenly;
     flex-wrap: wrap;
     position: relative;
 

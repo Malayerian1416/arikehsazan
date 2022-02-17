@@ -134,6 +134,7 @@ class InvoiceAutomationController extends Controller
             $invoice = Invoice::query()->findOrFail($id);
             $automation = InvoiceAutomation::query()->findOrFail($invoice->automation->id);
             $current_role = InvoiceFlow::query()->where("role_id", "=", Auth::user()->role->id)->first();
+            $main_role = InvoiceFlow::query()->where("is_main","=",1)->value("role_id");
             $duplicate = $invoice->automation_amounts()->whereHas("user", function ($query) {
                 $query->where("id", "=", Auth::id());
             })->get();
@@ -144,6 +145,7 @@ class InvoiceAutomationController extends Controller
                     "amount" => $invoice->automation_amounts[0]->amount,
                     "payment_offer" => $invoice->automation_amounts[0]->payment_offer,
                     "payment_offer_percent" => $invoice->automation_amounts[0]->payment_offer_percent,
+                    "is_main" => ($main_role != null && Auth::user()->role->id == $main_role) ? 1 : 0
                 ]);
             }
             if ($request->input('comment') != null)
@@ -160,10 +162,56 @@ class InvoiceAutomationController extends Controller
                 "next_role_id" => $after_next_role,
                 "is_read" => 0
             ]);
-
-            $invoice->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
+            if ($invoice->signs()->where("user_id","=",Auth::id())->count() == 0)
+                $invoice->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
             DB::commit();
             return redirect()->route("InvoiceAutomation.new")->with(["result" => "sent"]);
+        }
+        catch (Throwable $ex){
+            DB::rollBack();
+            return redirect()->back()->with(["action_error" => $ex->getMessage()]);
+        }
+    }
+    public function refer($id){
+        Gate::authorize("refer","InvoiceAutomation");
+        try {
+            DB::beginTransaction();
+            $invoice = Invoice::query()->findOrFail($id);
+            $automation = InvoiceAutomation::query()->findOrFail($invoice->automation->id);
+            $current_role = InvoiceFlow::query()->where("role_id", "=", Auth::user()->role->id)->first();
+            if ($invoice->user->role->id == $automation->previous_role_id)
+                $previous_role = InvoiceFlow::query()->where("role_id", "=", $automation->previous_role_id)->first();
+            else
+                $previous_role = InvoiceFlow::query()->where("role_id", "=", $automation->previous_role_id)->where("is_starter","=",0)->first();
+            if($automation->previous_role_id != $automation->current_role_id) {
+                $invoice->automation_amounts()->where("user_id", "=", Auth::user()->id)->delete();
+                $invoice->comments()->where("user_id", "=", Auth::user()->id)->delete();
+                $invoice->signs()->where("user_id", "=", Auth::user()->id)->delete();
+            }
+            if ($previous_role->is_starter){
+                $automation->update([
+                    "previous_role_id" => $previous_role->role_id,
+                    "current_role_id" => 0,
+                    "next_role_id" => 0,
+                    "is_read" => 0
+                ]);
+            }
+            else{
+                $priority = --$current_role->priority - 1;
+                $before_previous_role = InvoiceFlow::query()->where("priority", "=", $priority)->get();
+                if ($before_previous_role->count() > 1 && $priority == 1)
+                    $before_previous_role = $before_previous_role->where("role_id","=",$invoice->user->role->id)->first();
+                else
+                    $before_previous_role = $before_previous_role->first();
+                $automation->update([
+                    "previous_role_id" => $before_previous_role->role_id,
+                    "current_role_id" => $previous_role->role_id,
+                    "next_role_id" => $current_role->role_id,
+                    "is_read" => 0
+                ]);
+            }
+            DB::commit();
+            return redirect()->route("InvoiceAutomation.new")->with(["result" => "referred"]);
         }
         catch (Throwable $ex){
             DB::rollBack();

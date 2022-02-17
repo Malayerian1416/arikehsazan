@@ -34,7 +34,7 @@ class InvoiceLimitedController extends Controller
     }
     public function index()
     {
-        Gate::authorize("index","Invoices");
+        Gate::authorize("index","InvoicesLimited");
         try {
             $contracts = Contract::query()->with(["project","contractor"])->get();
             $invoices = Invoice::query()->with(["contract.project","contract.contractor","payments","automation"])->where("user_id",Auth::id())->latest()->get();
@@ -185,6 +185,13 @@ class InvoiceLimitedController extends Controller
                 $invoice->comments()->create(["user_id" => Auth::id(),"comment" => $validated["comment"]]);
             elseif($request->input("invoice_comment_id") != null && $validated["comment"] != null)
                 InvoiceComment::query()->findOrFail($request->input("invoice_comment_id"))->update(["comment" => $validated["comment"]]);
+            $invoice_flow = InvoiceFlow::all();
+            $current_role_id = $invoice_flow->where("priority","=",2)->first()->role_id;
+            $current_role_id = $current_role_id ?: 0;
+            $next_role_id = $invoice_flow->where("priority","=",3)->first()->role_id;
+            $next_role_id = $next_role_id ?: 0;
+            $invoice_automation = ["previous_role_id" => Auth::user()->role->id,"current_role_id" => $current_role_id,"next_role_id" => $next_role_id, "is_read" => 0];
+            $invoice->automation()->update($invoice_automation);
             DB::commit();
             return redirect()->back()->with(["result" => "updated"]);
         }

@@ -147,6 +147,17 @@
     </div>
     <div class="pages_container">
         @if(Route::is("idle"))
+            <div class="alert alert-success alert-dismissible fade show p-4" role="alert" v-cloak v-show="{{"new_invoice_automation_show"}}">
+                <a href="{{route("InvoiceAutomation.new")}}">
+                    <h6 class="iran_yekan m-0" style="font-size: 12px">
+                        <span class="badge badge-pill badge-danger" style="font-size: 12px" v-cloak v-text="new_invoice_automation_text"></span>
+                        مشاهده وضعیت های جدید
+                    </h6>
+                </a>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             <div class="gadget_container">
                 @yield('idle')
             </div>
@@ -236,6 +247,14 @@
             <h6 class="iran_yekan">
                 <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
                 <span class="white_color">عملیات تایید و پرداخت با موفقیت انجام شد</span>
+            </h6>
+        </div>
+    @endif
+    @if(session("result") == "referred")
+        <div class="alert_container">
+            <h6 class="iran_yekan">
+                <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
+                <span class="white_color">عملیات ارجاع با موفقیت انجام شد</span>
             </h6>
         </div>
     @endif

@@ -78,7 +78,6 @@ input:-webkit-autofill:active{
     text-decoration: none;
 }
 .input_label{
-    width: 100px;
     color:#959595;
     position: absolute;
     top:50%;

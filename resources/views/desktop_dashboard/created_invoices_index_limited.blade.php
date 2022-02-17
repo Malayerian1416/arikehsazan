@@ -44,7 +44,11 @@
                     @if($invoice->automation->is_finished == 1)
                         <td>تکمیل شده</td>
                     @else
-                        <td>{{\App\Models\Role::query()->findOrFail($invoice->automation->current_role_id)->name}}</td>
+                        @if($invoice->automation->current_role_id != 0)
+                            <td>{{\App\Models\Role::query()->findOrFail($invoice->automation->current_role_id)->name}}</td>
+                        @else
+                            <td>ارجاع شده</td>
+                        @endif
                     @endif
                     @if($invoice->payments->isEmpty())
                         <td>در جریان</td>

@@ -282,6 +282,31 @@ const app = new Vue({
                 }
             });
         },
+        submit_refer_form(e) {
+            let self = this;
+            let form = e.target;
+            e.preventDefault();
+            bootbox.confirm({
+                message: "آیا برای ارجاع اطلاعات اطمینان دارید؟",
+                closeButton: false,centerVertical: true,
+                buttons: {
+                    confirm: {
+                        label: 'بله',
+                        className: 'btn-success',
+                    },
+                    cancel: {
+                        label: 'خیر',
+                        className: 'btn-danger',
+                    }
+                },
+                callback: function (result) {
+                    if (result === true) {
+                        bootbox.hideAll();
+                        form.submit();
+                    }
+                }
+            });
+        },
         submit_activation_form(e) {
             let self = this;
             let form = e.target;
