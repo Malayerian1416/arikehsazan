@@ -178,7 +178,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="11"><span>اطلاعاتی یافت نشد</span></td></tr>
+                        <tr><td colspan="12"><span>اطلاعاتی یافت نشد</span></td></tr>
                     @endforelse
                     </tbody>
                 @endif

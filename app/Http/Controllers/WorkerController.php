@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ContractorRequest;
+use App\Http\Requests\WorkerRequest;
 use App\Models\Bank;
 use App\Models\Contractor;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class WorkerController extends Controller
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
-    public function store(ContractorRequest $request): \Illuminate\Http\RedirectResponse
+    public function store(WorkerRequest $request): \Illuminate\Http\RedirectResponse
     {
         Gate::authorize("create","Workers");
         try {

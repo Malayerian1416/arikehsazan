@@ -128,20 +128,20 @@ const app = new Vue({
                 }
             }
         }
-        if(Notification.permission !== "granted" && Notification.permission !== "denied"){
-            if ('serviceWorker' in navigator && 'PushManager' in window){
-                this.notification_text = "لطفا جهت دریافت پیام از رویدادهای سامانه (Notification)، در پنجره نمایان شده گزینه Allow را انتخاب بفرمایید.";
-                this.notification_permission = true;
-                Notification.requestPermission().then(result => {
-                    this.notification_permission = false;
-                    navigator.serviceWorker.ready.then(registration => {
-                        registration.showNotification("سیستم Notification با موفقیت فعال شد!", {}).then(r =>{});
-                    });
-                })
-            }
-            else
-                this.notification_text = "متاسفانه مرورگر دستگاه شما از سیستم پیام رسانی (Notification) پشتیبانی نمی کند";
-        }
+        // if(Notification.permission !== "granted" && Notification.permission !== "denied"){
+        //     if ('serviceWorker' in navigator && 'PushManager' in window){
+        //         this.notification_text = "لطفا جهت دریافت پیام از رویدادهای سامانه (Notification)، در پنجره نمایان شده گزینه Allow را انتخاب بفرمایید.";
+        //         this.notification_permission = true;
+        //         Notification.requestPermission().then(result => {
+        //             this.notification_permission = false;
+        //             navigator.serviceWorker.ready.then(registration => {
+        //                 registration.showNotification("سیستم Notification با موفقیت فعال شد!", {}).then(r =>{});
+        //             });
+        //         })
+        //     }
+        //     else
+        //         this.notification_text = "متاسفانه مرورگر دستگاه شما از سیستم پیام رسانی (Notification) پشتیبانی نمی کند";
+        // }
         if ($(".select_picker").length)
             $(".select_picker").selectpicker('refresh');
     },
