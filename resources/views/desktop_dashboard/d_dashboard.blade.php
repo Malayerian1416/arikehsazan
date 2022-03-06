@@ -18,6 +18,11 @@
 <button id="select_refresher" onclick="$('.select_picker').selectpicker('refresh')" hidden>
 </button>
 <div id="app" v-on:click="account_information_open">
+    <div class="notification_permission_window" v-cloak v-show="notification_permission">
+        <i class="fas fa-info-circle white_color fa-3x mb-2"></i>
+        <h6 class="iran_yekan white_color" style="width: 200px;word-break: break-word;text-align: justify" v-text="notification_text"></h6>
+        <button class="btn btn-outline-light iran_yekan mt-3" v-on:click="notification_permission = false">متوجه شدم</button>
+    </div>
     <div class="loading_window" v-show="loading_window_active">
         <i class="fas fa-cog fa-spin white_color"></i>
     </div>
@@ -158,9 +163,22 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="gadget_container">
-                @yield('idle')
+            <div class="alert alert-success alert-dismissible fade show p-4" role="alert" v-cloak v-show="{{"new_worker_payment_automation_show"}}">
+                <a href="{{route("WorkerPayments.new")}}">
+                    <h6 class="iran_yekan m-0" style="font-size: 12px">
+                        <span class="badge badge-pill badge-danger" style="font-size: 12px" v-cloak v-text="new_worker_payment_automation_text"></span>
+                        مشاهده پرداختی های کارگری جدید
+                    </h6>
+                </a>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
+            @if(auth()->user()->is_staff)
+                <div class="gadget_container">
+                    @yield('idle')
+                </div>
+            @endif
         @else
             <div class="page_content">
                 <div class="w-100 bg-dark page_title_container">

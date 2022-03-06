@@ -34,6 +34,18 @@ body{
 .window_loading image{
     user-select: none;
 }
+.notification_permission_window{
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 5000;
+}
 .company_name{
     color: #eca62f;
     font-size: 16px;
@@ -829,6 +841,56 @@ textarea{
 }
 .progress_bar{
     position: absolute;top: -25%;right: 0;height: 150%;
+}
+#main_table tbody tr:first-child td{
+    border-top: none;!important;
+}
+.invoice_detail_modal{
+    max-width: 100%;
+}
+.invoice_detail_modal th{
+    text-align: center;
+}
+.invoice_detail_modal th,.invoice_detail_modal td{
+    border: 1px solid #bcbcbc;
+}
+.invoice_detail_modal thead tr:first-child th{
+    border: none;!important;
+    border-top: none;!important;
+}
+.invoice_detail_modal thead tr:nth-child(2) th{
+    border-bottom: 1px solid #343A40;!important;
+}
+.invoice_detail_modal thead tr:nth-child(2) th:first-child{
+    border-right: 1px solid #343A40;!important;
+}
+.invoice_detail_modal thead tr:nth-child(2) th:last-child{
+    border-left: 1px solid #343A40;!important;
+}
+.invoice_detail_modal_ex th{
+    text-align: center;
+}
+.invoice_detail_modal_ex thead tr:first-child th,.invoice_detail_modal_ex thead tr:nth-child(2) th{
+    border: none;
+}
+.font-size-header *{
+    font-size: 13px;!important;
+}
+.red_slow_color{
+    color: #ff5f5f;!important;
+}
+.green_slow_color{
+    color: #5fef1e;!important;
+}
+.bg-blue{
+    background-color: #0c356a;!important;
+}
+.total_amounts_window{
+    position: -webkit-sticky;
+    position: -moz-sticky;
+    position: -ms-sticky;
+    position: -o-sticky;
+    position: sticky;bottom: -1px;right:2px;min-width: 300px;
 }
 @media screen and (max-width: 1200px){
     .header_container{

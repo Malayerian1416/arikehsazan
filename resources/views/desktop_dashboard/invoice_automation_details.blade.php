@@ -269,41 +269,41 @@
                             <tr>
                                 <th colspan="3" class="white_color">{{"واریز به حساب بانکی ".$invoice->contract->contractor->name}}</th>
                             </tr>
-                                <tr class="bg-light">
-                                    <td style="width: 40%">
-                                        <select class="form-control select_picker iran_yekan" title="انتخاب کنید" data-size="5" data-live-search="true" id="contractor_bank" name="contractor_bank" v-on:change="get_contractor_bank_information" data-type="contractor_bank_information" ref="parent_select">
-                                            @forelse($invoice->contract->contractor->banks as $bank)
-                                                <option data-options="{{json_encode(["card"=>$bank->card,"account"=>$bank->account,"sheba"=>$bank->sheba])}}" value="{{$bank->name}}">{{$bank->name}}</option>
-                                            @empty
-                                            @endforelse
-                                        </select>
-                                    </td>
-                                    <td style="width: 60%" colspan="2">
-                                        <div class="d-flex flex-row align-items-center justify-content-around">
-                                            <div>
-                                                <input id="deposit_kind_cash" checked type="radio" name="deposit_kind" value="check" v-on:change="deposit_kind_change">
-                                                <label id="deposit_kind_cash_label" class="iran_yekan" for="deposit_kind_cash">چک</label>
-                                            </div>
-                                            <div>
-                                                <input id="deposit_kind_card" disabled type="radio" name="deposit_kind" value="" v-on:change="deposit_kind_change">
-                                                <label id="deposit_kind_card_label" class="iran_yekan" for="deposit_kind_card" v-on:click="copy_bank_information" data-copy="">کارت</label>
-                                            </div>
-                                            <div>
-                                                <input id="deposit_kind_account" disabled type="radio" name="deposit_kind" value="" v-on:change="deposit_kind_change">
-                                                <label id="deposit_kind_account_label" class="iran_yekan" for="deposit_kind_account" v-on:click="copy_bank_information" data-copy="">حساب</label>
-                                            </div>
-                                            <div>
-                                                <input id="deposit_kind_sheba" disabled type="radio" name="deposit_kind" value="" v-on:change="deposit_kind_change">
-                                                <label id="deposit_kind_sheba_label" class="iran_yekan" for="deposit_kind_sheba" v-on:click="copy_bank_information" data-copy="">شبا</label>
-                                            </div>
-                                            <div>
-                                                <input id="deposit_kind_cash" type="radio" name="deposit_kind" value="cash" v-on:change="deposit_kind_change">
-                                                <label id="deposit_kind_cash_label" class="iran_yekan" for="deposit_kind_cash">نقدی</label>
-                                            </div>
-                                            <input type="hidden" name="deposit_kind_number" readonly v-model="deposit_kind_number">
+                            <tr class="bg-light">
+                                <td style="width: 40%">
+                                    <select class="form-control select_picker iran_yekan" title="انتخاب کنید" data-size="5" data-live-search="true" id="contractor_bank" name="contractor_bank" v-on:change="get_contractor_bank_information" data-type="contractor_bank_information" ref="parent_select">
+                                        @forelse($invoice->contract->contractor->banks as $bank)
+                                            <option data-options="{{json_encode(["card"=>$bank->card,"account"=>$bank->account,"sheba"=>$bank->sheba])}}" value="{{$bank->name}}">{{$bank->name}}</option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+                                </td>
+                                <td style="width: 60%" colspan="2">
+                                    <div class="d-flex flex-row align-items-center justify-content-around">
+                                        <div>
+                                            <input id="deposit_kind_cash" checked type="radio" name="deposit_kind" value="check" v-on:change="deposit_kind_change">
+                                            <label id="deposit_kind_cash_label" class="iran_yekan" for="deposit_kind_cash">چک</label>
                                         </div>
-                                    </td>
-                                </tr>
+                                        <div>
+                                            <input id="deposit_kind_card" disabled type="radio" name="deposit_kind" value="" v-on:change="deposit_kind_change">
+                                            <label id="deposit_kind_card_label" class="iran_yekan" for="deposit_kind_card" v-on:click="copy_bank_information" data-copy="">کارت</label>
+                                        </div>
+                                        <div>
+                                            <input id="deposit_kind_account" disabled type="radio" name="deposit_kind" value="" v-on:change="deposit_kind_change">
+                                            <label id="deposit_kind_account_label" class="iran_yekan" for="deposit_kind_account" v-on:click="copy_bank_information" data-copy="">حساب</label>
+                                        </div>
+                                        <div>
+                                            <input id="deposit_kind_sheba" disabled type="radio" name="deposit_kind" value="" v-on:change="deposit_kind_change">
+                                            <label id="deposit_kind_sheba_label" class="iran_yekan" for="deposit_kind_sheba" v-on:click="copy_bank_information" data-copy="">شبا</label>
+                                        </div>
+                                        <div>
+                                            <input id="deposit_kind_cash" type="radio" name="deposit_kind" value="cash" v-on:change="deposit_kind_change">
+                                            <label id="deposit_kind_cash_label" class="iran_yekan" for="deposit_kind_cash">نقدی</label>
+                                        </div>
+                                        <input type="hidden" name="deposit_kind_number" readonly v-model="deposit_kind_number">
+                                    </div>
+                                </td>
+                            </tr>
                             <tr class="bg-light">
                                 <td colspan="3">
                                     <div class="d-flex flex-row justify-content-start align-items-center align-content-stretch">
@@ -473,17 +473,22 @@
                                     <td>
                                         @if($contract_detail->automation->is_finished)
                                             تکمیل شده
+                                    @else
+                                        @if($invoice->automation->current_role_id != 0)
+                                            <td>{{\App\Models\Role::query()->findOrFail($invoice->automation->current_role_id)->name}}</td>
                                         @else
-                                            {{\App\Models\Role::query()->findOrFail($contract_detail->automation->current_role_id)->name}}
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($contract_detail->payments->isNotEmpty())
-                                            {{number_format(array_sum($contract_detail->payments->pluck('amount_payed')->toArray()))}}
-                                        @else
-                                            0
-                                        @endif
-                                    </td>
+                                            <td>ارجاع شده</td>
+
+                                         @endif
+                                            @endif
+                                         </td>
+                                            <td>
+                                                @if($contract_detail->payments->isNotEmpty())
+                                                    {{number_format(array_sum($contract_detail->payments->pluck('amount_payed')->toArray()))}}
+                                                @else
+                                                    0
+                                                @endif
+                                            </td>
                                 </tr>
                             @empty
                             @endforelse

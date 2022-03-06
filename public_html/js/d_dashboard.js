@@ -32,7 +32,7 @@ $(document).ready(function (){
     if ($('.number_format_dec').length > 0)
         new AutoNumeric.multiple('.number_format_dec',['float',{'digitGroupSeparator':'','watchExternalChanges':true}]);
     if ($(".persian_date").length > 0)
-        $(".persian_date").persianDatepicker();
+        $(".persian_date").persianDatepicker({formatDate: "YYYY/0M/0D"});
     $(".dropdown-btn").click(function (){
         if ($(this).hasClass("menu_dropdown_active")){
             $(this).removeClass("menu_dropdown_active");
@@ -82,4 +82,3 @@ $(document).ready(function (){
         }
     });
 });
-

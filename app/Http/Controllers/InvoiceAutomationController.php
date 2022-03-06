@@ -172,7 +172,8 @@ class InvoiceAutomationController extends Controller
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
-    public function refer($id){
+    public function refer($id): \Illuminate\Http\RedirectResponse
+    {
         Gate::authorize("refer","InvoiceAutomation");
         try {
             DB::beginTransaction();

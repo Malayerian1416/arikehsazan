@@ -38,7 +38,7 @@
                 @enderror
             </div>
             <div class="form-group col-md-12 col-lg-4 col-xl-3">
-                <label class="col-form-label iran_yekan black_color" for="project_name">دستگاه اجرایی</label>
+                <label class="col-form-label iran_yekan black_color" for="project_name">کارفرما</label>
                 <input type="text" class="form-control iran_yekan text-center @error('executive_system') is-invalid @enderror" id="executive_system" name="executive_system" value="{{$project->executive_system}}">
                 @error('executive_system')
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>

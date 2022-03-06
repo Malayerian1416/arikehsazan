@@ -51,9 +51,13 @@ const app = new Vue({
         response_items: [],
         edit_input_data: "",
         edit_select_data: "",
-        related_data_select: "",
+        related_data_select: typeof related_data_select === 'undefined' ? null : related_data_select,
+        related_data_select_child: typeof related_data_select_child === 'undefined' ? null : related_data_select_child,
         related_data_search_loading: false,
-        searches: [],
+        related_data_search_loading_child: false,
+        searches: typeof searches === 'undefined' ? [] : searches,
+        searches_child: typeof searches_child === 'undefined' ? [] : searches_child,
+        parent_id: typeof parent_id === 'undefined' ? '' : parent_id,
         disabled: true,
         final_starter: [],
         final_inductor: [],
@@ -93,6 +97,9 @@ const app = new Vue({
         new_worker_payment_automation_text: "",
         invoice_total_previous_quantity: 0,
         linklist:'',
+        notification_permission: false,
+        notification_text:'',
+        invoice_detail_head_role:[]
     },
     mounted() {
         const self = this;
@@ -121,6 +128,22 @@ const app = new Vue({
                 }
             }
         }
+        if(Notification.permission !== "granted" && Notification.permission !== "denied"){
+            if ('serviceWorker' in navigator && 'PushManager' in window){
+                this.notification_text = "لطفا جهت دریافت پیام از رویدادهای سامانه (Notification)، در پنجره نمایان شده گزینه Allow را انتخاب بفرمایید.";
+                this.notification_permission = true;
+                Notification.requestPermission().then(result => {
+                    this.notification_permission = false;
+                    navigator.serviceWorker.ready.then(registration => {
+                        registration.showNotification("سیستم Notification با موفقیت فعال شد!", {}).then(r =>{});
+                    });
+                })
+            }
+            else
+                this.notification_text = "متاسفانه مرورگر دستگاه شما از سیستم پیام رسانی (Notification) پشتیبانی نمی کند";
+        }
+        if ($(".select_picker").length)
+            $(".select_picker").selectpicker('refresh');
     },
     beforeMount() {
         if ($("#invoice_automation_quantity").length && $("#invoice_automation_amount").length){
@@ -131,6 +154,11 @@ const app = new Vue({
     },
     watch: {
         searches: function(){
+            this.$nextTick(function () {
+                $('.select_picker').selectpicker('refresh').selectpicker('render');
+            });
+        },
+        searches_child: function(){
             this.$nextTick(function () {
                 $('.select_picker').selectpicker('refresh').selectpicker('render');
             });
@@ -492,13 +520,17 @@ const app = new Vue({
             const self = this;
             const target = e.target;
             if (target.value) {
+                self.related_data_select = '';
                 self.related_data_search_loading = true;
                 const values = {"id": target.value, "type": target.dataset.type};
                 axios.post("/Dashboard/Desktop/related_data_search", values)
                     .then(response =>
                     {
                         self.related_data_search_loading = false;
-                        if (response["data"].length === 0){
+                        console.log(response["data"].length)
+                        self.searches_child = '';
+                        self.related_data_select_child = '';
+                        if (response["data"].length === 0) {
                             self.contract_branch = '';
                             self.contract_category = '';
                             self.contractor_name = '';
@@ -512,11 +544,42 @@ const app = new Vue({
                             self.extra_inline = [];
                             self.deduction_inline = [];
                             self.new_invoice_comment = '';
-                            self.related_data_select = '';
                         }else {
                             self.searches = response["data"];
                             if (target.dataset.related_id)
                                 self.related_data_select = target.dataset.related_id;
+                        }
+                    });
+            }
+        },
+        related_data_search_child(e) {
+            const self = this;
+            const target = e.target;
+            if (target.value) {
+                self.related_data_select_child = '';
+                self.related_data_search_loading_child = true;
+                const values = {"id": target.value, "parent_id": self.parent_id, "type": target.dataset.type};
+                axios.post("/Dashboard/Desktop/related_data_search", values)
+                    .then(response =>
+                    {
+                        if (response["data"].length === 0){
+                            self.contract_branch = '';
+                            self.contract_category = '';
+                            self.contractor_name = '';
+                            self.invoices_count = '';
+                            self.new_invoice_frame = false;
+                            self.searches = '';
+                            self.searches_child = '';
+                            self.new_invoice_quantity = 0;
+                            self.new_invoice_unit = '';
+                            self.new_invoice_amount = 0;
+                            self.new_invoice_total_amount = 0;
+                            self.extra_inline = [];
+                            self.deduction_inline = [];
+                            self.new_invoice_comment = '';
+                        }else {
+                            self.related_data_search_loading_child = false;
+                            self.searches_child = response["data"];
                         }
                     });
             }
@@ -916,6 +979,74 @@ const app = new Vue({
             if (e.currentTarget.getAttribute('href') !== "" && e.currentTarget.getAttribute('href') !== null && e.currentTarget.getAttribute('href').startsWith("#") === false) {
                 this.loading_window_active = true;
             }
+        },
+        invoice_details(e){
+            const self = this;
+            let invoice_id = e.currentTarget.dataset.invoice_id;
+            if (invoice_id) {
+                const values = {"invoice_id": invoice_id};
+                this.loading_window_active = true;
+                axios.post("/Dashboard/Desktop/get_invoice_details", values).then(response => {
+                        self.loading_window_active = false;
+                        const header = $("#roles_head");
+                        const titles = $("#roles_titles");
+                        const body = $("#amounts_body");
+                        const ex_body = $("#extras_body");
+                        let extras = 0,deductions = 0;
+                        const de_body = $("#deductions_body");
+                        const total_body = $("#totals_body");
+                        titles.append(`<th colspan="${response["data"]["automation_amounts"].length}">
+                                کارکرد</th>
+                                <th></th>
+                                <th colspan="${response["data"]["automation_amounts"].length}">
+                                بهاء جزء(ریال)</th>
+                                <th colspan="${response["data"]["automation_amounts"].length}">
+                                بهاء کل(ریال)</th>`);
+                        for (const item of response["data"]["automation_amounts"])
+                            header.append(`<th>${item["user"]["role"]["name"]}</th>`);
+                        header.append("<th>واحد</th>");
+                        for (const item of response["data"]["automation_amounts"])
+                            header.append(`<th>${item["user"]["role"]["name"]}</th>`);
+                        for (const item of response["data"]["automation_amounts"])
+                            header.append(`<th>${item["user"]["role"]["name"]}</th>`);
+                        for (const item of response["data"]["automation_amounts"])
+                            body.append(`<td>${item["quantity"]}</td>`);
+                        body.append(`<td>${response["data"]["contract"]["unit"]["name"]}</td>`);
+                        for (const item of response["data"]["automation_amounts"]) {
+                            const amount = numeral(item["amount"]).format("0,0")
+                            body.append(`<td>${amount}</td>`);
+                        }
+                        for (const item of response["data"]["automation_amounts"]) {
+                            const amount = item["amount"];
+                            const quantity = item["quantity"];
+                            const amount_sum = numeral(amount * quantity).format("0,0");
+                            body.append(`<td>${amount_sum}</td>`);
+                        }
+                        for (const item of response["data"]["extras"]) {
+                            extras += parseFloat(item["amount"]);
+                            const amount = numeral(item["amount"]).format("0,0")
+                            ex_body.append(`<tr><td>${item["description"]}</td><td>${amount}</td></tr>`);
+                        }
+                        for (const item of response["data"]["deductions"]) {
+                            deductions += parseFloat(item["amount"]);
+                            const amount = numeral(item["amount"]).format("0,0")
+                            de_body.append(`<tr><td>${item["description"]}</td><td>${amount}</td></tr>`);
+                        }
+                        for (const item of response["data"]["automation_amounts"]) {
+                            const payment_offer = numeral(item["payment_offer"]).format("0,0")
+                            const amount = item["amount"];
+                            const quantity = item["quantity"];
+                            const amount_sum = numeral((amount * quantity) + (extras - deductions)).format("0,0");
+                            total_body.append(`<tr><td><div class="payment_offer_container">${item["user"]["role"]["name"]}</td><td>${amount_sum}</td><td><span class="text-center iran_yekan bg-success white_color p-1" style="width: 25%">${item["payment_offer_percent"]} %</span>
+                                    <span class="text-center iran_yekan bold_font" style="width: 75%;">${payment_offer}</span></div></td></tr>`);
+                        }
+                    }
+                );
+            }
+            $("#invoice_details").modal("show");
+        },
+        clear_invoice_details(){
+            $("#roles_titles,#roles_head,#amounts_body,#extras_body,#deductions_body,#totals_body").html('');
         }
     }
 });

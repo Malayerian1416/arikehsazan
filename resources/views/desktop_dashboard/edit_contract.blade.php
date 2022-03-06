@@ -81,7 +81,7 @@
             </div>
             <div class="form-group col-md-12 col-lg-4 col-xl-3">
                 <label class="col-form-label iran_yekan black_color" for="amount">
-                    مبلغ پیمان(ریال)
+                    مبلغ واحد پیمان(ریال)
                     <strong class="red_color">*</strong>
                 </label>
                 <input type="text" class="form-control iran_yekan text-center number_format @error('amount') is-invalid @enderror" data-a-sep="," id="amount" name="amount" value="{{$contract->amount}}">

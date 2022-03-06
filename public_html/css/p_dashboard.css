@@ -35,6 +35,18 @@ body{
     background: rgba(0, 0, 0, 0.6);
     z-index: 5000;
 }
+.notification_permission_window{
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 5000;
+}
 .menu_icon{
     width: 30px;
     font-size: 1.5rem;

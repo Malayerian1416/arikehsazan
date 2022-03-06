@@ -4,9 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MenuActionController;
 use App\Http\Controllers\MenuHeaderController;
 use App\Http\Controllers\MenuItemsController;
-use App\Models\Contract;
-use App\Models\Invoice;
-use App\Models\Project;
+use \App\Http\Controllers\ReportsController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +28,7 @@ use \App\Http\Controllers\PhoneDashboardController;
 use \App\Http\Controllers\WorkerPaymentAutomationController;
 use \App\Http\Controllers\InvoiceLimitedController;
 use \App\Http\Controllers\WorkerController;
+
 Auth::routes();
 Route::get('/', function () {
     return redirect("login");
@@ -44,6 +43,7 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
         Route::post("/live_adding_data",[AxiosCallController::class,"live_data_adding"]);
         Route::post("/related_data_search",[AxiosCallController::class,"related_data_search"]);
         Route::post("/get_new_invoice_information",[AxiosCallController::class,"get_new_invoice_information"]);
+        Route::post("/get_invoice_details",[AxiosCallController::class,"get_invoice_details"]);
         Route::post("/get_bank_account_information",[AxiosCallController::class,"get_bank_account_information"]);
         Route::post("/change_extra_deduction_content",[AxiosCallController::class,"change_extra_deduction_content"]);
         Route::get("/get_new_notification",[AxiosCallController::class,"get_new_notification"]);
@@ -85,6 +85,18 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
         Route::resource("/InvoicesLimited",InvoiceLimitedController::class);
         Route::get("/Worker/create",[WorkerController::class,"create"])->name("Workers.create");
         Route::post("/Worker/store",[WorkerController::class,"store"])->name("Workers.store");
+        Route::group(['prefix' => 'Reports'],function (){
+            Route::get("/Project",[ReportsController::class,"project_reports_index"])->name("Reports.project_reports_index");
+            Route::post("/Project",[ReportsController::class,"make_project_report"])->name("Reports.project_reports_make");
+            Route::get("/ContractBranch",[ReportsController::class,"contract_branch_report_index"])->name("Reports.contract_branch_reports_index");
+            Route::post("/ContractBranch",[ReportsController::class,"make_contract_branch_report"])->name("Reports.contract_branch_reports_make");
+            Route::get("/ContractCategory",[ReportsController::class,"contract_category_report_index"])->name("Reports.contract_category_reports_index");
+            Route::post("/ContractCategory",[ReportsController::class,"make_contract_category_report"])->name("Reports.contract_category_reports_make");
+            Route::get("/Contract",[ReportsController::class,"contract_report_index"])->name("Reports.contract_reports_index");
+            Route::post("/Contract",[ReportsController::class,"make_contract_report"])->name("Reports.contract_reports_make");
+            Route::get("/Contractor",[ReportsController::class,"contractor_report_index"])->name("Reports.contractor_reports_index");
+            Route::post("/Contractor",[ReportsController::class,"make_contractor_report"])->name("Reports.contractor_reports_make");
+        });
         Route::group(['prefix' => 'Admin','middleware' => ['AdminCheck']],function (){
             Route::get("/SystemStatus",[SystemStatusController::class,"index"])->name("system_status_index");
             Route::post("/ChangeSystemStatus",[SystemStatusController::class,"change_status"])->name("system_status_change");

@@ -18,6 +18,11 @@
 <button id="select_refresher" onclick="$('.select_picker').selectpicker('refresh')" hidden>
 </button>
 <div id="app" v-on:click="account_information_open">
+    <div class="notification_permission_window" v-cloak v-show="notification_permission">
+        <i class="fas fa-info-circle white_color fa-3x mb-2"></i>
+        <h6 class="iran_yekan white_color" style="width: 200px;word-break: break-word;text-align: justify" v-text="notification_text"></h6>
+        <button class="btn btn-outline-light iran_yekan mt-3" v-on:click="notification_permission = false">متوجه شدم</button>
+    </div>
     <div class="loading_window" v-show="loading_window_active">
         <i class="fas fa-circle-notch fa-spin white_color fa-3x"></i>
     </div>

@@ -6,6 +6,7 @@ use App\Models\AbilityCategory;
 use App\Models\BankAccount;
 use App\Models\Contract;
 use App\Models\ContractCategory;
+use App\Models\Invoice;
 use App\Models\InvoiceAutomation;
 use App\Models\InvoiceDeduction;
 use App\Models\InvoiceExtra;
@@ -23,7 +24,14 @@ class AxiosCallController extends Controller
     {
         $response = [];
         $id = $request->input("id");
+        $parent_id = $request->input("parent_id");
         switch ($request->input("type")){
+            case "contract":{
+                $response = Contract::query()->whereHas("category",function ($query) use ($id){$query->where("id",$id);})
+                    ->whereHas("project",function ($query) use ($parent_id){$query->where("id",$parent_id);})
+                    ->get(["id","name"])->flatten()->toArray();
+                break;
+            }
             case "contract_category":{
                 $response = ContractCategory::query()->whereHas("branch",function ($query) use ($id){$query->where("id",$id);})->get(["id","category"])->flatten()->toArray();
                 break;
@@ -38,6 +46,20 @@ class AxiosCallController extends Controller
                 $response = $bank_account->checks()->get(["id","sayyadi","serial"])->toArray();
                 break;
             }
+            case "contractor_project":{
+                $response = Project::query()->whereHas("contracts.contractor",function ($query) use ($id){$query->where("contractors.id",$id);})
+                    ->get(["id","name"])->flatten()->toArray();
+                break;
+            }
+            case "contractor_project_contract":{
+                if ($id != 0)
+                    $response = Contract::query()->whereHas("project", function ($query) use ($id) {
+                        $query->where("id", $id);
+                    })->whereHas("contractor", function ($query) use ($parent_id) {$query->where("id", $parent_id);})->get(["id", "name"])->flatten()->toArray();
+                else
+                    $response = Contract::query()->whereHas("contractor", function ($query) use ($parent_id) {$query->where("id", $parent_id);})->get(["id", "name"])->flatten()->toArray();
+                break;
+            }
         }
         return $response;
     }
@@ -46,6 +68,20 @@ class AxiosCallController extends Controller
         return Contract::query()->with(["category.branch","contractor","unit"])
             ->withSum(["automation_amounts" => function($query){$query->where("is_main",1);}],"quantity")
             ->withCount("invoices")->findOrFail($request->input("contract_id"))->toArray();
+    }
+    function get_invoice_details(Request $request): array
+    {
+        return Invoice::query()->with([
+            "automation",
+            "user.role",
+            "contract.project",
+            "contract.contractor.banks",
+            "contract.unit","contract.category.branch",
+            "comments.user.role",
+            "signs.user.role",
+            "extras",
+            "deductions",
+            "automation_amounts.user.role"])->findOrFail($request->input("invoice_id"))->toArray();
     }
     function live_data_adding(Request $request): array
     {
