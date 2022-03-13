@@ -16,13 +16,13 @@
                 <h5 class="iran_yekan text-center text-muted">
                     @if($status)
                         <i class="fa fa-power-off fa-3x green_color d-block mb-2"></i>
-                        وضعیت سرویس سیستم
-                        <strong style="font-size: 16px;font-weight: 800;color: green">غیرفعال</strong>
+                        سیستم
+                        <strong style="font-size: 16px;font-weight: 800;color: green">فعال</strong>
                         است
                     @else
                         <i class="fa fa-plug fa-3x red_color d-block mb-2"></i>
-                        وضعیت سرویس سیستم
-                        <strong style="font-size: 16px;font-weight: 800;color: red">فعال</strong>
+                        سیستم
+                        <strong style="font-size: 16px;font-weight: 800;color: red">غیر فعال</strong>
                         است
                     @endif
                 </h5>
@@ -32,12 +32,12 @@
                         @if($status)
                             <button class="btn btn-outline-danger iran_yekan">
                                 <i class="fa fa-plug"></i>
-                                فعال کردن وضعیت سرویس
+                                غیرفعال کردن وضعیت سیستم
                             </button>
                         @else
                             <button class="btn btn-outline-success iran_yekan">
                                 <i class="fa fa-power-off"></i>
-                                غیرفعال کردن وضعیت سرویس
+                                فعال کردن وضعیت سیستم
                             </button>
                         @endif
                     </div>

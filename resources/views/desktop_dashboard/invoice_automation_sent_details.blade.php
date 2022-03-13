@@ -267,6 +267,10 @@
                 <span>بازگشت به لیست</span>
             </button>
         </a>
+        <a class="iran_yekan btn btn-outline-warning mr-2 print_anchor" target="_blank" href="{{route("print",$invoice->id)}}">
+            <i class="fa fa-print button_icon"></i>
+            <span>چاپ</span>
+        </a>
         <a href="{{route("idle")}}">
             <button type="button" class="btn btn-outline-light iran_yekan">
                 <i class="fa fa-backspace button_icon"></i>

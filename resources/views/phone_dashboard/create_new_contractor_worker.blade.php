@@ -10,7 +10,7 @@
     <span class="laleh external_page_title_text text-muted text-center">ایجاد کارگر جدید</span>
 @endsection
 @section('content')
-    <form id="create_form" action="{{route("Contractors.store")}}" method="post" v-on:submit="submit_create_form" enctype="multipart/form-data">
+    <form id="create_form" action="{{route("Workers.store")}}" method="post" v-on:submit="submit_create_form" enctype="multipart/form-data">
         @csrf
         <div class="form-row border rounded pb-2">
             <div class="col-12 position-relative form_label_container">
@@ -160,7 +160,7 @@
                     <h6 class="modal-title">ثبت اطلاعات بانکی جدید</h6>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
+                    <div class="row no-gutters">
                         <div class="col-12">
                             <label class="col-form-label iran_yekan black_color" for="bank_name">
                                 نام بانک

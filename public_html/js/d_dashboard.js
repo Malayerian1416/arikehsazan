@@ -81,4 +81,5 @@ $(document).ready(function (){
             $(".doc_expand_icon").removeClass("fa-arrow-alt-circle-left").toggleClass("fa-arrow-alt-circle-down")
         }
     });
+    $(".index_form_submit_button").click(function (e){e.stopPropagation();});
 });

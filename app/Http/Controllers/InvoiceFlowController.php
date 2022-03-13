@@ -28,7 +28,7 @@ class InvoiceFlowController extends Controller
     {
         Gate::authorize("adminUser");
         try {
-            $roles = Role::all();
+            $roles = Role::query()->where("name","<>","ادمین")->get();
             $invoice_flow = InvoiceFlow::query()->with("role")->orderBy("priority")->get();
             return view("desktop_dashboard.create_edit_invoice_flow",["invoice_flow" => $invoice_flow, "roles" => $roles]);
         }
@@ -39,6 +39,7 @@ class InvoiceFlowController extends Controller
 
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
+        dd($request->all());
         Gate::authorize("adminUser");
         try {
             if ($request->has("final_starter") && $request->has("final_inductor") && $request->input("final_finisher") != null && $request->input("is_main") != null) {

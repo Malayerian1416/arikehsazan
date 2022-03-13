@@ -28,6 +28,8 @@ use \App\Http\Controllers\PhoneDashboardController;
 use \App\Http\Controllers\WorkerPaymentAutomationController;
 use \App\Http\Controllers\InvoiceLimitedController;
 use \App\Http\Controllers\WorkerController;
+use \App\Http\Controllers\PhonebookController;
+use \App\Http\Controllers\PrintController;
 
 Auth::routes();
 Route::get('/', function () {
@@ -47,6 +49,7 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
         Route::post("/get_bank_account_information",[AxiosCallController::class,"get_bank_account_information"]);
         Route::post("/change_extra_deduction_content",[AxiosCallController::class,"change_extra_deduction_content"]);
         Route::get("/get_new_notification",[AxiosCallController::class,"get_new_notification"]);
+        Route::post("/generate_pdfs",[AxiosCallController::class,"generate_pdfs"]);
         Route::resource("/Contractors",ContractorController::class)->except("show");
         Route::resource("/Roles",RoleController::class)->except("show");
         Route::resource("/Users",UserController::class)->except("show");
@@ -69,6 +72,7 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
         Route::get("/InvoiceAutomation/Details/Sent/{id}",[InvoiceAutomationController::class,"view_sent_details"])->name("InvoiceAutomation.sent.details");
         Route::resource("/BankAccounts",BankAccountController::class)->except("show");
         Route::get("/CheckPrint",function (){return view("desktop_dashboard.check_print");});
+        Route::get("/Print/{id}",[PrintController::class,"print_invoice"])->name("print");
         Route::group(['prefix' => '/WorkerPayments'],function (){
             Route::get("/create",[WorkerPaymentAutomationController::class,"create"])->name("WorkerPayments.create");
             Route::post("/store",[WorkerPaymentAutomationController::class,"store"])->name("WorkerPayments.store");
@@ -82,9 +86,12 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
             Route::put("/Update/{id}",[WorkerPaymentAutomationController::class,"update"])->name("WorkerPayments.update");
             Route::delete("/Destroy/{id}",[WorkerPaymentAutomationController::class,"destroy"])->name("WorkerPayments.destroy");
         });
+        Route::resource("/Phonebook",PhonebookController::class)->except(["show","edit"]);
         Route::resource("/InvoicesLimited",InvoiceLimitedController::class);
-        Route::get("/Worker/create",[WorkerController::class,"create"])->name("Workers.create");
-        Route::post("/Worker/store",[WorkerController::class,"store"])->name("Workers.store");
+        Route::group(['prefix' => '/Workers'],function () {
+            Route::get("/create", [WorkerController::class, "create"])->name("Workers.create");
+            Route::post("/store", [WorkerController::class, "store"])->name("Workers.store");
+        });
         Route::group(['prefix' => 'Reports'],function (){
             Route::get("/Project",[ReportsController::class,"project_reports_index"])->name("Reports.project_reports_index");
             Route::post("/Project",[ReportsController::class,"make_project_report"])->name("Reports.project_reports_make");
@@ -119,5 +126,5 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
     });
 });
 Route::get('/linkstorage', function () {
-    Artisan::call('storage:link');
+    Artisan::call('cache:clear');
 });

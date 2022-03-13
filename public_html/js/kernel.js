@@ -105,8 +105,10 @@ const app = new Vue({
         const self = this;
         this.loading_window_active = false;
         this.linkList = document.getElementsByTagName('a');
-        for( let i=0; i < this.linkList.length; i++ )
-            this.linkList[i].onclick = this.linkAction;
+        for( let i=0; i < this.linkList.length; i++ ) {
+            if (!$(this.linkList[i]).hasClass("print_anchor"))
+                this.linkList[i].onclick = this.linkAction;
+        }
         let notification = document.getElementsByClassName("badge");
         if (notification.length !== 0) {
             let get_notification = new EventSource("/Dashboard/Desktop/get_new_notification");
@@ -222,7 +224,7 @@ const app = new Vue({
                         form.submit();
                     }
                 }
-            });
+            }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
         },
         submit_update_form(e) {
             let self = this;
@@ -252,7 +254,7 @@ const app = new Vue({
                         form.submit();
                     }
                 }
-            });
+            }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
         },
         submit_delete_form(e) {
             let self = this;
@@ -278,7 +280,7 @@ const app = new Vue({
                         form.submit();
                     }
                 }
-            });
+            }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
         },
         submit_pay_form(e) {
             let form = e.target;
@@ -308,7 +310,7 @@ const app = new Vue({
                         form.submit();
                     }
                 }
-            });
+            }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
         },
         submit_refer_form(e) {
             let self = this;
@@ -333,7 +335,7 @@ const app = new Vue({
                         form.submit();
                     }
                 }
-            });
+            }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
         },
         submit_activation_form(e) {
             let self = this;
@@ -370,7 +372,7 @@ const app = new Vue({
                         form.submit();
                     }
                 }
-            });
+            }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
         },
         live_data_adding(e) {
             let type = e.target.dataset.type;
@@ -454,7 +456,7 @@ const app = new Vue({
                             });
                         }
                     }
-                });
+                }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
             }
         },
         static_data_add_modal() {
@@ -687,7 +689,6 @@ const app = new Vue({
                             break;
                         }
                     }
-
                     if (selected === "finisher" && $("#finisher_list").children().length > 0)
                         $("#finisher_list").html('');
                     let item = $(this).clone(true);
@@ -707,7 +708,6 @@ const app = new Vue({
                     }
                     $(item).click(function (){self.list_item_select(event)});
                     $(`#${selected}_list`).append(item);
-                    $(this).remove();
                     $("#flow_type_modal").modal("hide");
                 }
             });
@@ -722,7 +722,6 @@ const app = new Vue({
                 }
             });
             if (item){
-                let cloned_item = $(item).clone(true);
                 let parent_list_id = $(item).parent().attr("id");
                 switch (parent_list_id){
                     case "starter_list":{
@@ -744,8 +743,6 @@ const app = new Vue({
                         break;
                     }
                 }
-                $(cloned_item).click(function (){self.list_item_select(event)});
-                $("#origin_list").append(cloned_item);
                 $(item).remove();
             }
         },
@@ -1047,6 +1044,20 @@ const app = new Vue({
         },
         clear_invoice_details(){
             $("#roles_titles,#roles_head,#amounts_body,#extras_body,#deductions_body,#totals_body").html('');
-        }
+        },
+        contact_information(e){
+            e.stopPropagation();
+            $("#contact_id").val(e.currentTarget.children[0].innerText);
+            $("#name").val(e.currentTarget.children[1].innerText);
+            $("#phone_number_1").val(e.currentTarget.children[2].innerText);
+            $("#phone_number_2").val(e.currentTarget.children[3].innerText);
+            $("#phone_number_3").val(e.currentTarget.children[4].innerText);
+            $("#job_title").val(e.currentTarget.children[5].innerText);
+            $("#email").val(e.currentTarget.children[6].innerText);
+            $("#address").val(e.currentTarget.children[8].innerText);
+            $("#note").val(e.currentTarget.children[7].innerText);
+            $("#update_form").attr("action",e.currentTarget.dataset.route);
+            $("#contact_information").modal("show");
+        },
     }
 });

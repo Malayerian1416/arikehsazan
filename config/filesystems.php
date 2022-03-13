@@ -100,6 +100,12 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
+        'invoice_pdfs' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/invoice_pdfs'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
     ],
 
     /*

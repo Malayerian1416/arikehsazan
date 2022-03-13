@@ -89,9 +89,10 @@ class InvoiceAutomationController extends Controller
                 ])->where("contract_id","=",$invoice->contract->id)->orderBy("number","asc")->get();
             $invoice_flow_permissions = InvoiceFlow::query()->where("role_id","=",Auth::user()->role->id)->first();
             $bank_accounts = BankAccount::query()->with(["docs","checks"])->get();
+            $pdf = Storage::disk("invoice_pdfs")->exists("{$invoice->id}/invoicePDF.pdf");
             return view("{$this->agent}.invoice_automation_details",[
                 "invoice" => $invoice,"contract_details" => $contract_details,"main_amounts" => $main_amounts,"invoice_flow_permissions" => $invoice_flow_permissions,
-                "contractor_details" => $contractor_details, "bank_accounts" => $bank_accounts
+                "contractor_details" => $contractor_details, "bank_accounts" => $bank_accounts, "pdf" => $pdf
             ]);
         }
         catch (Throwable $ex){

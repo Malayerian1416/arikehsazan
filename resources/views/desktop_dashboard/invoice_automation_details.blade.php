@@ -374,6 +374,10 @@
             <i class="fa fa-user button_icon"></i>
             <span>اطلاعات پیمانکار</span>
         </button>
+        <a class="iran_yekan btn btn-outline-warning mr-2 print_anchor" target="_blank" href="{{route("print",$invoice->id)}}">
+            <i class="fa fa-print button_icon"></i>
+            <span>چاپ</span>
+        </a>
         @if($invoice->automation->next_role_id == 0)
             @if($main_amounts)
                 <button type="submit" form="pay_form" class="btn btn-outline-success iran_yekan mr-2 submit_button">
@@ -479,9 +483,9 @@
                                         @else
                                             <td>ارجاع شده</td>
 
-                                         @endif
                                             @endif
-                                         </td>
+                                            @endif
+                                            </td>
                                             <td>
                                                 @if($contract_detail->payments->isNotEmpty())
                                                     {{number_format(array_sum($contract_detail->payments->pluck('amount_payed')->toArray()))}}
