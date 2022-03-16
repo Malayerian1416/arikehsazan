@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BankAccount;
 use App\Models\Contract;
 use App\Models\ContractCategory;
+use App\Models\Contractor;
 use App\Models\Invoice;
 use App\Models\InvoiceAutomation;
 use App\Models\InvoiceDeduction;
@@ -183,5 +184,33 @@ class AxiosCallController extends Controller
                 ob_flush();
             });
         $response->send();
+    }
+    public function update_bank_information(Request $request){
+        try {
+            $contractor = Contractor::query()->findOrFail($request->input("contractor_id"));
+            $bank = $contractor->banks->where("id", "=", $request->input("bank_id"))->first();
+            $value = $request->input("value");
+            switch ($request->input("type")) {
+                case "card":
+                {
+                    $bank->update(["card" => $value]);
+                    break;
+                }
+                case "sheba":
+                {
+                    $bank->update(["sheba" => $value]);
+                    break;
+                }
+                case "account":
+                {
+                    $bank->update(["account" => $value]);
+                    break;
+                }
+            }
+            return "ok";
+        }
+        catch (Throwable $ex){
+            return $ex;
+        }
     }
 }

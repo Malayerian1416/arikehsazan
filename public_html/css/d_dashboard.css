@@ -892,6 +892,11 @@ textarea{
     position: -o-sticky;
     position: sticky;bottom: -1px;right:2px;min-width: 300px;
 }
+.modal-footer{
+    display: flex;!important;
+    justify-content: center;!important;
+    align-items: center;!important;
+}
 @media screen and (max-width: 1200px){
     .header_container{
         width: 100vw;

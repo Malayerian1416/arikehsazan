@@ -49,7 +49,7 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
         Route::post("/get_bank_account_information",[AxiosCallController::class,"get_bank_account_information"]);
         Route::post("/change_extra_deduction_content",[AxiosCallController::class,"change_extra_deduction_content"]);
         Route::get("/get_new_notification",[AxiosCallController::class,"get_new_notification"]);
-        Route::post("/generate_pdfs",[AxiosCallController::class,"generate_pdfs"]);
+        Route::post("/update_bank_information",[AxiosCallController::class,"update_bank_information"]);
         Route::resource("/Contractors",ContractorController::class)->except("show");
         Route::resource("/Roles",RoleController::class)->except("show");
         Route::resource("/Users",UserController::class)->except("show");

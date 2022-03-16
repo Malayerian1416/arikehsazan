@@ -27,12 +27,11 @@
                 <th scope="col">موقعیت</th>
                 <th scope="col">تاریخ ثبت</th>
                 <th scope="col">تاریخ ارسال</th>
-                <th scope="col">عملیات</th>
             </tr>
             </thead>
             <tbody>
             @forelse($invoice_automations as $invoice_automation)
-                <tr>
+                <tr data-details_route="{{route("InvoiceAutomation.sent.details",$invoice_automation->invoice->id)}}" v-on:dblclick="invoice_details_navigation">
                     <td><span>{{$invoice_automation->id}}</span></td>
                     <td><span>{{$invoice_automation->invoice->contract->project->name}}</span></td>
                     <td><span>{{$invoice_automation->invoice->contract->name}}</span></td>
@@ -60,9 +59,6 @@
                     </td>
                     <td><span>{{verta($invoice_automation->created_at)->format("Y/n/d")}}</span></td>
                     <td><span>{{verta($invoice_automation->updated_at)->format("Y/n/d")}}</span></td>
-                    <td>
-                        <a class="index_action" href="{{route("InvoiceAutomation.sent.details",$invoice_automation->invoice->id)}}"><i class="fa fa-info-circle index_edit_icon"></i></a>
-                    </td>
                 </tr>
             @empty
             @endforelse

@@ -27,7 +27,7 @@
         <i class="fas fa-cog fa-spin white_color"></i>
     </div>
     <div class="header_container">
-        <i class="fa fa-times header_menu_button" v-on:click="sidenav_visibility"></i>
+        <i class="fa fa-arrow-right header_menu_button" v-on:click="sidenav_visibility"></i>
         <div>
             <i class="fa fa-gear fa-2x black_color pr-3 header_button"></i>
             <i id="account_info_button" class="fa fa-user-circle black_color header_user_button" v-on:click="account_information_show" :class="{acc_info_active : account_info_active}"></i>

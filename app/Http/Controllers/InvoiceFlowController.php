@@ -39,7 +39,6 @@ class InvoiceFlowController extends Controller
 
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
-        dd($request->all());
         Gate::authorize("adminUser");
         try {
             if ($request->has("final_starter") && $request->has("final_inductor") && $request->input("final_finisher") != null && $request->input("is_main") != null) {

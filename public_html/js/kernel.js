@@ -928,17 +928,38 @@ const app = new Vue({
         },
         get_contractor_bank_information(e){
             if (e.target.value){
-                $("#deposit_kind_card").val("card").prop("disabled",false).attr("data-copy",$(e.target).find(":selected").data("options")["card"]);
-                $("#deposit_kind_card_label").attr("data-copy",$(e.target).find(":selected").data("options")["card"]);
-                $("#deposit_kind_account").val('account').prop("disabled",false).attr("data-copy",$(e.target).find(":selected").data("options")["account"]);
-                $("#deposit_kind_account_label").attr("data-copy",$(e.target).find(":selected").data("options")["account"]);
-                $("#deposit_kind_sheba").val('sheba').prop("disabled",false).attr("data-copy",$(e.target).find(":selected").data("options")["sheba"]);
-                $("#deposit_kind_sheba_label").attr("data-copy",$(e.target).find(":selected").data("options")["sheba"]);
+                this.deposit_kind_number = $(e.target).find(":selected").data("options")["card"];
+                $("#deposit_kind_card").val("card");
+                $("#deposit_kind_card_number").val($(e.target).find(":selected").data("options")["card"]).trigger("input");
+                $("#card-copy").attr("data-copy",$(e.target).find(":selected").data("options")["card"]);
+                $("#edit_card").attr("data-bank_id",$(e.target).find(":selected").data("options")["bank_id"]);
+                $("#deposit_kind_sheba").val("sheba");
+                $("#deposit_kind_sheba_number").val($(e.target).find(":selected").data("options")["sheba"]).trigger("input");
+                $("#sheba-copy").attr("data-copy",$(e.target).find(":selected").data("options")["sheba"]);
+                $("#edit_sheba").attr("data-bank_id",$(e.target).find(":selected").data("options")["bank_id"]);
+                $("#deposit_kind_account").val("account");
+                $("#deposit_kind_account_number").val($(e.target).find(":selected").data("options")["account"]).trigger("input");
+                $("#account-copy").attr("data-copy",$(e.target).find(":selected").data("options")["account"]);
+                $("#edit_account").attr("data-bank_id",$(e.target).find(":selected").data("options")["bank_id"]);
             }
         },
         deposit_kind_change(e){
-            if (e.target.checked === true)
-                this.deposit_kind_number = e.target.dataset.copy;
+            if (e.target.checked === true){
+                switch (e.target.id){
+                    case "deposit_kind_card":{
+                        this.deposit_kind_number = $("#card-copy").attr("data-copy");
+                        break;
+                    }
+                    case "deposit_kind_sheba":{
+                        this.deposit_kind_number = $("#sheba-copy").attr("data-copy");
+                        break;
+                    }
+                    case "deposit_kind_account":{
+                        this.deposit_kind_number = $("#account-copy").attr("data-copy");
+                        break;
+                    }
+                }
+            }
         },
         sidebar_toggle(e){
             this.sidebar_visibility = !this.sidebar_visibility;
@@ -966,7 +987,7 @@ const app = new Vue({
         sidenav_visibility(){
             $(".sidenav").toggleClass("disappear");
             $(".header_container, .pages_container, .gadget_container").toggleClass("full-width");
-            $(".header_menu_button").toggleClass("fa-times").toggleClass("fa-bars");
+            $(".header_menu_button").toggleClass("fa-arrow-right").toggleClass("fa-arrow-left");
             window.dispatchEvent(new Event('resize'));
         },
         submit_login(){
@@ -1059,5 +1080,66 @@ const app = new Vue({
             $("#update_form").attr("action",e.currentTarget.dataset.route);
             $("#contact_information").modal("show");
         },
+        edit_bank_information(e){
+            let data = {};
+            const self = this;
+            data["contractor_id"] = e.target.dataset.contractor_id;
+            data["bank_id"] = e.target.dataset.bank_id;
+            switch (e.target.id){
+                case "edit_card":{
+                    data["type"] = "card";
+                    data["value"] = $("#deposit_kind_card_number").cleanVal();
+                    break;
+                }
+                case "edit_sheba":{
+                    data["type"] = "sheba";
+                    data["value"] = $("#deposit_kind_sheba_number").cleanVal();
+                    break;
+                }
+                case "edit_account":{
+                    data["type"] = "account";
+                    data["value"] = $("#deposit_kind_account_number").cleanVal();
+                    break;
+                }
+            }
+            if (data["value"]) {
+                bootbox.confirm({
+                    message: "آیا برای ویرایش اطلاعات بانکی پیمانکار اطمینان دارید؟",
+                    closeButton: false, centerVertical: true,
+                    buttons: {
+                        confirm: {
+                            label: 'بله',
+                            className: 'btn-success',
+                        },
+                        cancel: {
+                            label: 'خیر',
+                            className: 'btn-danger',
+                        }
+                    },
+                    callback: function (result) {
+                        if (result === true) {
+                            bootbox.hideAll();
+                            self.loading_window_active = true;
+                            axios.post("/Dashboard/Desktop/update_bank_information", data)
+                                .then(function (response) {
+                                    self.loading_window_active = false;
+                                    if (response.data === "ok")
+                                        alerify.success("ویرایش اطلاعات بانکی با موفقیت انجام شد");
+                                }).catch(function (error) {
+                                self.loading_window_active = false;
+                                if (error.response) {
+                                    console.log(error.response.data);
+                                    console.log(error.response.status);
+                                    console.log(error.response.headers);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        },
+        invoice_details_navigation(e){
+            location.replace(e.currentTarget.dataset.details_route);
+        }
     }
 });

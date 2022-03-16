@@ -68,6 +68,7 @@ class InvoiceAutomationController extends Controller
                 ])->findOrFail($id);
             $invoice->automation()->update(["is_read" => 1]);
             $main_role = InvoiceFlow::query()->where("is_main","=",1)->value("role_id");
+            $project_id = $invoice->contract->project->id;
             $main_amounts = $invoice->automation_amounts()->
             whereHas("user",function ($query) use($main_role){$query->whereHas("role",function ($q) use ($main_role){$q->where("id","=",$main_role);});})->first();
             $contractor_details = Contractor::query()->with(
@@ -77,7 +78,9 @@ class InvoiceAutomationController extends Controller
                     "contract.invoices.extras",
                     "contract.invoices.deductions",
                     "contract.project"
-                ])->whereHas("contract.invoices")->findOrFail($invoice->contract->contractor->id);
+                ])->whereHas("contract.invoices")->whereHas("contract.project",function ($query) use ($project_id){
+                    $query->where("projects.id",$project_id);
+            })->findOrFail($invoice->contract->contractor->id);
             $contract_details = Invoice::query()->with(
                 [
                     "contract.unit",
@@ -134,7 +137,6 @@ class InvoiceAutomationController extends Controller
             DB::beginTransaction();
             $invoice = Invoice::query()->findOrFail($id);
             $automation = InvoiceAutomation::query()->findOrFail($invoice->automation->id);
-            $current_role = InvoiceFlow::query()->where("role_id", "=", Auth::user()->role->id)->first();
             $main_role = InvoiceFlow::query()->where("is_main","=",1)->value("role_id");
             $duplicate = $invoice->automation_amounts()->whereHas("user", function ($query) {
                 $query->where("id", "=", Auth::id());
@@ -151,18 +153,8 @@ class InvoiceAutomationController extends Controller
             }
             if ($request->input('comment') != null)
                 $invoice->comments()->create(["user_id" => Auth::id(), "comment" => $request->comment]);
-            $next_role = InvoiceFlow::query()->where("role_id", "=", $automation->next_role_id)->first();
-            $after_next_role = 0;
-            if ($next_role->is_finisher == 0) {
-                $after_next_role = InvoiceFlow::query()->where("priority", "=", ++$next_role->priority)->first();
-                $after_next_role = $after_next_role->role_id;
-            }
-            $automation->update([
-                "previous_role_id" => $current_role->role_id,
-                "current_role_id" => $next_role->role_id,
-                "next_role_id" => $after_next_role,
-                "is_read" => 0
-            ]);
+            $invoice_automation = InvoiceFlow::automate();
+            $automation->update($invoice_automation);
             if ($invoice->signs()->where("user_id","=",Auth::id())->count() == 0)
                 $invoice->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
             DB::commit();
@@ -178,40 +170,7 @@ class InvoiceAutomationController extends Controller
         Gate::authorize("refer","InvoiceAutomation");
         try {
             DB::beginTransaction();
-            $invoice = Invoice::query()->findOrFail($id);
-            $automation = InvoiceAutomation::query()->findOrFail($invoice->automation->id);
-            $current_role = InvoiceFlow::query()->where("role_id", "=", Auth::user()->role->id)->first();
-            if ($invoice->user->role->id == $automation->previous_role_id)
-                $previous_role = InvoiceFlow::query()->where("role_id", "=", $automation->previous_role_id)->first();
-            else
-                $previous_role = InvoiceFlow::query()->where("role_id", "=", $automation->previous_role_id)->where("is_starter","=",0)->first();
-            if($automation->previous_role_id != $automation->current_role_id) {
-                $invoice->automation_amounts()->where("user_id", "=", Auth::user()->id)->delete();
-                $invoice->comments()->where("user_id", "=", Auth::user()->id)->delete();
-                $invoice->signs()->where("user_id", "=", Auth::user()->id)->delete();
-            }
-            if ($previous_role->is_starter){
-                $automation->update([
-                    "previous_role_id" => $previous_role->role_id,
-                    "current_role_id" => 0,
-                    "next_role_id" => 0,
-                    "is_read" => 0
-                ]);
-            }
-            else{
-                $priority = --$current_role->priority - 1;
-                $before_previous_role = InvoiceFlow::query()->where("priority", "=", $priority)->get();
-                if ($before_previous_role->count() > 1 && $priority == 1)
-                    $before_previous_role = $before_previous_role->where("role_id","=",$invoice->user->role->id)->first();
-                else
-                    $before_previous_role = $before_previous_role->first();
-                $automation->update([
-                    "previous_role_id" => $before_previous_role->role_id,
-                    "current_role_id" => $previous_role->role_id,
-                    "next_role_id" => $current_role->role_id,
-                    "is_read" => 0
-                ]);
-            }
+            InvoiceFlow::refer($id);
             DB::commit();
             return redirect()->route("InvoiceAutomation.new")->with(["result" => "referred"]);
         }

@@ -96,12 +96,7 @@ class InvoiceController extends Controller
             if ($request->input('comment') != null)
                 $invoice->comments()->create(["user_id" => Auth::id(),"comment" => $validated["comment"]]);
             $invoice->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
-            $invoice_flow = InvoiceFlow::all();
-            $current_role_id = $invoice_flow->where("priority","=",2)->first()->role_id;
-            $current_role_id = $current_role_id ?: 0;
-            $next_role_id = $invoice_flow->where("priority","=",3)->first()->role_id;
-            $next_role_id = $next_role_id ?: 0;
-            $invoice_automation = ["previous_role_id" => Auth::user()->role->id,"current_role_id" => $current_role_id,"next_role_id" => $next_role_id];
+            $invoice_automation = InvoiceFlow::automate();
             $invoice->automation()->create($invoice_automation);
             DB::commit();
             return redirect()->back()->with(["result" => "saved"]);
@@ -167,12 +162,7 @@ class InvoiceController extends Controller
                 $invoice->comments()->create(["user_id" => Auth::id(),"comment" => $validated["comment"]]);
             elseif($request->input("invoice_comment_id") != null && $validated["comment"] != null)
                 InvoiceComment::query()->findOrFail($request->input("invoice_comment_id"))->update(["comment" => $validated["comment"]]);
-            $invoice_flow = InvoiceFlow::all();
-            $current_role_id = $invoice_flow->where("priority","=",2)->first()->role_id;
-            $current_role_id = $current_role_id ?: 0;
-            $next_role_id = $invoice_flow->where("priority","=",3)->first()->role_id;
-            $next_role_id = $next_role_id ?: 0;
-            $invoice_automation = ["previous_role_id" => Auth::user()->role->id,"current_role_id" => $current_role_id,"next_role_id" => $next_role_id, "is_read" => 0];
+            $invoice_automation = InvoiceFlow::automate();
             $invoice->automation()->update($invoice_automation);
             DB::commit();
             return redirect()->back()->with(["result" => "updated"]);
