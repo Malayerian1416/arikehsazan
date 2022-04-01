@@ -10,12 +10,12 @@
     <link href="{{asset("/css/app.css?v=".time())}}" rel="stylesheet">
     @yield('styles')
 </head>
-<body class="antialiased rtl" style="background: #F8F8F8">
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
+<body class="antialiased rtl iran_yekan" style="background: #F8F8F8">
+<div class="container" style="width: 100vw;height: 100vh">
+    <div class="row h-100 justify-content-center">
+        <div class="col-md-8 d-flex justify-content-center align-items-center h-100">
+            <div class="card" style="width: 90%">
+                <div class="card-header iran_yekan">تغییر گذرواژه</div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -27,11 +27,9 @@
                     <form method="POST" action="{{ route('password.email') }}">
                         @csrf
 
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                        <div class="row">
+                            <div class="col-12">
+                                <input id="email" type="email" class="form-control text-center @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="ایمیل خود را وارد کنید" autofocus>
 
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
@@ -39,12 +37,9 @@
                                     </span>
                                 @enderror
                             </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Send Password Reset Link') }}
+                            <div class="col-12 mt-2 text-center">
+                                <button type="submit" class="btn btn-primary iran_yekan">
+                                    دریافت لینک تغییر گذرواژه
                                 </button>
                             </div>
                         </div>

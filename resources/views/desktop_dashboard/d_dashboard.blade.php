@@ -38,7 +38,7 @@
                 <form action="{{route("logout")}}" method="post" class="p-3">
                     @csrf
                     <button type="button" class="account_info_item btn btn-outline-secondary">
-                        <i class="fa fa-cogs fa-2x"></i>
+                        <a href="{{route("password.request")}}" style="text-decoration: none"><i class="fa fa-cogs fa-2x"></i></a>
                     </button>
                     <button type="submit" class="account_info_item btn btn-outline-secondary">
                         <i class="fa fa-sign-out-alt fa-2x"></i>

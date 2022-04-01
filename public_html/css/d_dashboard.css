@@ -730,6 +730,7 @@ input[type='radio']{
     justify-content: center;
     padding: 10px 10px;
     border: 2px dotted #dcdcdc;
+    min-width: 120px;
 }
 .invoice_payable_summary_table td {
     vertical-align: middle;

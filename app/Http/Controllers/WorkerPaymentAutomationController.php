@@ -147,19 +147,8 @@ class WorkerPaymentAutomationController extends Controller
         try {
             DB::beginTransaction();
             $worker_automation = WorkerPaymentAutomation::query()->findOrFail($id);
-            $current_role = InvoiceFlow::query()->where("role_id", "=", Auth::user()->role->id)->first();
-            $next_role = InvoiceFlow::query()->where("role_id", "=", $worker_automation->next_role_id)->first();
-            $after_next_role = 0;
-            if ($next_role->is_finisher == 0) {
-                $after_next_role = InvoiceFlow::query()->where("priority", "=", ++$next_role->priority)->first();
-                $after_next_role = $after_next_role->role_id;
-            }
-            $worker_automation->update([
-                "previous_role_id" => $current_role->role_id,
-                "current_role_id" => $next_role->role_id,
-                "next_role_id" => $after_next_role,
-                "is_read" => 0
-            ]);
+            $invoice_automation = InvoiceFlow::automate();
+            $worker_automation->update($invoice_automation);
             if ($worker_automation->signs->where("user_id","=",Auth::id())->isEmpty())
                 $worker_automation->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
             DB::commit();
