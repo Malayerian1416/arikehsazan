@@ -85,6 +85,7 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
             Route::get("/Edit/{id}",[WorkerPaymentAutomationController::class,"edit"])->name("WorkerPayments.edit");
             Route::put("/Update/{id}",[WorkerPaymentAutomationController::class,"update"])->name("WorkerPayments.update");
             Route::delete("/Destroy/{id}",[WorkerPaymentAutomationController::class,"destroy"])->name("WorkerPayments.destroy");
+            Route::get("/Print/{id}",[WorkerPaymentAutomationController::class,"print_payment"])->name("WorkerPayments.print");
         });
         Route::resource("/Phonebook",PhonebookController::class)->except(["show","edit"]);
         Route::resource("/InvoicesLimited",InvoiceLimitedController::class);

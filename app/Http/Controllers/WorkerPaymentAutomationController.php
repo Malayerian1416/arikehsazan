@@ -278,7 +278,7 @@ class WorkerPaymentAutomationController extends Controller
                 "receipt_scan" => $request->hasFile('payment_receipt_scan') ? 1 : 0
             ]);
             DB::commit();
-            return redirect()->route("WorkerPayments.new")->with(["result" => "payed"]);
+            return redirect()->route("WorkerPayments.new")->with(["result" => "payed","print" => $worker_automation->id]);
         }
         catch (Throwable $ex){
             DB::rollBack();
@@ -297,5 +297,9 @@ class WorkerPaymentAutomationController extends Controller
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
+    }
+    public function print_payment($id){
+        $worker_automation = WorkerPaymentAutomation::query()->with(["project","contractor","signs","payments"])->findOrFail($id);
+        return view("{$this->agent}.print_worker_payment",["worker_automation" => $worker_automation]);
     }
 }

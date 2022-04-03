@@ -26,6 +26,7 @@
                 <th scope="col">وضعیت</th>
                 <th scope="col">تاریخ ثبت</th>
                 <th scope="col">تاریخ ویرایش</th>
+                <th scope="col">عملیات</th>
             </tr>
             </thead>
             <tbody>
@@ -57,6 +58,7 @@
                     </td>
                     <td><span>{{verta($worker_payment->created_at)->format("Y/n/d")}}</span></td>
                     <td><span>{{verta($worker_payment->updated_at)->format("Y/n/d")}}</span></td>
+                    <td><a class="print_anchor" href="{{route("WorkerPayments.print",$worker_payment->id)}}" target="_blank"><i class="fa fa-print index_edit_icon"></i></a></td>
                 </tr>
             @empty
             @endforelse

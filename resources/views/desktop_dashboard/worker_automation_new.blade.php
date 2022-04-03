@@ -2,6 +2,11 @@
 @section('styles')
 @endsection
 @section('scripts')
+    @if(session()->has("print"))
+        <script>
+            window.open("{{route("WorkerPayments.print",session("print"))}}","_blanc");
+        </script>
+    @endif
 @endsection
 @section('page_title')
     اتوماسیون پرداختی کارگری
