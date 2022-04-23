@@ -73,7 +73,9 @@
                                                 <li><a class="dropdown-item dropdown-toggle menu_item_text" data-toggle="dropdown" href="#">{{$item->name}}</a>
                                                     <ul class="submenu dropdown-menu">
                                                         @foreach($item->children as $child)
-                                                            <li><a class="dropdown-item menu_item_text" href="{{route($role->menu_items->where("pivot.menu_item_id",$child->id)->where("pivot.menu_action_id",$child->actions->where("action",$child->main_route)->first()->id)->first()->pivot->route)}}">{{$child->name}}</a></li>
+                                                            @if($role->menu_items->where("id",$child->id)->isNotEmpty())
+                                                                <li><a class="dropdown-item menu_item_text" href="{{route($role->menu_items->where("pivot.menu_item_id",$child->id)->where("pivot.menu_action_id",$child->actions->where("action",$child->main_route)->first()->id)->first()->pivot->route)}}">{{$child->name}}</a></li>
+                                                            @endif
                                                         @endforeach
                                                     </ul>
                                                 </li>
@@ -93,7 +95,7 @@
             </ul>
         </div>
         <i id="account_info_button" class="fa fa-user-circle black_color header_user_button" v-on:click="account_information_show" :class="{acc_info_active : account_info_active}"></i>
-        <div class="account_info" v-show="account_info_active">
+        <div class="account_info" v-cloak v-show="account_info_active">
             <i class="fa fa-user fa-3x w-100 p-3 text-center"></i>
             <span class="account_info_item iran_yekan black_color border-bottom w-100 p-1">{{$user->name}}</span>
             <span class="account_info_item iran_yekan black_color border-bottom w-100 p-1">{{$user->role->name}}</span>

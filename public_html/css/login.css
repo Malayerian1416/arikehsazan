@@ -1,10 +1,6 @@
 body{
     min-height: 100vh;
-    background: #e0e0e0;
-    background: url(../img/login_bg.jpg);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-color: #1c5250;
 }
 *{
     font-size: 12px;
@@ -47,7 +43,8 @@ body{
     width: 900px;
     background-color: #ffffff;
     border-radius: 10px;
-    box-shadow: 5px 5px 10px -1px #bebebe;
+    box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.5);
+    border: 2px solid #ea7914;
 }
 .login_body{
     display: flex;
@@ -73,7 +70,7 @@ body{
     border-bottom: 2px solid #dea734;
 }
 .side{
-    background-image: url(../img/login_window_side_img.png);
+    background-image: url(../img/login_window_side_img.jpg);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -142,7 +139,9 @@ input:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 30px #fff4de inset !important;
 }
 .login_button{
-    height: 45px;border-radius: 25px
+    height: 45px;border-radius: 25px;
+    background-color: #1c5250;
+    color: white;
 }
 .button_text{
     font-size: 15px;

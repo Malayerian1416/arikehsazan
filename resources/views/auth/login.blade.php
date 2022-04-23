@@ -18,14 +18,7 @@
     <div class="login_window">
         <div class="w-100 login_body">
             <div class="side">
-                <div class="text-center iran_nastaliq header">
-                    <h3 class="company_title nastaliq">{{$company_information->name}}</h3>
-                    <h6 class="company_desc iran_yekan mt-1 pt-1 white_color">{{$company_information->description}}</h6>
-                    <h6 class="company_desc iran_yekan white_color" style="padding-top: 15px">سامانه جامع مدیریت شرکت های عمرانی</h6>
-                </div>
-                <div class="text-center footer">
-                    <img class="img_logo" src="{{asset("/img/mainlogo.png")}}">
-                </div>
+
             </div>
             <div class="content text-center">
                 <h4 class="iran_yekan pb-4 black_color">صفحه ورود به ســیسـتم</h4>
@@ -59,12 +52,6 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
-                            </div>
-                        </div>
-                        <div class="form-row mt-1">
-                            <div class="form-group col-12 text-left">
-                                <input type="checkbox" style="vertical-align: middle" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                                <label class="form-check-label iran_yekan p-0 m-0" style="vertical-align: middle" for="remember">مرا به خاطر بسپار</label>
                             </div>
                         </div>
                         <div class="form-row pb-3">
