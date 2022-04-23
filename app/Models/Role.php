@@ -14,10 +14,6 @@ class Role extends Model
     {
         return $this->hasMany(User::class,"role_id");
     }
-    public function abilities(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(Ability::class,"role_ability","role_id","ability_id")->withTimestamps();
-    }
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class,"user_id");
@@ -25,10 +21,6 @@ class Role extends Model
     public function menu_headers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(MenuHeader::class,"role_menu_header","role_id","menu_header_id")->orderBy('menu_header_id');
-    }
-    public function menu_titles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(MenuTitle::class,"role_menu_title","role_id","menu_title_id")->orderBy('menu_title_id')->withPivot("menu_header_id");
     }
     public function menu_items(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {

@@ -25,10 +25,12 @@ class MenuItemRequest extends FormRequest
     {
         return [
             "name" => "required|max:500",
-            "menu_title_id" => "required",
-            "menu_action_id" => "required",
+            "menu_header_id" => "required",
+            "parent_id" => "sometimes|nullable",
+            "menu_action_id" => "sometimes|nullable",
             "short_name" => "required|max:255",
-            "main" => "required",
+            "route" => "sometimes|nullable",
+            "main" => "sometimes|nullable",
             "notifiable" => "sometimes|nullable",
             "notification_channel" => "sometimes|nullable",
         ];

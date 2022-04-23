@@ -30,6 +30,7 @@
             justify-content: center;
             padding: 10px 10px;
             border: 2px dotted #dcdcdc;
+            min-width: 90px;
         }
         @media print {
             @page  {

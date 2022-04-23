@@ -31,10 +31,13 @@
         "bootstrap-select": "^1.13.18",
         "bootstrap-v4-rtl": "^4.6.0-3",
         "chart.js": "^3.7.0",
+        "d3-geo": "^3.0.1",
         "imask": "^6.2.2",
         "jquery": "^3.6.0",
         "jquery-mask-plugin": "^1.14.16",
         "laravel-echo": "^1.11.3",
+        "leaflet": "^1.7.1",
+        "leaflet-draw": "^1.0.4",
         "owl.carousel": "^2.3.4",
         "pusher-js": "^7.0.3"
     }

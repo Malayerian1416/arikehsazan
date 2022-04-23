@@ -33,16 +33,23 @@ class InvoiceAutomationController extends Controller
             return view("errors/cant_detect_device");
         return false;
     }
-    public function get_new_items(){
-        Gate::authorize("new","InvoiceAutomation");
+    public function get_automation_items(){
+        Gate::authorize("automation","InvoiceAutomation");
         try {
-            $invoice_automations = InvoiceAutomation::query()
+            $invoice_automations_inbox = InvoiceAutomation::query()
                 ->with(["invoice.contract.project" => function ($query) {
                     $query->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());})->orderBy('id', 'asc');
                 }, "invoice.contract.contractor", "invoice.user.role"])
                 ->where("current_role_id", "=", Auth::user()->role->id)->where("is_finished", "<>", 1)
                 ->orderBy("updated_at", "DESC")->get();
-            return view("{$this->agent}.invoice_automation_new", ["invoice_automations" => $invoice_automations]);
+            $invoice_automations_outbox = InvoiceAutomation::query()
+                ->with(["invoice.contract.project" => function($query)
+                {
+                    $query->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());})->orderBy('id', 'asc');
+                },"invoice.contract.contractor","invoice.user.role"])
+                ->whereHas("invoice.signs",function ($query){$query->where("user_id","=",Auth::id());})
+                ->orderBy("updated_at","DESC")->get();
+            return view("{$this->agent}.invoice_automation", ["invoice_automations_inbox" => $invoice_automations_inbox, "invoice_automations_outbox" => $invoice_automations_outbox]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
@@ -92,10 +99,9 @@ class InvoiceAutomationController extends Controller
                 ])->where("contract_id","=",$invoice->contract->id)->orderBy("number","asc")->get();
             $invoice_flow_permissions = InvoiceFlow::query()->where("role_id","=",Auth::user()->role->id)->first();
             $bank_accounts = BankAccount::query()->with(["docs","checks"])->get();
-            $pdf = Storage::disk("invoice_pdfs")->exists("{$invoice->id}/invoicePDF.pdf");
             return view("{$this->agent}.invoice_automation_details",[
                 "invoice" => $invoice,"contract_details" => $contract_details,"main_amounts" => $main_amounts,"invoice_flow_permissions" => $invoice_flow_permissions,
-                "contractor_details" => $contractor_details, "bank_accounts" => $bank_accounts, "pdf" => $pdf
+                "contractor_details" => $contractor_details, "bank_accounts" => $bank_accounts
             ]);
         }
         catch (Throwable $ex){

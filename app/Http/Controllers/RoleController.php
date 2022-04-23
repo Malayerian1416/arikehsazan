@@ -10,6 +10,7 @@ use App\Models\MenuItem;
 use App\Models\MenuTitle;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Throwable;
@@ -20,10 +21,12 @@ class RoleController extends Controller
 
     public function index()
     {
-        Gate::authorize("adminUser");
+        if (Auth::user()->is_staff)
+            Gate::authorize("index","Roles");
         try {
+            $menu_headers = MenuHeader::query()->with(["items.actions","items.children"])->get();
             $roles = Role::query()->with("user")->get();
-            return view("desktop_dashboard.role_index", ["roles" => $roles]);
+            return view("desktop_dashboard.role_index", ["roles" => $roles, "menu_headers" => $menu_headers]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
@@ -32,9 +35,10 @@ class RoleController extends Controller
 
     public function create()
     {
-        Gate::authorize("adminUser");
+        if (Auth::user()->is_staff)
+            Gate::authorize("create","Roles");
         try {
-            $menu_headers = MenuHeader::query()->with("menu_titles.menu_items.actions")->get();
+            $menu_headers = MenuHeader::query()->with(["items.actions","items.children"])->get();
             return view("desktop_dashboard.create_new_role", ["menu_headers" => $menu_headers]);
         }
         catch (Throwable $ex){
@@ -44,7 +48,8 @@ class RoleController extends Controller
 
     public function store(RoleRequest $request): \Illuminate\Http\RedirectResponse
     {
-        Gate::authorize("adminUser");
+        if (Auth::user()->is_staff)
+            Gate::authorize("create","Roles");
         try {
             DB::beginTransaction();
             $validated = $request->validated();
@@ -67,12 +72,12 @@ class RoleController extends Controller
 
     public function edit($id)
     {
-        Gate::authorize("adminUser");
+        if (Auth::user()->is_staff)
+            Gate::authorize("edit","Roles");
         try {
-            $menu_headers = MenuHeader::query()->with("menu_titles.menu_items.actions")->get();
+            $menu_headers = MenuHeader::query()->with(["items.actions","items.children"])->get();
             $role = Role::query()->with("menu_items.actions")->findOrFail($id);
-            $role_menu = MenuItem::query()->whereIn("id", $role->menu_items->pluck("id"))->with("actions")->get();
-            return view("desktop_dashboard.edit_role", ["role" => $role, "menu_headers" => $menu_headers, "role_menu" => $role_menu]);
+            return view("desktop_dashboard.edit_role", ["role" => $role, "menu_headers" => $menu_headers]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
@@ -81,7 +86,8 @@ class RoleController extends Controller
 
     public function update(RoleRequest $request, $id): \Illuminate\Http\RedirectResponse
     {
-        Gate::authorize("adminUser");
+        if (Auth::user()->is_staff)
+            Gate::authorize("edit","Roles");
         try {
             DB::beginTransaction();
             $validated = $request->validated();
@@ -106,7 +112,8 @@ class RoleController extends Controller
 
     public function destroy($id): \Illuminate\Http\RedirectResponse
     {
-        Gate::authorize("adminUser");
+        if (Auth::user()->is_staff)
+            Gate::authorize("destroy","Roles");
         try {
             DB::beginTransaction();
             $role = Role::query()->findOrFail($id);

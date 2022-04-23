@@ -8,6 +8,7 @@ use App\Models\MenuHeader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class MenuHeaderController extends Controller
@@ -43,7 +44,11 @@ class MenuHeaderController extends Controller
         try {
             DB::beginTransaction();
             $validated = $request->validated();
-            MenuHeader::query()->create($validated);
+            $menu_header = MenuHeader::query()->create($validated);
+            if ($request->hasFile('icon')) {
+                $menu_header->update(["mobile_icon" => $request->file('icon')->hashName()]);
+                Storage::disk('menu_header_icons')->put($menu_header->id, $request->file('icon'));
+            }
             DB::commit();
             return redirect()->back()->with(["result" => "saved"]);
         }
@@ -66,7 +71,7 @@ class MenuHeaderController extends Controller
         }
     }
 
-    public function update(MenuHeaderRequest $request, $id)
+    public function update(MenuHeaderRequest $request, $id): \Illuminate\Http\RedirectResponse
     {
         Gate::authorize("adminUser");
         try {
@@ -74,6 +79,11 @@ class MenuHeaderController extends Controller
             $validated = $request->validated();
             $menu_header = MenuHeader::query()->findOrFail($id);
             $menu_header->update($validated);
+            if ($request->hasFile('icon')) {
+                Storage::disk("menu_header_icons")->delete("{$menu_header->id}/$menu_header->mobile_icon");
+                $menu_header->update(["mobile_icon" => $request->file('icon')->hashName()]);
+                Storage::disk('menu_header_icons')->put($menu_header->id, $request->file('icon'));
+            }
             DB::commit();
             return redirect()->back()->with(["result" => "updated"]);
         }

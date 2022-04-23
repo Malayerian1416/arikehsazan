@@ -205,7 +205,7 @@
             <i v-show="button_not_loading" class="fa fa-edit button_icon"></i>
             <span v-show="button_not_loading">ارسال و ویرایش</span>
         </button>
-        <a href="{{route("Projects.index")}}" class="index_action">
+        <a href="{{route("Invoices.index")}}" class="index_action">
             <button type="button" class="btn btn-outline-info iran_yekan mr-2">
                 <i class="fa fa-arrow-circle-right button_icon"></i>
                 <span>بازگشت به لیست</span>

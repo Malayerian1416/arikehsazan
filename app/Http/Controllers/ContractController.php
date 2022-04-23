@@ -65,12 +65,20 @@ class ContractController extends Controller
                 $contracts = Contract::get_permissions(["contractor", "user", "unit"]);
             $contractors = Contractor::get_permissions([]);
             $projects = Project::get_permissions([]);
+            $contract_branches = ContractBranch::all();
+            $units = Unit::all();
             $docs = [];
             foreach ($contracts as $contract) {
                 if (Storage::disk('contracts_doc')->exists("$contract->id"))
-                    array_push($docs, $contract->id);
+                    $docs[] = $contract->id;
             }
-            return view("{$this->agent}.contract_index", ["contracts" => $contracts, "docs" => $docs, "contractors" => $contractors, "projects" => $projects]);
+            return view("{$this->agent}.contract_index", [
+                "contracts" => $contracts,
+                "docs" => $docs,
+                "contractors" => $contractors,
+                "projects" => $projects,
+                "contract_branches" => $contract_branches,
+                "units" => $units]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
@@ -135,7 +143,7 @@ class ContractController extends Controller
             $docs = null;
             $contract = Contract::query()->with(["project", "contractor", "unit", "category.branch"])->findOrFail($id);
             $projects = Project::all();
-            $contract_branches = ContractBranch::all();
+            $contract_branches = ContractBranch::query()->with("categories")->get();
             $contractors = Contractor::all();
             $units = Unit::all();
             if (Storage::disk('contracts_doc')->exists("$id"))

@@ -1,10 +1,4 @@
 @extends('desktop_dashboard.d_dashboard')
-@section('styles')
-    <link href="{{asset("/css/bootstrap-select.css")}}" rel="stylesheet">
-@endsection
-@section('scripts')
-    <script type="text/javascript" src="{{asset("/js/bootstrap-select.min.js")}}" defer></script>
-@endsection
 @section('page_title')
     {{"ویرایش عنوان فرعی منو - ".$menu_item->name}}
 @endsection
@@ -34,15 +28,37 @@
                 @enderror
             </div>
             <div class="form-group col-md-12 col-lg-3">
-                <label class="col-form-label iran_yekan black_color" for="menu_title_id">منوی اصلی</label>
-                <select class="form-control iran_yekan text-center select_picker @error('menu_title_id') is-invalid @enderror" data-live-search="true" id="menu_title_id" name="menu_title_id" title="انتخاب کنید" data-size="20">
-                    @forelse($menu_titles as $menu_title)
-                        <option @if($menu_title->id == $menu_item->menu_title->id) selected @endif value="{{$menu_title->id}}">{{$menu_title->name." (".$menu_title->menu_header->name.")"}}</option>
+                <label class="col-form-label iran_yekan black_color" for="menu_header_id">گروه منو</label>
+                <select class="form-control iran_yekan text-center select_picker @error('menu_header_id') is-invalid @enderror" data-live-search="true" id="menu_header_id" name="menu_header_id" title="انتخاب کنید" data-size="20">
+                    @forelse($menu_headers as $menu_header)
+                        <option @if($menu_header->id == $menu_item->menu_header_id) selected @endif value="{{$menu_header->id}}" data-icon="{{$menu_header->icon->name}}">{{$menu_header->name}}</option>
                     @empty
-                        <option>منوی اصلی وجود ندارد</option>
                     @endforelse
                 </select>
-                @error('menu_title_id')
+                @error('menu_header_id')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-3">
+                <label class="col-form-label iran_yekan black_color" for="parent_id">وابستگی</label>
+                <select class="form-control iran_yekan text-center select_picker @error('parent_id') is-invalid @enderror" data-live-search="true" id="parent_id" name="parent_id" title="انتخاب کنید" data-size="20">
+                    <option value="">هیچکدام</option>
+                    @forelse($menu_items as $item)
+                        <option @if($item->id == $menu_item->parent_id) selected @endif value="{{$item->id}}">{{$item->name}}</option>
+                    @empty
+                    @endforelse
+                </select>
+                @error('parent_id')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-3">
+                <label class="col-form-label iran_yekan black_color" for="route">
+                    مسیر
+                    <strong class="red_color">*</strong>
+                </label>
+                <input type="text" class="form-control text-center @error('route') is-invalid @enderror ltr" id="route" name="route" value="{{$menu_item->route}}">
+                @error('route')
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>

@@ -99,7 +99,8 @@ const app = new Vue({
         linklist:'',
         notification_permission: false,
         notification_text:'',
-        invoice_detail_head_role:[]
+        invoice_detail_head_role:[],
+        location_id: '',
     },
     mounted() {
         const self = this;
@@ -130,20 +131,43 @@ const app = new Vue({
                 }
             }
         }
-        // if(Notification.permission !== "granted" && Notification.permission !== "denied"){
-        //     if ('serviceWorker' in navigator && 'PushManager' in window){
-        //         this.notification_text = "لطفا جهت دریافت پیام از رویدادهای سامانه (Notification)، در پنجره نمایان شده گزینه Allow را انتخاب بفرمایید.";
-        //         this.notification_permission = true;
-        //         Notification.requestPermission().then(result => {
-        //             this.notification_permission = false;
-        //             navigator.serviceWorker.ready.then(registration => {
-        //                 registration.showNotification("سیستم Notification با موفقیت فعال شد!", {}).then(r =>{});
-        //             });
-        //         })
-        //     }
-        //     else
-        //         this.notification_text = "متاسفانه مرورگر دستگاه شما از سیستم پیام رسانی (Notification) پشتیبانی نمی کند";
-        // }
+        if ($("#attendance_map").length){
+            const self = this
+            let options = {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            };
+            navigator.permissions.query({ name: 'geolocation' })
+                .then(function () {
+                    self.loading_window_active = true;
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(position => {
+                            let map = L.map('attendance_map').setView([position.coords.latitude,position.coords.longitude], 16);
+                            L.tileLayer(
+                                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                    maxZoom: 18,
+                                }).addTo(map);
+                            L.marker([position.coords.latitude,position.coords.longitude]).addTo(map);
+                            self.loading_window_active = false;
+                        },positionError => {},options);
+                    }
+                });
+        }
+        if(Notification.permission !== "granted"){
+            if ('serviceWorker' in navigator && 'PushManager' in window){
+                this.notification_text = "لطفا جهت دریافت پیام از رویدادهای سامانه (Notification)، در پنجره نمایان شده گزینه Allow را انتخاب بفرمایید.";
+                this.notification_permission = true;
+                Notification.requestPermission().then(result => {
+                    this.notification_permission = false;
+                    navigator.serviceWorker.ready.then(registration => {
+                        registration.showNotification("سیستم Notification با موفقیت فعال شد!", {}).then(r =>{});
+                    });
+                });
+            }
+            else
+                this.notification_text = "متاسفانه مرورگر دستگاه شما از سیستم پیام رسانی (Notification) پشتیبانی نمی کند";
+        }
         if ($(".select_picker").length)
             $(".select_picker").selectpicker('refresh');
     },
@@ -196,7 +220,6 @@ const app = new Vue({
             (this.account_info_active === true) ? this.account_info_active = false : this.account_info_active = false;
         },
         submit_create_form(e) {
-            console.log(this.linklist.length);
             let form = e.target;
             e.preventDefault();
             bootbox.confirm({
@@ -374,6 +397,96 @@ const app = new Vue({
                 }
             }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
         },
+        submit_attendance_form(e) {
+            let form = e.target;
+            e.preventDefault();
+            let message = $("#type").val() === "presence" ? "آیا برای ثبت ورود کارمند اطمینان دارید؟":"آیا برای ثبت خروج کارمند اطمینان دارید؟"
+            bootbox.confirm({
+                message: message,
+                closeButton: false,centerVertical: true,
+                buttons: {
+                    confirm: {
+                        label: 'بله',
+                        className: 'btn-success',
+                    },
+                    cancel: {
+                        label: 'خیر',
+                        className: 'btn-danger',
+                    }
+                },
+                callback: function (result) {
+                    if (result === true) {
+                        let self = this;
+                        bootbox.hideAll();
+                        $(".masked").length > 0 ? $(".masked").unmask() : "";
+                        $(".number_format").length > 0 ? AutoNumeric.getAutoNumericElement('.number_format').formUnformat() : '';
+                        self.button_loading = true;
+                        self.button_not_loading = false;
+                        self.loading_window_active = true;
+                        form.submit();
+                    }
+                }
+            }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
+        },
+        submit_attendance_register_form(e) {
+            let self = this;
+            let form = e.target;
+            let options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 1
+            };
+            e.preventDefault();
+            let message = $("#type").val() === "presence" ? "آیا برای ثبت ورود کارمند اطمینان دارید؟":"آیا برای ثبت خروج کارمند اطمینان دارید؟"
+            bootbox.confirm({
+                message: message,
+                closeButton: false,centerVertical: true,
+                buttons: {
+                    confirm: {
+                        label: 'بله',
+                        className: 'btn-success',
+                    },
+                    cancel: {
+                        label: 'خیر',
+                        className: 'btn-danger',
+                    }
+                },
+                callback: function (result) {
+                    if (result === true) {
+                        navigator.permissions.query({ name: 'geolocation' })
+                            .then(function (){
+                                self.loading_window_active = true;
+                                if (navigator.geolocation) {
+                                    navigator.geolocation.getCurrentPosition(position => {
+                                        axios.post("/Dashboard/Desktop/get_geo_json", {"location_id" : self.location_id})
+                                            .then(function (response) {
+                                                self.loading_window_active = false;
+                                                if (response.data !== null) {
+                                                    const in_position = d3.geoContains(response.data,[position.coords.longitude, position.coords.latitude]);
+                                                    $("#ff").val(position.coords.latitude + " " + position.coords.longitude);
+                                                    if (in_position){
+                                                        bootbox.hideAll();
+                                                        self.button_loading = true;
+                                                        self.button_not_loading = false;
+                                                        self.loading_window_active = true;
+                                                        form.submit();
+                                                    }
+                                                    else {
+                                                        self.loading_window_active = false;
+                                                        bootbox.alert("در موقعیت انتخاب شده نمی باشید");
+                                                    }
+                                                }
+                                            }).catch(function (){self.loading_window_active = false;});
+                                    },positionError => {
+                                        self.loading_window_active = false;
+                                    },options);
+                                }}).catch(function () {
+                                bootbox.alert("با مجوز دسترسی به موقعیت یابی مخالفت شده است");
+                            });
+                    }
+                }
+            }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
+        },
         live_data_adding(e) {
             let type = e.target.dataset.type;
             switch (type) {
@@ -504,7 +617,7 @@ const app = new Vue({
             if (error_size.length > 0)
                 size_str = "<h6 style='color: red'>حجم فایل(های) ذیل مورد قبول نمی باشد:</h6>" + error_size.toString();
             if (error_size.length > 0 || error_ext.length > 0) {
-                $("#file_browser_box").val('فایلی انتخاب نشده است');
+                $(e.target).closest('div').find('input[type="text"]').val('فایلی انتخاب نشده است');
                 bootbox.alert({
                     "message": ext_str + size_str,
                     closeButton: false,centerVertical: true,
@@ -516,7 +629,7 @@ const app = new Vue({
                     backdrop: true,
                 });
             } else
-                $("#file_browser_box").val(file_names.toString());
+                $(e.target).closest('div').find('input[type="text"]').val(file_names.toString());
         },
         related_data_search(e) {
             const self = this;
@@ -1069,14 +1182,14 @@ const app = new Vue({
         contact_information(e){
             e.stopPropagation();
             $("#contact_id").val(e.currentTarget.children[0].innerText);
-            $("#name").val(e.currentTarget.children[1].innerText);
-            $("#phone_number_1").val(e.currentTarget.children[2].innerText);
-            $("#phone_number_2").val(e.currentTarget.children[3].innerText);
-            $("#phone_number_3").val(e.currentTarget.children[4].innerText);
-            $("#job_title").val(e.currentTarget.children[5].innerText);
-            $("#email").val(e.currentTarget.children[6].innerText);
-            $("#address").val(e.currentTarget.children[8].innerText);
-            $("#note").val(e.currentTarget.children[7].innerText);
+            $("#e_name").val(e.currentTarget.children[1].innerText);
+            $("#e_phone_number_1").val(e.currentTarget.children[2].innerText);
+            $("#e_phone_number_2").val(e.currentTarget.children[3].innerText);
+            $("#e_phone_number_3").val(e.currentTarget.children[4].innerText);
+            $("#e_job_title").val(e.currentTarget.children[5].innerText);
+            $("#e_email").val(e.currentTarget.children[6].innerText);
+            $("#e_address").val(e.currentTarget.children[8].innerText);
+            $("#e_note").val(e.currentTarget.children[7].innerText);
             $("#update_form").attr("action",e.currentTarget.dataset.route);
             $("#contact_information").modal("show");
         },
@@ -1140,6 +1253,22 @@ const app = new Vue({
         },
         invoice_details_navigation(e){
             location.replace(e.currentTarget.dataset.details_route);
+        },
+        check_menu_action(e) {
+            e.stopPropagation();
+            $(e.currentTarget).children('input[type="checkbox"]').prop('checked',!$(e.currentTarget).children('input[type="checkbox"]').prop('checked'));
+        },
+        select_all_checkboxes(e){
+            $(e.target).closest('ul').find('input[type="checkbox"]').prop("checked",true);
+        },
+        deselect_all_checkboxes(e){
+            $(e.target).closest('ul').find('input[type="checkbox"]').prop("checked",false);
+        },
+        add_value_to_input(e){
+            $("#type").val(e.currentTarget.dataset.value);
+        },
+        showPosition(position) {
+            return [position.coords.latitude , position.coords.longitude];
         }
     }
 });

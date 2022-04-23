@@ -1,11 +1,4 @@
 @extends('phone_dashboard.p_dashboard')
-@section('styles')
-    <link href="{{asset("/css/persianDatepicker-default.css")}}" rel="stylesheet">
-@endsection
-@section('scripts')
-    <script type="text/javascript" src="{{asset("/js/persianDatepicker.min.js")}}" defer></script>
-    <script type="text/javascript" src="{{asset("/js/jquery.mask.js")}}" defer></script>
-@endsection
 @section('page_title')
     <span class="laleh external_page_title_text text-muted text-center">ایجاد کارگر جدید</span>
 @endsection

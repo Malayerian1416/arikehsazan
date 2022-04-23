@@ -9,7 +9,7 @@
     {{"ویرایش سرفصل منو - ".$menu_header->name}}
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("MenuHeaders.update",$menu_header->id)}}" method="post" v-on:submit="submit_update_form">
+    <form id="update_form" action="{{route("MenuHeaders.update",$menu_header->id)}}" method="post" v-on:submit="submit_update_form" enctype="multipart/form-data">
         @csrf
         @method('put')
         <div class="form-row">
@@ -19,7 +19,7 @@
                     متعلق به مدیر سامانه
                 </label>
             </div>
-            <div class="form-group col-md-12">
+            <div class="form-group col-md-6">
                 <label class="col-form-label iran_yekan black_color" for="name">
                     نام گروه
                     <strong class="red_color">*</strong>
@@ -33,6 +33,14 @@
                 <label class="col-form-label iran_yekan black_color" for="slug">برچسب</label>
                 <input type="text" class="form-control iran_yekan text-center @error('slug') is-invalid @enderror" id="slug" name="slug" value="{{$menu_header->slug}}">
                 @error('slug')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-6">
+                <label class="col-form-label iran_yekan black_color" for="icon">آیکون موبایل</label>
+                <input type="file" hidden class="form-control iran_yekan text-center @error('icon') is-invalid @enderror" v-on:change="file_browser_change" id="icon" name="icon" accept=".jpg,.png,.bmp,.jpeg">
+                <input type="text" class="form-control iran_yekan text-center file_selector_box" v-on:click="popup_file_browser" id="file_browser_box" readonly value="فایلی انتخاب نشده است">
+                @error('icon')
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>

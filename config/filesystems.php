@@ -100,9 +100,15 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
-        'invoice_pdfs' => [
+        'users_doc' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/invoice_pdfs'),
+            'root' => storage_path('app/public/users_doc'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+        'menu_header_icons' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/menu_header_icons'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],

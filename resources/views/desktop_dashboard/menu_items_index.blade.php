@@ -9,7 +9,7 @@
 @section('content')
     <div class="row pt-1 pb-3">
         <div class="col-12">
-            <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام، اصلی و گروه" v-on:input="search_input_filter" aria-describedby="basic-addon3">
+            <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام و گروه" v-on:input="search_input_filter" aria-describedby="basic-addon3">
         </div>
     </div>
     <div class="table-responsive">
@@ -18,8 +18,8 @@
             <tr>
                 <th scope="col">شماره</th>
                 <th scope="col">نام</th>
-                <th scope="col">اصلی</th>
                 <th scope="col">گروه</th>
+                <th scope="col">وابستگی</th>
                 <th scope="col">تاریخ ثبت</th>
                 <th scope="col">تاریخ ویرایش</th>
                 <th scope="col">ویرایش</th>
@@ -31,8 +31,16 @@
                 <tr>
                     <td><span>{{$menu_item->id}}</span></td>
                     <td><span>{{$menu_item->name}}</span></td>
-                    <td><span>{{$menu_item->menu_title->menu_header->name}}</span></td>
-                    <td><span>{{$menu_item->menu_title->name}}</span></td>
+                    <td><span>{{$menu_item->menu_header->name}}</span></td>
+                    <td>
+                        <span>
+                            @if($menu_item->parent)
+                                {{$menu_item->parent->name}}
+                            @else
+                                {{"ندارد"}}
+                            @endif
+                        </span>
+                    </td>
                     <td><span>{{verta($menu_item->created_at)->format("Y/n/d")}}</span></td>
                     <td><span>{{verta($menu_item->updated_at)->format("Y/n/d")}}</span></td>
                     <td>

@@ -39,9 +39,11 @@ class WorkerPaymentAutomationController extends Controller
     public function index(){
         Gate::authorize("index","WorkerPayments");
         try {
+            $projects = Project::get_permissions([]);
+            $workers = Contractor::query()->where("type","=",1)->get();
             $worker_automations = WorkerPaymentAutomation::query()->with(["project","contractor","user"])
                 ->whereHas("user",function ($query){$query->where("id","=",Auth::id());})->get();
-            return view("{$this->agent}.worker_automations",["worker_automations" => $worker_automations]);
+            return view("{$this->agent}.worker_automations",["worker_automations" => $worker_automations,"projects" => $projects,"workers" => $workers]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);

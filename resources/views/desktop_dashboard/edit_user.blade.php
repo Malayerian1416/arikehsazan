@@ -1,12 +1,4 @@
 @extends('desktop_dashboard.d_dashboard')
-@section('styles')
-    <link href="{{asset("/css/persianDatepicker-default.css")}}" rel="stylesheet">
-    <link href="{{asset("/css/bootstrap-select.css")}}" rel="stylesheet">
-@endsection
-@section('scripts')
-    <script type="text/javascript" src="{{asset("/js/persianDatepicker.min.js")}}" defer></script>
-    <script type="text/javascript" src="{{asset("/js/bootstrap-select.min.js")}}" defer></script>
-@endsection
 @section('page_title')
     {{"ویرایش کاربر ".$user->name}}
 @endsection
@@ -20,6 +12,37 @@
                 <strong class="red_color">*</strong>
                 <input type="text" class="form-control iran_yekan text-center @error('name') is-invalid @enderror" id="name" name="name" value="{{$user->name}}">
                 @error('name')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="father_name">نام پدر</label>
+                <input type="text" class="form-control iran_yekan text-center @error('father_name') is-invalid @enderror" id="father_name" name="father_name" value="{{$user->father_name}}">
+                @error('father_name')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="birth_date">تاریخ تولد</label>
+                <input type="text" readonly class="form-control persian_date @error('birth_date') is-invalid @enderror" id="birth_date" name="birth_date" value="{{$user->birth_date}}">
+                @error('birth_date')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="national_code">
+                    کد ملی
+                    <strong class="red_color">*</strong>
+                </label>
+                <input type="text" class="form-control iran_yekan text-center masked @error('national_code') is-invalid @enderror" data-mask="0000000000" id="national_code" name="national_code" value="{{$user->national_code}}">
+                @error('national_code')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="identify_number">شماره شناسنامه</label>
+                <input type="text" class="form-control iran_yekan text-center masked @error('identify_number') is-invalid @enderror" data-mask="0000000000" id="identify_number" name="identify_number" value="{{$user->identify_number}}">
+                @error('identify_number')
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>
@@ -104,8 +127,60 @@
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>
+            <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="agreement_sample">اسکن مدارک</label>
+                @if($docs)
+                    <input type="text" class="form-control iran_yekan text-center file_selector_box" v-on:click="popup_file_browser" id="file_browser_box" readonly value="{{count($docs) . " فایل آپلود شده است"}}">
+                @else
+                    <input type="text" class="form-control iran_yekan text-center file_selector_box" v-on:click="popup_file_browser" id="file_browser_box" readonly value="فایلی انتخاب نشده است">
+                @endif
+                <input type="file" hidden class="form-control iran_yekan text-center @error('agreement_sample') is-invalid @enderror" v-on:change="file_browser_change" multiple id="agreement_sample" name="agreement_sample[]" accept=".pdf,.doc,.docx,.jpg,.png,.bmp,.jpeg,.xls,.xlsx,.txt">
+                @error('agreement_sample')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-8 col-xl-6">
+                <label class="col-form-label iran_yekan black_color" for="address">آدرس</label>
+                <input type="text" class="form-control iran_yekan text-center @error('address') is-invalid @enderror" id="address" name="address" value="{{$user->address}}">
+                @error('address')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
         </div>
     </form>
+    @if($docs)
+        <div class="row no-gutters mt-3 doc_container">
+            <div class="col-12">
+                <h5 class="iran_yekan border-bottom mb-5 pb-2 doc_expand">
+                    <i class="fa fa-arrow-alt-circle-left doc_expand_icon"></i>
+                    مشاهده مدارک
+                </h5>
+            </div>
+            @forelse($docs as $doc)
+                <div class="col-md-12 col-lg-4 col-xl-3 border d-flex flex-row justify-content-center align-items-center doc">
+                    <div class="doc_cover">
+                        <div>
+                            <a class="print_anchor" download href="{{"/storage/users_doc/$doc"}}" title="دانلود">
+                                <i class="fa fa-download white_color border p-2 doc_icon"></i>
+                            </a>
+                        </div>
+                        <form id="delete_form" action="{{route("DestroyUserDoc")}}" method="post" v-on:submit="submit_delete_form">
+                            @csrf
+                            @method('delete')
+                            <input type="text" hidden value="{{$user->id}}" name="id">
+                            <input type="text" hidden value="{{$doc}}" name="filename">
+                            <button class="icon_button" type="submit"><i class="fa fa-trash white_color border p-2 doc_icon"></i></button>
+                        </form>
+                    </div>
+                    <a class="print_anchor" download href="{{"/storage/users_doc/$doc"}}" title="دانلود">
+                        <img src="{{"/storage/users_doc/$doc"}}" class="img-fluid" style="max-height: 200px">
+                    </a>
+                </div>
+            @empty
+                <h5 class="iran_yekan">تصویری وجود ندارد</h5>
+            @endforelse
+        </div>
+    @endif
 @endsection
 @section('page_footer')
     <div class="form-row pt-3 pb-3 m-0 d-flex flex-row justify-content-end">

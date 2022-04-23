@@ -140,7 +140,7 @@
     @endif
 @endsection
 @section('page_footer')
-    <div class="form-row pt-3 pb-3 m-0 d-flex flex-row justify-content-end">
+    <div class="form-row pt-3 pb-3 m-0 d-flex flex-row justify-content-center">
         <button type="submit" form="update_form" class="btn btn-outline-success iran_yekan submit_button mr-2">
             <i v-show="button_loading" class="button_loading fa fa-spinner fa-spin mr-2"></i>
             <i v-show="button_not_loading" class="fa fa-edit button_icon"></i>

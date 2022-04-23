@@ -1,9 +1,11 @@
 @extends('desktop_dashboard.d_dashboard')
-@section('styles')
-
-@endsection
 @section('scripts')
-
+    @if($contract->category)
+        <script>
+            let searches = @json($contract_branches->where("id",$contract->category->branch->id)->first()->categories->flatten()->toArray());
+            let related_data_select = {{$contract->category->id}};
+        </script>
+    @endif
 @endsection
 @section('page_title')
     {{"ویرایش پیمان ".$contract->name}}

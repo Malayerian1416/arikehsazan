@@ -33,37 +33,17 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('desktop_dashboard.d_dashboard', function ($view) {
             $company_information = CompanyInformation::all()->first();
-            $role = Role::query()->with("menu_items")->findOrFail(Auth::user()->role_id);
-            $user_menu = MenuHeader::with(["icon","menu_titles" => function($query) use($role){$query->whereHas("menu_items",function($query)use($role){$query->whereIn("menu_items.id",$role->menu_items->pluck("id"));});},
-                "menu_titles.menu_items" => function($query) use($role){$query->whereIn("menu_items.id",$role->menu_items->pluck("id"))->with("actions");
-                }])->whereHas("menu_items", function($query) use ($role){$query->whereIn("menu_items.id",$role->menu_items->pluck("id"));})->get();
+            $menu_headers = MenuHeader::query()->with(["items.actions","items.children"])->get();
+            $role = Role::query()->with("menu_items.actions")->findOrFail(Auth::user()->role_id);
             $user = User::query()->with("role")->findOrFail(Auth::id());
-            foreach ($user_menu as $header){
-                foreach ($header->menu_titles as $title){
-                    foreach ($title->menu_items as $item){
-                        for ($i = 0 ; $i < count($item->actions) ; $i++)
-                            $item->actions[$i]->action = $title->route . "." . $item->actions[$i]->action;
-                    }
-                }
-            };
-            $view->with(["company_information" => $company_information, "user_menu" => $user_menu, "user" => $user]);
+            $view->with(["company_information" => $company_information,"user" => $user, "menu_headers" => $menu_headers, "role" => $role]);
         });
         View::composer('phone_dashboard.p_dashboard', function ($view) {
             $company_information = CompanyInformation::all()->first();
-            $role = Role::query()->with("menu_items")->findOrFail(Auth::user()->role_id);
-            $user_menu = MenuHeader::with(["icon","menu_titles" => function($query) use($role){$query->whereHas("menu_items",function($query)use($role){$query->whereIn("menu_items.id",$role->menu_items->pluck("id"));});},
-                "menu_titles.menu_items" => function($query) use($role){$query->whereIn("menu_items.id",$role->menu_items->pluck("id"))->with("actions");
-                }])->whereHas("menu_items", function($query) use ($role){$query->whereIn("menu_items.id",$role->menu_items->pluck("id"));})->get();
+            $menu_headers = MenuHeader::query()->with(["items.actions","items.children"])->get();
+            $role = Role::query()->with("menu_items.actions")->findOrFail(Auth::user()->role_id);
             $user = User::query()->with("role")->findOrFail(Auth::id());
-            foreach ($user_menu as $header){
-                foreach ($header->menu_titles as $title){
-                    foreach ($title->menu_items as $item){
-                        for ($i = 0 ; $i < count($item->actions) ; $i++)
-                            $item->actions[$i]->action = $title->route . "." . $item->actions[$i]->action;
-                    }
-                }
-            };
-            $view->with(["company_information" => $company_information, "user_menu" => $user_menu, "user" => $user]);
+            $view->with(["company_information" => $company_information,"user" => $user, "menu_headers" => $menu_headers, "role" => $role]);
         });
     }
 }

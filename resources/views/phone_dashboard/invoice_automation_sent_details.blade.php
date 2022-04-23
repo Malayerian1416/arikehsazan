@@ -1,8 +1,4 @@
 @extends('phone_dashboard.p_dashboard')
-@section('styles')
-@endsection
-@section('scripts')
-@endsection
 @section('page_title')
     <span class="laleh external_page_title_text text-muted text-center">{{"جزئیات صورت وضعیت تایید و ارسال شده پیمان " . $invoice->contract->name . " از پروژه " . $invoice->contract->project->name}}</span>
 @endsection

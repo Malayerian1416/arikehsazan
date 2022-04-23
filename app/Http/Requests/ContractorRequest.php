@@ -34,7 +34,11 @@ class ContractorRequest extends FormRequest
                 "identify_number" => "sometimes|nullable|numeric",
                 "tel" => "sometimes|nullable|digits_between:11,14",
                 "cellphone" => ["required", "regex:/^(?:98|\+98|0098|0)?9[0-9]{9}$/", "unique:contractors"],
-                "address" => "sometimes|nullable|max:500"
+                "address" => "sometimes|nullable|max:500",
+                "bank_names" => "sometimes|nullable|max:500",
+                "bank_cards" => "sometimes|nullable|max:500",
+                "bank_accounts" => "sometimes|nullable|max:500",
+                "bank_sheba" => "sometimes|nullable|max:500",
             ];
         }
         elseif ($this->method() == "PUT"){
@@ -47,7 +51,11 @@ class ContractorRequest extends FormRequest
                 "identify_number" => "sometimes|nullable|numeric",
                 "tel" => "sometimes|nullable|digits_between:11,14",
                 "cellphone" => ["required", "regex:/^(?:98|\+98|0098|0)?9[0-9]{9}$/", "unique:contractors,cellphone,".$this->route('Contractor').",id"],
-                "address" => "sometimes|nullable|max:500"
+                "address" => "sometimes|nullable|max:500",
+                "bank_names" => "sometimes|nullable|max:500",
+                "bank_cards" => "sometimes|nullable|max:500",
+                "bank_accounts" => "sometimes|nullable|max:500",
+                "bank_sheba" => "sometimes|nullable|max:500",
             ];
         }
     }

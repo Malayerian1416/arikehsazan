@@ -7,6 +7,77 @@
     <span class="laleh external_page_title_text text-muted text-center">مشاهده و ویرایش اتوماسیون پرداختی های کارگری ایجاد شده</span>
 @endsection
 @section('content')
+    @can('create','WorkerPayments')
+        <div class="row pt-1 pb-3">
+            <div class="col-12 hide_section_container">
+                <h6 class="pb-3">
+                    <i class="fa fa-plus-square fa-2x hide_section_icon" style="vertical-align: middle"></i>
+                    <span class="iran_yekan hide_section_title">تعریف وضعیت جدید</span>
+                </h6>
+            </div>
+            <div class="col-12 hide_section @if($errors->any())) active @endif">
+                <form id="create_form" action="{{route("WorkerPayments.store")}}" method="post" v-on:submit="submit_create_form">
+                    @csrf
+                    <div class="form-row">
+                        <div class="form-group col-md-12 col-lg-4">
+                            <label class="col-form-label iran_yekan black_color" for="project_id">
+                                پروژه
+                                <strong class="red_color">*</strong>
+                            </label>
+                            <select class="form-control iran_yekan text-center select_picker @error('project_id') is-invalid @enderror" title="انتخاب کنید" data-size="5" data-live-search="true" id="project_id" name="project_id">
+                                @forelse($projects as $project)
+                                    <option value="{{$project->id}}">{{$project->name}}</option>
+                                @empty
+                                    <option>پروژه ای وجود ندارد</option>
+                                @endforelse
+                            </select>
+                            @error('project_id')
+                            <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-12 col-lg-4">
+                            <label class="col-form-label iran_yekan black_color" for="contractor_id">کارگر</label>
+                            <select class="form-control iran_yekan text-center select_picker @error('contractor_id') is-invalid @enderror" title="انتخاب کنید" data-size="5" data-live-search="true" id="contractor_id" name="contractor_id">
+                                @forelse($workers as $worker)
+                                    <option value="{{$worker->id}}">{{$worker->name}}</option>
+                                @empty
+                                @endforelse
+                            </select>
+                            @error('contractor_id')
+                            <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-12 col-lg-4">
+                            <label class="col-form-label iran_yekan black_color" for="amount">
+                                مبلغ قابل پرداخت(ریال)
+                                <strong class="red_color">*</strong>
+                            </label>
+                            <input type="text" class="form-control iran_yekan text-center number_format @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{old("amount")}}">
+                            @error('amount')
+                            <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="col-form-label iran_yekan black_color" for="description">
+                                توضیحات
+                            </label>
+                            <textarea class="form-control iran_yekan" id="description" name="description"></textarea>
+                            @error('description')
+                            <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group col-12 text-center">
+                        <button type="submit" form="create_form" class="btn btn-outline-success iran_yekan submit_button mr-2">
+                            <i v-show="button_loading" class="button_loading fa fa-spinner fa-spin mr-2"></i>
+                            <i v-show="button_not_loading" class="fa fa-edit button_icon"></i>
+                            <span v-show="button_not_loading">ارسال و ذخیره</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endcan
     <div class="row pt-1 pb-3">
         <div class="col-12">
             <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام پروژه و یا کارگر" v-on:input="search_input_filter" aria-describedby="basic-addon3">

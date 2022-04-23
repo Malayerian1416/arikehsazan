@@ -26,153 +26,113 @@
     <div class="loading_window" v-show="loading_window_active">
         <i class="fas fa-cog fa-spin white_color"></i>
     </div>
-    <div class="header_container">
-        <i class="fa fa-arrow-right header_menu_button" v-on:click="sidenav_visibility"></i>
-        <div>
-            <i class="fa fa-gear fa-2x black_color pr-3 header_button"></i>
-            <i id="account_info_button" class="fa fa-user-circle black_color header_user_button" v-on:click="account_information_show" :class="{acc_info_active : account_info_active}"></i>
-            <div class="account_info" v-show="account_info_active">
-                <i class="fa fa-user fa-3x w-100 p-3 text-center"></i>
-                <span class="account_info_item iran_yekan black_color border-bottom w-100 p-1">{{$user->name}}</span>
-                <span class="account_info_item iran_yekan black_color border-bottom w-100 p-1">{{$user->role->name}}</span>
-                <form action="{{route("logout")}}" method="post" class="p-3">
-                    @csrf
-                    <button type="button" class="account_info_item btn btn-outline-secondary">
-                        <a href="{{route("password.request")}}" style="text-decoration: none"><i class="fa fa-cogs fa-2x"></i></a>
-                    </button>
-                    <button type="submit" class="account_info_item btn btn-outline-secondary">
-                        <i class="fa fa-sign-out-alt fa-2x"></i>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="dashboard_container p-0 m-0 rtl">
-        <aside class="sidenav bg-dark">
-            <div class="sidenav_title bg-dark" style="border-bottom: 1px solid rgba(77,77,77,0.67)">
-                <h6 class="laleh text-center m-0 p-0 company_name">
-                    {{$company_information->name}}
-                </h6>
-            </div>
-            <div class="sidenav_body">
-                <ul class="nav nav-tabs iran_yekan menu_tab" id="myTab" role="tablist">
-                    @if(auth()->user()->is_admin)
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link menu_tab_link active" id="admin-tab" data-toggle="tab" href="#admin" role="tab" aria-controls="admin" aria-selected="true">
-                                <i class="fa fa-user-cog menu_header_icon"></i>
-                            </a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light iran_yekan" style="height: 50px">
+        <a class="navbar-brand laleh" href="{{route("dashboard_home")}}">اریکه سازان</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main_nav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="main_nav">
+            <ul class="navbar-nav">
+                @if(auth()->user()->is_admin)
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle menu_header_text" href="#" data-toggle="dropdown"><i class="fa fa-cogs fa-1_4x pr-2" style="vertical-align: middle"></i>مدیر سامانه</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item dropdown-toggle menu_item_text" data-toggle="dropdown" href="#">مدیریت کاربران</a>
+                            <ul class="submenu dropdown-menu">
+                                <li><a class="dropdown-item menu_item_text" href="{{route('Users.index')}}">ایجاد، مشاهده و ویرایش کاربران</a></li>
+                                <li><a class="dropdown-item menu_item_text" href="{{route('Roles.index')}}">ایجاد، مشاهده و ویرایش سمت کاربران</a></li>
+                            </ul>
                         </li>
-                    @elseif(auth()->user()->is_staff)
-                        @forelse($user_menu as $menu_header)
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link menu_tab_link @if(Route::is("idle") && $loop->first) active @elseif(Route::is($menu_header->menu_titles->pluck("main_route")->toArray())) active @else {{null}} @endif" id="{{$menu_header->slug}}-tab" data-toggle="tab" href="#{{$menu_header->slug}}" role="tab" aria-controls="{{$menu_header->slug}}" aria-selected="true">
-                                    <i class="{{$menu_header->icon->name}} menu_header_icon"></i>
-                                </a>
+                        <li><a class="dropdown-item dropdown-toggle menu_item_text" data-toggle="dropdown" href="#">مدیریت منو</a>
+                            <ul class="submenu dropdown-menu">
+                                <li><a class="dropdown-item menu_item_text" href="{{route('MenuHeaders.index')}}">ایجاد، مشاهده و ویرایش گروه منو</a></li>
+                                <li><a class="dropdown-item menu_item_text" href="{{route('MenuItems.index')}}">ایجاد، مشاهده و ویرایش عناوین منو</a></li>
+                                <li><a class="dropdown-item menu_item_text" href="{{route('MenuActions.index')}}">ایجاد، مشاهده و ویرایش عملیات منو</a></li>
+                            </ul>
+                        </li>
+                        <li><a class="dropdown-item dropdown-toggle menu_item_text" data-toggle="dropdown" href="#">مدیریت رشته و سرفصل پیمان</a>
+                            <ul class="submenu dropdown-menu">
+                                <li><a class="dropdown-item menu_item_text" href="{{route("ContractBranches.index")}}">ایجاد، مشاهده و ویرایش شاخه های پیمان</a></li>
+                                <li><a class="dropdown-item menu_item_text" href="{{route("ContractCategories.index")}}">ایجاد، مشاهده و ویرایش سرفصل های پیمان</a></li>
+                            </ul>
+                        </li>
+                        <li><a class="dropdown-item menu_item_text" href="{{route("Units.index")}}">ایجاد، مشاهده و ویرایش واحد های اندازه گیری</a></li>
+                        <li><a class="dropdown-item menu_item_text" href="{{route("InvoiceFlow.index")}}">ایجاد، مشاهده و ویرایش جریان صورت وضعیت</a></li>
+                        <li><a class="dropdown-item menu_item_text" href="{{route("system_status_index")}}">مشاهده و تغییر وضعیت سیستم</a>
+                    </ul>
+                </li>
+                @else
+                    @forelse($menu_headers as $menu_header)
+                        @if($role->menu_items->whereIn("id",$menu_header->items->pluck("id"))->isNotEmpty())
+                            <li class="nav-item mr-1 dropdown">
+                                <a class="nav-link menu_header_text" href="#" data-toggle="dropdown"><i class="{{$menu_header->icon->name}} fa-1_6x pr-2" style="vertical-align: middle"></i>{{$menu_header->name}}</a>
+                                <ul class="dropdown-menu">
+                                    @foreach($menu_header->items as $item)
+                                        @if($item->children->isNotEmpty())
+                                            @if($role->menu_items->whereIn("id",$item->children->pluck("id"))->isNotEmpty())
+                                                <li><a class="dropdown-item dropdown-toggle menu_item_text" data-toggle="dropdown" href="#">{{$item->name}}</a>
+                                                    <ul class="submenu dropdown-menu">
+                                                        @foreach($item->children as $child)
+                                                            <li><a class="dropdown-item menu_item_text" href="{{route($role->menu_items->where("pivot.menu_item_id",$child->id)->where("pivot.menu_action_id",$child->actions->where("action",$child->main_route)->first()->id)->first()->pivot->route)}}">{{$child->name}}</a></li>
+                                                        @endforeach
+                                                    </ul>
+                                                </li>
+                                            @endif
+                                        @else
+                                            @if($role->menu_items->where("id",$item->id)->isNotEmpty() && $item->parent_id == null)
+                                                <li><a class="dropdown-item menu_item_text" href="{{route($role->menu_items->where("pivot.menu_item_id",$item->id)->where("pivot.menu_action_id",$item->actions->where("action",$item->main_route)->first()->id)->first()->pivot->route)}}">{{$item->name}}</a></li>
+                                            @endif
+                                        @endif
+                                    @endforeach
+                                </ul>
                             </li>
-                        @empty
-                        @endforelse
-                    @endif
-                </ul>
-                <div class="tab-content" id="myTabContent">
-                    @if(auth()->user()->is_admin)
-                        <div class="tab-pane fade show active" id="admin" role="tabpanel" aria-labelledby="admin-tab">
-                            <button class="dropdown-btn iran_yekan @if(Route::is(['MenuHeaders.*','MenuTitles.*','MenuItems.*','MenuActions.*'])) menu_dropdown_active @endif">
-                                مدیریت منو
-                                <i class="fa fa-caret-down" style="vertical-align: middle"></i>
-                            </button>
-                            <div class="dropdown-container @if(Route::is(['MenuHeaders.*','MenuTitles.*','MenuItems.*','MenuActions.*'])) active @endif">
-                                <a class="iran_yekan @if(Route::is('MenuHeaders.*')) dropdown-item_active @endif" href="{{route('MenuHeaders.index')}}">ایجاد، مشاهده و ویرایش عناوین گروه منو</a>
-                                <a class="iran_yekan @if(Route::is('MenuTitles.*')) dropdown-item_active @endif" href="{{route('MenuTitles.index')}}">ایجاد، مشاهده و ویرایش عناوین اصلی منو</a>
-                                <a class="iran_yekan @if(Route::is('MenuItems.*')) dropdown-item_active @endif" href="{{route('MenuItems.index')}}">ایجاد، مشاهده و ویرایش عناوین فرعی منو</a>
-                                <a class="iran_yekan @if(Route::is('MenuActions.*')) dropdown-item_active @endif" href="{{route('MenuActions.index')}}">ایجاد، مشاهده و ویرایش عملیات وابسته منو</a>
-                            </div>
-                            <button class="dropdown-btn iran_yekan @if(Route::is("Roles.create")||Route::is("Roles.index")||Route::is("Roles.edit")) menu_dropdown_active @endif}}">
-                                مدیریت سمت کاربران
-                                <i class="fa fa-caret-down" style="vertical-align: middle"></i>
-                            </button>
-                            <div class="dropdown-container @if(Route::is("Roles.create")||Route::is("Roles.index")||Route::is("Roles.edit")) active @endif">
-                                <a class="iran_yekan @if(Route::is("Roles.create")) dropdown-item_active @endif" href="{{route("Roles.create")}}">ایجاد سمت جدید</a>
-                                <a class="iran_yekan @if(Route::is("Roles.index")||Route::is("Roles.edit")) dropdown-item_active @endif" href="{{route("Roles.index")}}">مشاهده و ویرایش سمت ها</a>
-                            </div>
-                            <button class="dropdown-btn iran_yekan @if(Route::is("Users.create")||Route::is("Users.index")||Route::is("Users.edit")) menu_dropdown_active @endif}}">
-                                مدیریت کاربران سامانه
-                                <i class="fa fa-caret-down" style="vertical-align: middle"></i>
-                            </button>
-                            <div class="dropdown-container @if(Route::is("Users.create")||Route::is("Users.index")||Route::is("Users.edit")) active @endif">
-                                <a class="iran_yekan @if(Route::is("Users.create")) dropdown-item_active @endif" href="{{route("Users.create")}}">ایجاد کاربر جدید</a>
-                                <a class="iran_yekan @if(Route::is("Users.index")||Route::is("Users.edit")) dropdown-item_active @endif" href="{{route("Users.index")}}">مشاهده و ویرایش کاربران</a>
-                            </div>
-                            <button class="dropdown-btn iran_yekan @if(Route::is("ContractBranches.*")||Route::is("ContractCategories.*")) menu_dropdown_active @endif}}">
-                                مدیریت رشته و سرفصل پیمان
-                                <i class="fa fa-caret-down" style="vertical-align: middle"></i>
-                            </button>
-                            <div class="dropdown-container @if(Route::is("ContractBranches.*")||Route::is("ContractCategories.*")) active @endif">
-                                <a class="iran_yekan @if(Route::is("ContractBranches.*")) dropdown-item_active @endif" href="{{route("ContractBranches.index")}}">ایجاد، مشاهده و ویرایش شاخه های پیمان</a>
-                                <a class="iran_yekan @if(Route::is("ContractCategories.*")) dropdown-item_active @endif" href="{{route("ContractCategories.index")}}">ایجاد، مشاهده و ویرایش سرفصل های پیمان</a>
-                            </div>
-                            <a class="iran_yekan @if(Route::is("Units.*")) dropdown-item_active @endif" href="{{route("Units.index")}}">ایجاد، مشاهده و ویرایش واحد های اندازه گیری</a>
-                            <a class="iran_yekan @if(Route::is("InvoiceFlow.*")) dropdown-item_active @endif" href="{{route("InvoiceFlow.index")}}">ایجاد، مشاهده و ویرایش جریان صورت وضعیت</a>
-                            <a class="iran_yekan @if(Route::is("system_status_index")) dropdown-item_active @endif" href="{{route("system_status_index")}}">مشاهده و تغییر وضعیت سیستم</a>
-                        </div>
-                    @elseif(auth()->user()->is_staff)
-                        @forelse($user_menu as $menu_header)
-                            <div class="tab-pane fade @if(Route::is("idle") && $loop->first) show active @elseif(Route::is($menu_header->menu_titles->pluck("main_route")->toArray())) show active @else {{null}} @endif" id="{{$menu_header->slug}}" role="tabpanel" aria-labelledby="{{$menu_header->slug}}-tab">
-                                @forelse($menu_header->menu_titles as $menu_title)
-                                    <button class="dropdown-btn iran_yekan {{(Route::is($menu_title->main_route)) ? 'menu_dropdown_active':null}}">
-                                       <span>
-                                            @if($menu_title->icon != null)
-                                               <i class="menu_title_icon {{$menu_title->icon}}"></i>
-                                           @endif
-                                           {{$menu_title->name}}
-                                       </span>
-                                        <i class="fa fa-caret-down" style="vertical-align: middle"></i>
-                                    </button>
-                                    <div class="dropdown-container {{(Route::is($menu_title->main_route)) ? 'active':null}}">
-                                        @forelse($menu_title->menu_items as $menu_item)
-                                            <a class="iran_yekan {{(Route::is($menu_item->actions->pluck('action')->toArray())) ? 'dropdown-item_active':null}}" href="{{route($menu_title->route.".".$menu_item->main_route)}}">{{$menu_item->name}}
-                                                @if($menu_item->notifiable)
-                                                    <span class="badge badge-pill badge-danger" style="font-size: 12px" v-cloak v-text="{{$menu_item->notification_channel."_text"}}" v-show="{{$menu_item->notification_channel."_show"}}"></span>
-                                                @endif
-                                            </a>
-                                        @empty
-                                        @endforelse
-                                    </div>
-                                @empty
-                                @endforelse
-                            </div>
-                        @empty
-                        @endforelse
-                    @endif
-                </div>
-            </div>
-            <div class="sidenav_footer bg-dark">
-                <span class="iran_yekan pt-2 d-block text-muted-light text-center version">نسخه سیستمی({{env("APP_VERSION")}})</span>
-            </div>
-        </aside>
-    </div>
+                        @endif
+                    @empty
+                    @endforelse
+                @endif
+            </ul>
+        </div>
+        <i id="account_info_button" class="fa fa-user-circle black_color header_user_button" v-on:click="account_information_show" :class="{acc_info_active : account_info_active}"></i>
+        <div class="account_info" v-show="account_info_active">
+            <i class="fa fa-user fa-3x w-100 p-3 text-center"></i>
+            <span class="account_info_item iran_yekan black_color border-bottom w-100 p-1">{{$user->name}}</span>
+            <span class="account_info_item iran_yekan black_color border-bottom w-100 p-1">{{$user->role->name}}</span>
+            <form action="{{route("logout")}}" method="post" class="p-3">
+                @csrf
+                <button type="button" class="account_info_item btn btn-outline-secondary">
+                    <a href="{{route("password.request")}}" style="text-decoration: none"><i class="fa fa-cogs fa-2x"></i></a>
+                </button>
+                <button type="submit" class="account_info_item btn btn-outline-secondary">
+                    <i class="fa fa-sign-out-alt fa-2x"></i>
+                </button>
+            </form>
+        </div>
+    </nav>
     <div class="pages_container">
         @if(Route::is("idle"))
-            <div class="alert alert-success alert-dismissible fade show p-4" role="alert" v-cloak v-show="{{"new_invoice_automation_show"}}">
-                <a href="{{route("InvoiceAutomation.new")}}">
-                    <h6 class="iran_yekan m-0" style="font-size: 12px">
-                        <span class="badge badge-pill badge-danger" style="font-size: 12px" v-cloak v-text="new_invoice_automation_text"></span>
-                        مشاهده وضعیت های جدید
-                    </h6>
-                </a>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="alert alert-success alert-dismissible fade show p-4" role="alert" v-cloak v-show="{{"new_worker_payment_automation_show"}}">
-                <a href="{{route("WorkerPayments.new")}}">
-                    <h6 class="iran_yekan m-0" style="font-size: 12px">
-                        <span class="badge badge-pill badge-danger" style="font-size: 12px" v-cloak v-text="new_worker_payment_automation_text"></span>
-                        مشاهده پرداختی های کارگری جدید
-                    </h6>
-                </a>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="w-100 d-flex flex-column align-items-end justify-content-center p-5" v-cloak v-show="{{"new_invoice_automation_show"}} || {{"new_worker_payment_automation_show"}}">
+                <div class="card text-white bg-success mb-3" style="width: 22rem;" v-cloak v-show="{{"new_invoice_automation_show"}} || {{"new_worker_payment_automation_show"}}">
+                    <div class="card-header iran_yekan">
+                        <h6 class="m-0" style="font-weight: 600">
+                            <i class="fa fa-bullhorn" style="vertical-align: middle;font-size: 1.2rem"></i>
+                            اطلاع رسانی
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <a class="white_color" v-show="{{"new_invoice_automation_show"}}" href="{{route("InvoiceAutomation.automation")}}">
+                            <h6 class="card-title iran_yekan">
+                                <span class="badge badge-pill badge-danger" style="font-size: 11px" v-cloak v-text="new_invoice_automation_text"></span>
+                                <span> صورت وضعیت پیمانکاری مشاهده نشده</span>
+                            </h6>
+                        </a>
+                        <a class="white_color" v-show="{{"new_worker_payment_automation_show"}}" href="{{route("WorkerPayments.new")}}">
+                            <h6 class="card-title iran_yekan">
+                                <span class="badge badge-pill badge-danger" style="font-size: 11px" v-cloak v-text="new_worker_payment_automation_text"></span>
+                                <span> صورت وضعیت کارگری مشاهده نشده</span>
+                            </h6>
+                        </a>
+                    </div>
+                </div>
             </div>
             @if(auth()->user()->is_staff)
                 <div class="gadget_container">
@@ -181,10 +141,11 @@
             @endif
         @else
             <div class="page_content">
-                <div class="w-100 bg-dark page_title_container">
-                <span class="iran_yekan white_color h-100 pl-3 m-0 page_title">
+                <div class="w-100 bg-official page_title_container">
+                <span class="iran_yekan white_color page_title">
                     @yield('page_title')
                 </span>
+                    <a href="{{route("idle")}}"><i class="fa fa-times-circle fa-1_4x white_color close_button"></i></a>
                 </div>
                 <div class="page_content_body">
                     @if(session()->has("action_error"))
@@ -203,7 +164,7 @@
                     @endif
                     @yield('content')
                 </div>
-                <div class="w-100 bg-dark page_footer_container d-flex justify-content-center align-items-center">
+                <div class="w-100 bg-official page_footer_container d-flex justify-content-center align-items-center">
                     @yield('page_footer')
                 </div>
             </div>
@@ -278,11 +239,25 @@
     @endif
 @endif
 <script src="{{asset("js/app.js?v=".time())}}"></script>
-<script src="{{asset("/js/jquery.mask.js")}}"></script>
 <script src="{{asset("/js/numeral.js")}}"></script>
 <script src="{{asset("/js/persianDatepicker.min.js")}}"></script>
 <script src="{{asset("/js/d_dashboard.js?v=".time())}}"></script>
 <script src="{{asset("/js/kernel.js?v=".time())}}" defer></script>
 @yield('scripts')
+<div id="menu_search" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <input id="menu_items_search_key" list="menu_items_datalist" class="form-control text-center iran_yekan" type="search" placeholder="جستجو در گزینه های منو">
+                <datalist id="menu_items_datalist">
+                    <option>مدیریت پروژه</option>
+                    <option>مدیریت پیمان</option>
+                    <option>مدیریت پیمانکار</option>
+                    <option>مدیریت وضعیت</option>
+                </datalist>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

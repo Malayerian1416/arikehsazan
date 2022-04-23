@@ -52,5 +52,14 @@ $(document).ready(function (){
             $(".doc_expand_icon").removeClass("fa-arrow-alt-circle-left").toggleClass("fa-arrow-alt-circle-down")
         }
     });
+    $(".index_form_submit_button").click(function (e){e.stopPropagation();});
+    $(".hide_section_container").on("click",function (){
+        $(".hide_section").toggleClass("active");
+        $(".table-responsive").toggleClass("smaller");
+        $(".hide_section_icon").hasClass("fa-plus-square") ? $(".hide_section_icon").removeClass("fa-plus-square").addClass("fa-minus-square") : $(".hide_section_icon").removeClass("fa-minus-square").addClass("fa-plus-square");
+    });
+    function goBack(){
+        console.log(history.state);
+    }
 });
 

@@ -10,6 +10,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceAutomation;
 use App\Models\InvoiceDeduction;
 use App\Models\InvoiceExtra;
+use App\Models\Location;
 use App\Models\Project;
 use App\Models\Unit;
 use App\Models\WorkerPaymentAutomation;
@@ -212,5 +213,10 @@ class AxiosCallController extends Controller
         catch (Throwable $ex){
             return $ex;
         }
+    }
+
+    public function get_geo_json(Request $request){
+        $location = Location::query()->findOrFail($request->input("location_id"));
+        return $location->geoJson;
     }
 }

@@ -19,36 +19,6 @@ This set of fonts are used in this project under the license: (.....)
 @font-face {
 	font-family: iranyekan;
 	font-style: normal;
-	font-weight: bold;
-	src: url('/fonts/iranyekanwebboldfanum.eot');
-	src: url('/fonts/iranyekanwebboldfanum.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
-		 url('/fonts/iranyekanwebboldfanum.woff') format('font-woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
-		 url('/fonts/iranyekanwebboldfanum.ttf') format('truetype');
-}
-
-@font-face {
-	font-family: iranyekan;
-	font-style: normal;
-	font-weight: 100;
-	src: url('/fonts/iranyekanwebthinfanum.eot');
-	src: url('/fonts/iranyekanwebthinfanum.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
-		 url('/fonts/iranyekanwebthinfanum.woff') format('font-woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
-		 url('/fonts/iranyekanwebthinfanum.ttf') format('truetype');
-}
-
-@font-face {
-	font-family: iranyekan;
-	font-style: normal;
-	font-weight: 300;
-	src: url('/fonts/iranyekanweblightfanum.eot');
-	src: url('/fonts/iranyekanweblightfanum.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
-		 url('/fonts/iranyekanweblightfanum.woff') format('font-woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
-		 url('/fonts/iranyekanweblightfanum.ttf') format('truetype');
-}
-
-@font-face {
-	font-family: iranyekan;
-	font-style: normal;
 	font-weight: normal;
 	src: url('/fonts/iranyekanwebregularfanum.eot');
 	src: url('/fonts/iranyekanwebregularfanum.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
@@ -56,45 +26,6 @@ This set of fonts are used in this project under the license: (.....)
 		 url('/fonts/iranyekanwebregularfanum.ttf') format('truetype');
 }
 
-@font-face {
-	font-family: iranyekan;
-	font-style: normal;
-	font-weight: 500;
-	src: url('/fonts/iranyekanwebmediumfanum.eot');
-	src: url('/fonts/iranyekanwebmediumfanum.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
-		 url('/fonts/iranyekanwebmediumfanum.woff') format('font-woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
-		 url('/fonts/iranyekanwebmediumfanum.ttf') format('truetype');
-}
-
-@font-face {
-	font-family: iranyekan;
-	font-style: normal;
-	font-weight: 800;
-	src: url('/fonts/iranyekanwebextraboldfanum.eot');
-	src: url('/fonts/iranyekanwebextraboldfanum.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
-		 url('/fonts/iranyekanwebextraboldfanum.woff') format('font-woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
-		 url('/fonts/iranyekanwebextraboldfanum.ttf') format('truetype');
-}
-
-@font-face {
-	font-family: iranyekan;
-	font-style: normal;
-	font-weight: 900;
-	src: url('/fonts/iranyekanwebblackfanum.eot');
-	src: url('/fonts/iranyekanwebblackfanum.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
-		 url('/fonts/iranyekanwebblackfanum.woff') format('font-woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
-		 url('/fonts/iranyekanwebblackfanum.ttf') format('truetype');
-}
-
-@font-face {
-	font-family: iranyekan;
-	font-style: normal;
-	font-weight: 950;
-	src: url('/fonts/iranyekanwebextrablackfanum.eot');
-	src: url('/fonts/iranyekanwebextrablackfanum.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
-		 url('/fonts/iranyekanwebextrablackfanum.woff') format('font-woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
-		 url('/fonts/iranyekanwebextrablackfanum.ttf') format('truetype');
-}
 @font-face {
     src: url("/fonts/IranNastaliq.ttf");
     font-family: nastaliq;
@@ -111,13 +42,6 @@ This set of fonts are used in this project under the license: (.....)
     src: url('/fonts/BMitra.eot');
     src: url('/fonts/BMitra.eot?#iefix') format("embedded-opentype"), url('/fonts/BMitra.woff') format("font-woff"), url('/fonts/BMitra.ttf') format("truetype");
     font-weight: normal;
-    font-style: normal
-}
-@font-face {
-    font-family: mitra;
-    src: url('/fonts/BMitraBold.eot');
-    src: url('/fonts/BMitraBold.eot?#iefix') format("embedded-opentype"), url('/fonts/BMitraBold.woff') format("font-woff"), url('/fonts/BMitraBold.ttf') format("truetype");
-    font-weight: bold;
     font-style: normal
 }
 @font-face {

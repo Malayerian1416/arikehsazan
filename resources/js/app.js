@@ -11,7 +11,6 @@ import AutoNumeric from "autonumeric";
 window.bootbox = require('bootbox');
 window.AutoNumeric = AutoNumeric;
 window.alerify = require('alertifyjs');
-window.imask = require('imask');
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -20,10 +19,14 @@ window.imask = require('imask');
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
 require('bootstrap-select/dist/js/bootstrap-select');
-require('bootstrap-select/js/i18n/defaults-ar_AR');
+require('bootstrap-select/js/i18n/defaults-fa_IR');
 require('owl.carousel');
 require('chart.js/dist/chart.min');
-require('chart.js/dist/helpers.esm')
+require('chart.js/dist/helpers.esm');
+require('leaflet/dist/leaflet.js');
+require('leaflet-draw/dist/leaflet.draw');
+import * as d3 from "d3-geo";
+window.d3 = d3;
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 // // Vue.component('example-component', require('./components/ExampleComponent.vue').default);

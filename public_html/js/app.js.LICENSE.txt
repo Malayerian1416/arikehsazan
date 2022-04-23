@@ -1,3 +1,8 @@
+/* @preserve
+ * Leaflet 1.7.1, a JS library for interactive maps. http://leafletjs.com
+ * (c) 2010-2019 Vladimir Agafonkin, (c) 2010-2011 CloudMade
+ */
+
 /*!
   * Bootstrap v4.6.0-2 (https://github.com/MahdiMajidzadeh/bootstrap-v4-rtl)
   * Copyright 2011-2021 Mahdi Majidzadeh
@@ -34,12 +39,6 @@
  * https://js.foundation/
  *
  * Date: 2021-02-16
- */
-
-/*!
- * Translated default messages for bootstrap-select.
- * Locale: AR (Arabic)
- * Author: Yasser Lotfy <y_l@alive.com>
  */
 
 /*!

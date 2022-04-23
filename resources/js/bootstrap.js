@@ -4,6 +4,7 @@ try {
     window.Popper = require('@popperjs/core');
     window.$ = window.jQuery = require('jquery');
     require('bootstrap-v4-rtl');
+    require('jquery-mask-plugin');
 } catch (e) {}
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\NationalCodeChecker;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserRequest extends FormRequest
@@ -21,7 +22,7 @@ class UserRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         if ($this->method() == "POST") {
             return [
@@ -32,6 +33,11 @@ class UserRequest extends FormRequest
                 'email' => 'sometimes|nullable|string|email|max:255|unique:users',
                 "mobile" => ["required", "regex:/^(?:98|\+98|0098|0)?9[0-9]{9}$/", "unique:users"],
                 "project_id" => "required",
+                "father_name" => "sometimes|nullable|max:150",
+                "birth_date" => "sometimes|nullable|max:100|jdate:Y/m/d",
+                "national_code" => ["required", "digits:10", new NationalCodeChecker, "unique:users"],
+                "identify_number" => "sometimes|nullable|numeric",
+                "address" => "sometimes|nullable|max:500"
             ];
         }
         elseif ($this->method() == "PUT"){
@@ -43,11 +49,16 @@ class UserRequest extends FormRequest
                 'email' => ['sometimes','nullable','string','email','max:255','unique:users,email,'.$this->route('User').",id"],
                 "mobile" => ["required", "regex:/^(?:98|\+98|0098|0)?9[0-9]{9}$/", "unique:users,mobile,".$this->route('User').",id"],
                 "project_id" => "required",
+                "father_name" => "sometimes|nullable|max:150",
+                "birth_date" => "sometimes|nullable|max:100|jdate:Y/m/d",
+                "national_code" => ["required", "digits:10", new NationalCodeChecker, "unique:contractors,national_code,".$this->route('Contractor').",id"],
+                "identify_number" => "sometimes|nullable|numeric",
+                "address" => "sometimes|nullable|max:500"
             ];
         }
         else return [];
     }
-    public function messages()
+    public function messages(): array
     {
         return [
             "name.required" => "درج نام کاربر الزامی می باشد.",
@@ -69,6 +80,14 @@ class UserRequest extends FormRequest
             "mobile.regex" => "تلفن همراه درج شده در فرمت صحیح نمی باشد.",
             "mobile.unique" => "تلفن همراه درج شده تکراری می باشد.",
             "project_id.required" => "انتخاب پروژه های مجاز به دسترسی الزامی می باشد.",
+            "father_name.max" => "طول نام پدر حداکثر به اندازه 500 کاراکتر قابل قبول است.",
+            "birth_date.max" => "طول تاریخ تولد ثبت شده حداکثر 100 کاراکتر قابل قبول است.",
+            "birth_date.jdate" => "تاریخ تولد درج شده در فرمت صحیح نمی باشد.",
+            "national_code.required" => "درج کد ملی پیمانکار الزامی می باشد.",
+            "national_code.unique" => "کد ملی درج شده تکراری می باشد.",
+            "national_code.digits" => "کد ملی پیمانکار 10 کاراکتر می باشد.",
+            "identify_number.numeric" => "شماره شناسنامه مقدار عددی نمی باشد.",
+            "address.max" => "طول آدرس حداکثر 500 کاراکتر قابل قبول است."
         ];
     }
 }

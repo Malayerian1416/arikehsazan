@@ -37,7 +37,8 @@ class InvoiceController extends Controller
         try {
             $contracts = Contract::get_permissions(["project","contractor"]);
             $invoices = Invoice::query()->with(["contract.project","contract.contractor","payments","automation"])->where("user_id",Auth::id())->latest()->get();
-            return view("{$this->agent}.created_invoices_index",["invoices" => $invoices, "contracts" => $contracts]);
+            $projects = Project::get_permissions([]);
+            return view("{$this->agent}.created_invoices_index",["invoices" => $invoices, "contracts" => $contracts,"projects" => $projects]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);

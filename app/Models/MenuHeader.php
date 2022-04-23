@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class MenuHeader extends Model
 {
     use HasFactory;
-    protected $fillable = ["name","slug","icon_id","is_admin"];
+    protected $fillable = ["name","slug","icon_id","is_admin","mobile_icon"];
     protected $table = "menu_headers";
 
     public function role(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -19,9 +19,9 @@ class MenuHeader extends Model
     {
         return $this->hasMany(MenuTitle::class,"menu_header_id");
     }
-    public function menu_items(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    public function items(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasManyThrough(MenuItem::class,MenuTitle::class,"menu_header_id","menu_title_id");
+        return $this->hasMany(MenuItem::class,"menu_header_id");
     }
     public function icon(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

@@ -1,30 +1,27 @@
 @extends('desktop_dashboard.d_dashboard')
-@section('styles')
-@endsection
 @section('scripts')
-    <script src="{{asset("/js/jquery.mask.js")}}" defer></script>
     @if($errors->has('name') || $errors->has('email'))
         <script>
             let contact = @json($phonebooks->where("id",old("contact_id"))->first());
             let route = @json(route("Phonebook.update",old("contact_id")));
             $(document).ready(function(){
                 $("#contact_id").val(contact["id"]);
-                $("#name").val(contact["name"]);
-                $("#phone_number_1").val(contact["phone_number_1"]);
-                $("#phone_number_2").val(contact["phone_number_2"]);
-                $("#phone_number_3").val(contact["phone_number_3"]);
-                $("#job_title").val(contact["job_title"]);
-                $("#email").val(contact["email"]);
-                $("#address").val(contact["address"]);
-                $("#note").val(contact["note"]);
-                $("#update_form").attr("action",route);
-                $("#contact_information").modal("show");
+                $("#e_name").val(contact["name"]);
+                $("#e_phone_number_1").val(contact["phone_number_1"]);
+                $("#e_phone_number_2").val(contact["phone_number_2"]);
+                $("#e_phone_number_3").val(contact["phone_number_3"]);
+                $("#e_job_title").val(contact["job_title"]);
+                $("#e_email").val(contact["email"]);
+                $("#e_address").val(contact["address"]);
+                $("#e_note").val(contact["note"]);
+                $("#e_update_form").attr("action",route);
+                $("#e_contact_information").modal("show");
             });
         </script>
     @endif
 @endsection
 @section('page_title')
-    مشاهده لیست مخاطبین
+    تعریف و ویرایش مخاطبین
 @endsection
 @section('content')
     @error('any')
@@ -43,6 +40,85 @@
         </button>
     </div>
     @enderror
+    @can("create","Phonebook")
+        <div class="row pt-1 pb-3">
+            <div class="col-12 hide_section_container">
+                <h6>
+                    <i class="fa fa-plus-square fa-2x hide_section_icon" style="vertical-align: middle"></i>
+                    <span class="iran_yekan hide_section_title">تعریف مخاطب جدید</span>
+                </h6>
+            </div>
+            <div class="col-12 hide_section @if($errors->any()) active @endif">
+                <form id="create_form" action="{{route("Phonebook.store")}}" method="post" v-on:submit="submit_create_form">
+                    @csrf
+                    <div class="form-row">
+                        <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                            <label class="col-form-label iran_yekan black_color" for="name">
+                                نام
+                                <strong class="red_color">*</strong>
+                            </label>
+                            <input type="text" class="form-control iran_yekan text-center @error('name') is-invalid @enderror" id="name" name="name" value="{{old("name")}}">
+                            @error('name')
+                            <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                            <label class="col-form-label iran_yekan black_color" for="phone_number_1">شماره تماس 1</label>
+                            <input type="text" class="form-control iran_yekan text-center @error('phone_number_1') is-invalid @enderror masked" data-mask="000000000000" id="phone_number_1" name="phone_number_1" value="{{old("phone_number_1")}}">
+                            @error('phone_number_1')
+                            <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                            <label class="col-form-label iran_yekan black_color" for="phone_number_2">شماره تماس 2</label>
+                            <input type="text" class="form-control iran_yekan text-center @error('phone_number_2') is-invalid @enderror masked" data-mask="000000000000" id="phone_number_2" name="phone_number_2" value="{{old("phone_number_2")}}">
+                            @error('phone_number_2')
+                            <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                            <label class="col-form-label iran_yekan black_color" for="phone_number_3">شماره تماس 3</label>
+                            <input type="text" class="form-control iran_yekan text-center @error('phone_number_3') is-invalid @enderror masked" data-mask="000000000000" id="phone_number_3" name="phone_number_3" value="{{old("phone_number_3")}}">
+                            @error('phone_number_3')
+                            <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                            <label class="col-form-label iran_yekan black_color" for="job_title">عنوان شغل</label>
+                            <input type="text" class="form-control iran_yekan text-center @error('job_title') is-invalid @enderror" id="job_title" name="job_title" value="{{old("job_title")}}">
+                            @error('job_title')
+                            <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                            <label class="col-form-label iran_yekan black_color" for="email">ایمیل</label>
+                            <input type="text" class="form-control iran_yekan text-center @error('email') is-invalid @enderror" id="email" name="email" value="{{old("email")}}">
+                            @error('email')
+                            <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-12 col-lg-4 col-xl-6">
+                            <label class="col-form-label iran_yekan black_color" for="address">آدرس</label>
+                            <input type="text" class="form-control iran_yekan text-center" id="address" name="address" value="{{old("address")}}">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="col-form-label iran_yekan black_color" for="note">یادداشت</label>
+                            <textarea type="text" class="form-control iran_yekan text-center" id="note" name="note">
+                    {{old("note")}}
+                </textarea>
+                        </div>
+                        <div class="form-group col-12 text-center pt-3">
+                            <button type="submit" form="create_form" class="btn btn-outline-success iran_yekan mr-2 submit_button">
+                                <i v-show="button_loading" class="button_loading fa fa-spinner fa-spin mr-2"></i>
+                                <i v-show="button_not_loading" class="fa fa-edit button_icon"></i>
+                                <span v-show="button_not_loading">ارسال و ذخیره</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endcan
     <div class="row pt-1 pb-3">
         <div class="col-12">
             <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با تمامی عناوین" v-on:input="search_input_filter" aria-describedby="basic-addon3">
@@ -116,55 +192,55 @@
                                     نام
                                     <strong class="red_color">*</strong>
                                 </label>
-                                <input type="text" class="form-control iran_yekan text-center @error('name') is-invalid @enderror" id="name" name="name">
+                                <input type="text" class="form-control iran_yekan text-center @error('name') is-invalid @enderror" id="e_name" name="name">
                                 @error('name')
                                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="col-12">
-                                <label class="col-form-label iran_yekan black_color" for="phone_number_1">
+                                <label class="col-form-label iran_yekan black_color" for="e_phone_number_1">
                                     شماره تماس 1
                                 </label>
-                                <input type="text" class="form-control iran_yekan text-center masked" data-mask="000000000000" id="phone_number_1" name="phone_number_1">
+                                <input type="text" class="form-control iran_yekan text-center masked" data-mask="000000000000" id="e_phone_number_1" name="phone_number_1">
                             </div>
                             <div class="col-12">
-                                <label class="col-form-label iran_yekan black_color" for="phone_number_2">
+                                <label class="col-form-label iran_yekan black_color" for="e_phone_number_2">
                                     شماره تماس 2
                                 </label>
-                                <input type="text" class="form-control iran_yekan text-center masked" data-mask="000000000000" id="phone_number_2" name="phone_number_2">
+                                <input type="text" class="form-control iran_yekan text-center masked" data-mask="000000000000" id="e_phone_number_2" name="phone_number_2">
                             </div>
                             <div class="col-12">
-                                <label class="col-form-label iran_yekan black_color" for="phone_number_3">
+                                <label class="col-form-label iran_yekan black_color" for="e_phone_number_3">
                                     شماره تماس 3
                                 </label>
-                                <input type="text" class="form-control iran_yekan text-center masked" data-mask="000000000000" id="phone_number_3" name="phone_number_3">
+                                <input type="text" class="form-control iran_yekan text-center masked" data-mask="000000000000" id="e_phone_number_3" name="phone_number_3">
                             </div>
                             <div class="col-12">
-                                <label class="col-form-label iran_yekan black_color" for="job_title">
+                                <label class="col-form-label iran_yekan black_color" for="e_job_title">
                                     عنوان شغل
                                 </label>
-                                <input type="text" class="form-control iran_yekan text-center" id="job_title" name="job_title">
+                                <input type="text" class="form-control iran_yekan text-center" id="e_job_title" name="job_title">
                             </div>
                             <div class="col-12">
-                                <label class="col-form-label iran_yekan black_color" for="email">
+                                <label class="col-form-label iran_yekan black_color" for="e_email">
                                     ایمیل
                                 </label>
-                                <input type="text" class="form-control iran_yekan text-center @error('email') is-invalid @enderror" id="email" name="email">
-                                @error('email')
+                                <input type="text" class="form-control iran_yekan text-center @error('e_email') is-invalid @enderror" id="e_email" name="email">
+                                @error('e_email')
                                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="col-12">
-                                <label class="col-form-label iran_yekan black_color" for="address">
+                                <label class="col-form-label iran_yekan black_color" for="e_address">
                                     آدرس
                                 </label>
-                                <input type="text" class="form-control iran_yekan text-center" id="address" name="address">
+                                <input type="text" class="form-control iran_yekan text-center" id="e_address" name="address">
                             </div>
                             <div class="col-12">
-                                <label class="col-form-label iran_yekan black_color" for="note">
+                                <label class="col-form-label iran_yekan black_color" for="e_note">
                                     یادداشت
                                 </label>
-                                <textarea type="text" class="form-control iran_yekan text-center" id="note" name="note">
+                                <textarea type="text" class="form-control iran_yekan text-center" id="e_note" name="note">
                             </textarea>
                             </div>
                         </div>

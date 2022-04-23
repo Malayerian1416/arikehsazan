@@ -36,11 +36,12 @@ class ContractorController extends Controller
         try {
             $docs = [];
             $contractors = Contractor::all();
+            $banks = Bank::all();
             foreach ($contractors as $contractor) {
                 if (Storage::disk('contractors_doc')->exists("$contractor->id"))
                     $docs[] = $contractor->id;
             }
-            return view("{$this->agent}.contractor_index", ["contractors" => $contractors, "docs" => $docs]);
+            return view("{$this->agent}.contractor_index", ["contractors" => $contractors, "docs" => $docs, "banks" => $banks]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);

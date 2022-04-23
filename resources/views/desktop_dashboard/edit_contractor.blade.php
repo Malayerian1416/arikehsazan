@@ -1,8 +1,5 @@
 @extends('desktop_dashboard.d_dashboard')
-@section('styles')
-@endsection
 @section('scripts')
-    <script type="text/javascript" src="{{asset("/js/jquery.mask.js")}}" defer></script>
     <script>
         const bank_already_information = @json($contractor->banks->toArray());
     </script>

@@ -41,6 +41,3 @@
     direction: ltr!important;
 }
 [v-cloak] {display: none}
-.modal-footer button {
-    margin: auto;!important;
-}
