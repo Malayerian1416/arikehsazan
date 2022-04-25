@@ -18,7 +18,7 @@ body{
     font-size: 1.3rem;
 }
 .user_icon{
-    font-size: 2rem;
+    font-size: 2.5rem;
     vertical-align: middle;
     color: white;
 }
@@ -865,4 +865,7 @@ input[type='radio']{
 }
 #location_info{
     position: absolute;bottom:50px;right: calc((100% - 28rem) / 2);z-index: 5000;width: 28rem;display: none;
+}
+.table-responsive{
+    overflow-y: auto!important;
 }

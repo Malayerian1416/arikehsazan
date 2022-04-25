@@ -176,3 +176,9 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
 Route::get('/linkstorage', function () {
     Artisan::call('cache:clear');
 });
+Route::get('/clear', function () {
+    Artisan::call('cache:clear');
+    Artisan::call('route:clear');
+    Artisan::call('config:clear');
+    Artisan::call('view:clear');
+});

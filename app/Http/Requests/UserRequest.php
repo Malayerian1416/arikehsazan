@@ -51,7 +51,7 @@ class UserRequest extends FormRequest
                 "project_id" => "required",
                 "father_name" => "sometimes|nullable|max:150",
                 "birth_date" => "sometimes|nullable|max:100|jdate:Y/m/d",
-                "national_code" => ["required", "digits:10", new NationalCodeChecker, "unique:contractors,national_code,".$this->route('Contractor').",id"],
+                "national_code" => ["required", "digits:10", new NationalCodeChecker, "unique:users,national_code,".$this->route('User').",id"],
                 "identify_number" => "sometimes|nullable|numeric",
                 "address" => "sometimes|nullable|max:500"
             ];

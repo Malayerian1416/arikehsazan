@@ -16,7 +16,7 @@
         </div>
         <div class="card-body" style="overflow: hidden">
             <div class="tab-content" id="myTabContent" style="overflow: hidden">
-                <div class="tab-pane fade show active" id="inbox" role="tabpanel" aria-labelledby="inbox-tab" style="overflow: hidden;height:calc(100vh - 200px)">
+                <div class="tab-pane fade show active" id="inbox" role="tabpanel" aria-labelledby="inbox-tab" style="overflow: auto;height:calc(100vh - 200px)">
                     <div class="row pt-1 pb-3">
                         <div class="col-12">
                             <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام پروژه، پیمان و پیمانکار" v-on:input="search_input_filter" aria-describedby="basic-addon3">
@@ -56,7 +56,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="outbox" role="tabpanel" aria-labelledby="outbox-tab" style="overflow: hidden;height:calc(100vh - 200px)">
+                <div class="tab-pane fade" id="outbox" role="tabpanel" aria-labelledby="outbox-tab" style="overflow: auto;height:calc(100vh - 200px)">
                     <div class="row pt-1 pb-3">
                         <div class="col-12">
                             <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام پروژه، پیمان و پیمانکار" v-on:input="search_input_filter" aria-describedby="basic-addon3">
