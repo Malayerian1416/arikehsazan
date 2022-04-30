@@ -21,15 +21,21 @@
             font-size: 13px;
         }
         .retry_button{
-            font-size: 10px;
+            font-size: 12px;
+            padding: 15px 25px;
+        }
+        .disconnect_img{
+            width: 90px;
+            height: auto;
         }
     </style>
 </head>
 <body class="rtl">
 <div class="container d-flex justify-content-center align-items-center flex-column">
-    <img class="disconnect_img" src="{{asset("/img/unplug-icon.png")}}" alt="">
-    <span class="iran_yekan disconnect_text mt-3">عدم اتصال به اینترنت</span>
-    <button class="btn btn-outline-warning iran_yekan mt-5 retry_button" onclick="location.href = '{{route("login")}}'">
+    <img class="disconnect_img" src="{{asset("/img/no-internet.png")}}" alt="">
+    <span class="iran_yekan disconnect_text mt-1">عدم اتصال به اینترنت</span>
+    <button class="btn btn-lg btn-outline-warning iran_yekan mt-3 retry_button" onclick="location.href = '{{route("login")}}';">
+        <i class="fa fa-refresh fa-2x" style="color: yellow"></i>
         تلاش مجدد
     </button>
 </div>

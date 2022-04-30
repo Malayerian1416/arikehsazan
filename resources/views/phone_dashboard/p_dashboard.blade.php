@@ -15,8 +15,8 @@
     @yield('styles')
 </head>
 <body class="antialiased rtl">
-<button id="select_refresher" onclick="$('.select_picker').selectpicker('refresh')" hidden>
-</button>
+<button id="select_refresher" onclick="$('.select_picker').selectpicker('refresh')" hidden></button>
+<input id="csrf_token" hidden value="{{csrf_token()}}">
 <div id="app" v-on:click="account_information_open">
     <div class="notification_permission_window" v-cloak v-show="notification_permission">
         <i class="fas fa-info-circle white_color fa-3x mb-2"></i>

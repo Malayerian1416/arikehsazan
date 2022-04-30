@@ -1,9 +1,4 @@
 @extends('desktop_dashboard.d_dashboard')
-@section('styles')
-@endsection
-@section('scripts')
-    <script type="text/javascript" src="{{asset("/js/jquery.mask.js")}}" defer></script>
-@endsection
 @section('page_title')
     {{"جزئیات صورت وضعیت پیمان " . $invoice->contract->name . " از پروژه " . $invoice->contract->project->name}}
 @endsection
@@ -440,7 +435,7 @@
             <i class="fa fa-user button_icon"></i>
             <span>اطلاعات پیمانکار</span>
         </button>
-        <a class="iran_yekan btn btn-outline-warning mr-2 print_anchor" target="_blank" href="{{route("print",$invoice->id)}}">
+        <a class="iran_yekan btn btn-outline-warning mr-2 print_anchor" target="_blank" href="{{route("InvoiceAutomation.print",$invoice->id)}}">
             <i class="fa fa-print button_icon"></i>
             <span>چاپ</span>
         </a>

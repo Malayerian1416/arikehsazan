@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\BankAccount;
 use App\Models\Contract;
 use App\Models\ContractCategory;
@@ -218,5 +219,14 @@ class AxiosCallController extends Controller
     public function get_geo_json(Request $request){
         $location = Location::query()->findOrFail($request->input("location_id"));
         return $location->geoJson;
+    }
+    public function record_user_position(Request $request): string
+    {
+        Attendance::query()->create(["staff_id" => Auth::id(),"user_id" => Auth::id(),"location_id" => 1,"year" => 1401,"month" => 5,"day" => 1,"time" => "18:00","timestamp"=>date("Y/m/d H:i:s"),"type" => "ab"]);
+        return "ok";
+    }
+    public function check_online(): bool
+    {
+        return true;
     }
 }

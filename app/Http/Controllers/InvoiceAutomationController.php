@@ -20,19 +20,6 @@ use Throwable;
 
 class InvoiceAutomationController extends Controller
 {
-    public function __construct()
-    {
-        $agent = new Agent();
-        if ($agent->isDesktop())
-            $this->agent = "desktop_dashboard";
-        else if($agent->isPhone() || $agent->isTablet())
-            $this->agent = "phone_dashboard";
-        else if ($agent->robot())
-            return view("errors/cant_detect_device");
-        else
-            return view("errors/cant_detect_device");
-        return false;
-    }
     public function get_automation_items(){
         Gate::authorize("automation","InvoiceAutomation");
         try {
@@ -164,7 +151,7 @@ class InvoiceAutomationController extends Controller
             if ($invoice->signs()->where("user_id","=",Auth::id())->count() == 0)
                 $invoice->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
             DB::commit();
-            return redirect()->route("InvoiceAutomation.new")->with(["result" => "sent"]);
+            return redirect()->route("InvoiceAutomation.automation")->with(["result" => "sent"]);
         }
         catch (Throwable $ex){
             DB::rollBack();
@@ -178,7 +165,7 @@ class InvoiceAutomationController extends Controller
             DB::beginTransaction();
             InvoiceFlow::refer($id);
             DB::commit();
-            return redirect()->route("InvoiceAutomation.new")->with(["result" => "referred"]);
+            return redirect()->route("InvoiceAutomation.automation")->with(["result" => "referred"]);
         }
         catch (Throwable $ex){
             DB::rollBack();
@@ -298,7 +285,7 @@ class InvoiceAutomationController extends Controller
                 "receipt_scan" => $request->hasFile('payment_receipt_scan') ? 1 : 0
             ]);
             DB::commit();
-            return redirect()->route("InvoiceAutomation.new")->with(["result" => "payed"]);
+            return redirect()->route("InvoiceAutomation.automation")->with(["result" => "payed"]);
         }
         catch (Throwable $ex){
             DB::rollBack();

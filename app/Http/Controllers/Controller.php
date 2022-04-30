@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contract;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -36,5 +37,12 @@ class Controller extends BaseController
         catch (Throwable $ex){
             abort(501);
         }
+    }
+    public function contract_number(): string
+    {
+        $number = "پ"."/".verta()->format("Y/m/").rand(101,999);
+        while (Contract::query()->where("contract_row",$number)->get()->isNotEmpty())
+            $number = "پ"."/".verta()->format("Y/m/").rand(101,999);
+        return $number;
     }
 }

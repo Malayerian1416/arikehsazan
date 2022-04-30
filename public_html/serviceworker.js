@@ -1,4 +1,6 @@
-const staticCacheName = "pwa-v" + new Date().getTime();
+let CACHE_VERSION = 1.46;
+const file_ext = [".jpg",".png",".svg",".bmp",".ttf",".eot",".woff",".woff2","css",".js",".map"];
+let Cache = 'static-cache-v' + CACHE_VERSION;
 const filesToCache = [
     '/serviceworker.js',
     '/offline',
@@ -16,7 +18,7 @@ const filesToCache = [
     '/js/mobile_login.js',
     '/js/p_dashboard.js',
     '/js/persianDatepicker.min.js',
-    "/img/unplug-icon.png",
+    "/img/no-internet.png",
     "/img/arrow-down.svg",
     "/img/arrow-left.svg",
     "/img/arrow-right.svg",
@@ -80,40 +82,49 @@ const filesToCache = [
     '/fonts/vendor/@fortawesome/fontawesome-free/webfa-brands-400.ttf',
 ];
 
-// Cache on install
 self.addEventListener("install", event => {
     this.skipWaiting();
     event.waitUntil(
-        caches.open(staticCacheName)
-            .then(cache => {
+        caches.open(Cache)
+            .then((cache) => {
                 return cache.addAll(filesToCache);
             })
     )
 });
 
-// Clear cache on activate
 self.addEventListener('activate', event => {
+    this.skipWaiting();
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames
-                    .filter(cacheName => (cacheName.startsWith("pwa-")))
-                    .filter(cacheName => (cacheName !== staticCacheName))
+                    .filter(cacheName => (cacheName.startsWith("static-cache-v")))
+                    .filter(cacheName => (cacheName !== Cache))
                     .map(cacheName => caches.delete(cacheName))
             );
         })
     );
 });
 
-// Serve from Cache
-self.addEventListener("fetch", event => {
-    event.respondWith(
-        caches.match(event.request)
-            .then(response => {
-                return response || fetch(event.request);
-            })
-            .catch(() => {
-                return caches.match('offline');
-            })
-    )
+self.addEventListener('fetch', (event) => {
+    if (file_ext.some(v => event.request.url.toLowerCase().includes(v))) {
+        event.respondWith(caches.open(Cache).then((cache) => {
+            return cache.match(event.request.url).then((cachedResponse) => {
+                if (cachedResponse) {
+                    return cachedResponse;
+                }
+                return fetch(event.request).then((fetchedResponse) => {
+                    cache.put(event.request, fetchedResponse.clone());
+                    return fetchedResponse;
+                }).catch(err => {return caches.match('offline');});
+            });
+        }))
+    }
+    else {
+        event.respondWith(caches.open(Cache).then((cache) => {
+            return fetch(event.request).then((fetchedResponse) => {
+                return fetchedResponse;
+            }).catch(err => {return caches.match('offline');});
+        }))
+    }
 });

@@ -1,6 +1,6 @@
 body{
     min-height:100%;
-    background:linear-gradient(0deg, rgb(16, 70, 68,0.9), rgb(16, 70, 68,0.9)), url(../img/dashboard-bg.jpg?v=123) no-repeat;
+    background:linear-gradient(0deg, rgb(16, 70, 68,0.9), rgb(16, 70, 68,0.9)), url(../img/dashboard-bg.jpg) no-repeat;
     background-size: cover;
 }
 *{
@@ -281,7 +281,7 @@ body{
     width: 100%;
     padding: 20px 15px 15px 15px;
     height: calc(100% - 90px);
-    overflow:hidden;
+    overflow-y:auto;
 }
 .page_content_body::-webkit-scrollbar {
     width: 0.5em;
@@ -1067,4 +1067,10 @@ textarea{
 }
 [v-cloak]{
     display: none;
+}
+.leaflet-default-icon-path {
+    background-image: url(./images/marker-icon.png) !important;
+}
+.leaflet-default-shadow-path {
+    background-image: url(./images/marker-icon.png) !important;
 }

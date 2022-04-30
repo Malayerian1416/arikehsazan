@@ -9,14 +9,14 @@
         -
         داشبورد
     </title>
-    <link href="{{asset("/css/app.css?v=".time())}}" rel="stylesheet">
-    <link href="{{asset("/css/d_dashboard.css?v=".time())}}" rel="stylesheet">
+    @laravelPWA
+    <link href="{{asset("/css/app.css")}}" rel="stylesheet">
+    <link href="{{asset("/css/d_dashboard.css?v=889")}}" rel="stylesheet">
     <link href="{{asset("/css/persianDatepicker-default.css")}}" rel="stylesheet">
     @yield('styles')
 </head>
 <body class="antialiased rtl">
-<button id="select_refresher" onclick="$('.select_picker').selectpicker('refresh')" hidden>
-</button>
+<button id="select_refresher" onclick="$('.select_picker').selectpicker('refresh')" hidden></button>
 <div id="app" v-on:click="account_information_open">
     <div class="notification_permission_window" v-cloak v-show="notification_permission">
         <i class="fas fa-info-circle white_color fa-3x mb-2"></i>
@@ -240,11 +240,11 @@
         </div>
     @endif
 @endif
-<script src="{{asset("js/app.js?v=".time())}}"></script>
+<script src="{{asset("js/app.js")}}"></script>
 <script src="{{asset("/js/numeral.js")}}"></script>
 <script src="{{asset("/js/persianDatepicker.min.js")}}"></script>
-<script src="{{asset("/js/d_dashboard.js?v=".time())}}"></script>
-<script src="{{asset("/js/kernel.js?v=".time())}}" defer></script>
+<script src="{{asset("/js/d_dashboard.js")}}"></script>
+<script src="{{asset("/js/kernel.js?v=sdfsdf")}}" defer></script>
 @yield('scripts')
 <div id="menu_search" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">

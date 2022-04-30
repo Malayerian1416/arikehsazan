@@ -44,7 +44,7 @@
             <div class="form-group col-md-12 col-lg-3 col-xl-2 align-self-end">
                 <button class="btn btn-outline-secondary iran_yekan @error('project_id') mb-4 @enderror @error('from_date') mb-4 @enderror @error('to_date') mb-4 @enderror" style="height: 30px">
                     <i class="fa fa-search"></i>
-                    جستجو و نمایش
+                    جستجو
                 </button>
             </div>
         </div>
@@ -57,7 +57,7 @@
         <div class="col-12 mb-3 mt-3">
             <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با تمامی عناوین" v-on:input="search_input_filter" aria-describedby="basic-addon3">
         </div>
-        <div class="table-responsive col-12">
+        <div class="table-responsive smaller col-12">
             <table class="table table-striped iran_yekan index_table" id="main_table" data-filter='[1,2,3,4,5]'>
                 <thead class="thead-bg-color">
                 <tr>

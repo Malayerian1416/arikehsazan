@@ -51,8 +51,10 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
         Route::post("/get_bank_account_information",[AxiosCallController::class,"get_bank_account_information"]);
         Route::post("/change_extra_deduction_content",[AxiosCallController::class,"change_extra_deduction_content"]);
         Route::get("/get_new_notification",[AxiosCallController::class,"get_new_notification"]);
+        Route::get("/check_online",[AxiosCallController::class,"check_online"]);
         Route::post("/update_bank_information",[AxiosCallController::class,"update_bank_information"]);
         Route::post("/get_geo_json",[AxiosCallController::class,"get_geo_json"]);
+        Route::post("/record_user_position",[AxiosCallController::class,"record_user_position"]);
         Route::resource("/Contractors",ContractorController::class)->except("show");
         Route::resource("/Roles",RoleController::class)->except("show");
         Route::resource("/Users",UserController::class)->except("show");
@@ -76,16 +78,16 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
             Route::post("/PaymentProcess/{id}", [InvoiceAutomationController::class, "payment_process"])->name("InvoiceAutomation.payment_process");
             Route::get("/Sent", [InvoiceAutomationController::class, "sent_invoices"])->name("InvoiceAutomation.sent");
             Route::get("/Details/Sent/{id}", [InvoiceAutomationController::class, "view_sent_details"])->name("InvoiceAutomation.sent.details");
+            Route::get("/Print/{id}",[PrintController::class,"print_invoice"])->name("InvoiceAutomation.print");
         });
         Route::resource("/Locations",LocationController::class);
         Route::post("/Locations/{id}",[LocationController::class,"location_change_activation"])->name("location_change_activation");
         Route::resource("/BankAccounts",BankAccountController::class)->except("show");
         Route::get("/CheckPrint",function (){return view("desktop_dashboard.check_print");});
-        Route::get("/Print/{id}",[PrintController::class,"print_invoice"])->name("print");
         Route::group(['prefix' => '/WorkerPayments'],function (){
             Route::get("/create",[WorkerPaymentAutomationController::class,"create"])->name("WorkerPayments.create");
             Route::post("/store",[WorkerPaymentAutomationController::class,"store"])->name("WorkerPayments.store");
-            Route::get("/new",[WorkerPaymentAutomationController::class,"get_new_items"])->name("WorkerPayments.new");
+            Route::get("/Automation",[WorkerPaymentAutomationController::class,"get_automation_items"])->name("WorkerPayments.automation");
             Route::put("/Agree&Send/{id}",[WorkerPaymentAutomationController::class,"automate_sending"])->name("WorkerPayments.automate_sending");
             Route::get("/Payment/{id}",[WorkerPaymentAutomationController::class,"payment"])->name("WorkerPayments.payment");
             Route::put("/PaymentProcess/{id}",[WorkerPaymentAutomationController::class,"payment_process"])->name("WorkerPayments.payment_process");

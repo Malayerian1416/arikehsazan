@@ -81,6 +81,7 @@
                                 <th scope="col">موقعیت</th>
                                 <th scope="col">تاریخ ثبت</th>
                                 <th scope="col">تاریخ ارسال</th>
+                                <th scope="col">عملیات</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -113,6 +114,7 @@
                                     </td>
                                     <td><span>{{verta($invoice_automation->created_at)->format("Y/n/d")}}</span></td>
                                     <td><span>{{verta($invoice_automation->updated_at)->format("Y/n/d")}}</span></td>
+                                    <td><a class="print_anchor" href="{{route("InvoiceAutomation.print",$invoice_automation->invoice_id)}}" target="_blank"><i class="fa fa-print fa-1_4x"></i></a></td>
                                 </tr>
                             @empty
                             @endforelse

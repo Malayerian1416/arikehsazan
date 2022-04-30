@@ -3,7 +3,7 @@
 return [
     'name' => 'LaravelPWA',
     'manifest' => [
-        'name' => '',
+        'name' => 'اریکه سازان توس',
         'short_name' => 'اریکه سازان توس',
         'start_url' => '/',
         'background_color' => '#103d41',

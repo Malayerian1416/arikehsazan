@@ -11,15 +11,12 @@
     <!-- Styles -->
     <link href="{{asset("/css/app.css?v=".time())}}" rel="stylesheet">
     <link href="{{asset("/css/login.css?v=".time())}}" rel="stylesheet">
-    @laravelPWA
 </head>
 <body class="antialiased">
 <div class="rtl container-fluid login_bg">
     <div class="login_window">
         <div class="w-100 login_body">
-            <div class="side">
-
-            </div>
+            <div class="side"></div>
             <div class="content text-center">
                 <h4 class="iran_yekan pb-4 black_color">صفحه ورود به ســیسـتم</h4>
                 <div>
@@ -71,7 +68,6 @@
 </div>
 <script type="text/javascript" src="{{asset("/js/app.js?v=".time())}}"></script>
 <script type="text/javascript" src="{{asset("/js/login.js?v=".time())}}"></script>
-<script type="text/javascript" src="{{asset("/serviceworker.js?v=".time())}}"></script>
 <script async src="https://www.google.com/recaptcha/api.js?hl=fa"></script>
 </body>
 </html>

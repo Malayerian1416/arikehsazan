@@ -103,6 +103,7 @@ const app = new Vue({
         location_id: '',
     },
     mounted() {
+        console.log(navigator.connection);
         const self = this;
         this.loading_window_active = false;
         this.linkList = document.getElementsByTagName('a');
@@ -110,6 +111,8 @@ const app = new Vue({
             if (!$(this.linkList[i]).hasClass("print_anchor"))
                 this.linkList[i].onclick = this.linkAction;
         }
+        if ('serviceWorker' in navigator)
+            navigator.serviceWorker.register('/serviceworker.js', {scope: '/'});
         let notification = document.getElementsByClassName("badge");
         if (notification.length !== 0) {
             let get_notification = new EventSource("/Dashboard/Desktop/get_new_notification");
@@ -132,42 +135,54 @@ const app = new Vue({
             }
         }
         if ($("#attendance_map").length){
+            let map = L.map('attendance_map').setView([36.31559,59.56796], 12);
+            L.tileLayer(
+                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 18,
+                }).addTo(map);
             const self = this
             let options = {
                 enableHighAccuracy: true,
                 timeout: 10000,
                 maximumAge: 0
             };
-            navigator.permissions.query({ name: 'geolocation' })
-                .then(function () {
-                    self.loading_window_active = true;
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(position => {
-                            let map = L.map('attendance_map').setView([position.coords.latitude,position.coords.longitude], 16);
-                            L.tileLayer(
-                                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                    maxZoom: 18,
-                                }).addTo(map);
-                            L.marker([position.coords.latitude,position.coords.longitude]).addTo(map);
-                            self.loading_window_active = false;
-                        },positionError => {},options);
+            self.loading_window_active = true;
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    L.marker([position.coords.latitude,position.coords.longitude]).addTo(map);
+                    map.flyTo([position.coords.latitude, position.coords.longitude], 16)
+                    self.loading_window_active = false;
+                },positionError => {
+                    self.loading_window_active = false;
+                    switch (positionError.code) {
+                        case 1:
+                            bootbox.alert("اجازه دسترسی به سیستم ناوبری صادر نشده است");
+                            break
+                        case 2:
+                            bootbox.alert("موقعیت مکانی شما مشخص نمی باشد");
+                            break
+                        case 3:
+                            bootbox.alert("زمان سنجش موقعیت مکانی شما به اتمام رسیده است");
+                            break
                     }
-                });
-        }
-        if(Notification.permission !== "granted"){
-            if ('serviceWorker' in navigator && 'PushManager' in window){
-                this.notification_text = "لطفا جهت دریافت پیام از رویدادهای سامانه (Notification)، در پنجره نمایان شده گزینه Allow را انتخاب بفرمایید.";
-                this.notification_permission = true;
-                Notification.requestPermission().then(result => {
-                    this.notification_permission = false;
-                    navigator.serviceWorker.ready.then(registration => {
-                        registration.showNotification("سیستم Notification با موفقیت فعال شد!", {}).then(r =>{});
-                    });
-                });
+                },options);
             }
-            else
-                this.notification_text = "متاسفانه مرورگر دستگاه شما از سیستم پیام رسانی (Notification) پشتیبانی نمی کند";
         }
+
+                if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                    if ('serviceWorker' in navigator && 'PushManager' in window) {
+                        this.notification_text = "لطفا جهت دریافت پیام از رویدادهای سامانه (Notification)، در پنجره نمایان شده گزینه Allow را انتخاب بفرمایید.";
+                        this.notification_permission = true;
+                        Notification.requestPermission().then(result => {
+                            this.notification_permission = false;
+                            navigator.serviceWorker.ready.then(registration => {
+                                registration.showNotification("سیستم Notification با موفقیت فعال شد!", {}).then(r => {
+                                });
+                            });
+                        });
+                    } else
+                        this.notification_text = "متاسفانه مرورگر دستگاه شما از سیستم پیام رسانی (Notification) پشتیبانی نمی کند";
+                }
         if ($(".select_picker").length)
             $(".select_picker").selectpicker('refresh');
     },
@@ -221,6 +236,7 @@ const app = new Vue({
         },
         submit_create_form(e) {
             let form = e.target;
+            let self = this;
             e.preventDefault();
             bootbox.confirm({
                 message: "آیا برای ذخیره اطلاعات اطمینان دارید؟",
@@ -237,13 +253,12 @@ const app = new Vue({
                 },
                 callback: function (result) {
                     if (result === true) {
-                        let self = this;
+                        self.loading_window_active = true;
                         bootbox.hideAll();
                         $(".masked").length > 0 ? $(".masked").unmask() : "";
                         $(".number_format").length > 0 ? AutoNumeric.getAutoNumericElement('.number_format').formUnformat() : '';
                         self.button_loading = true;
                         self.button_not_loading = false;
-                        self.loading_window_active = true;
                         form.submit();
                     }
                 }
@@ -268,12 +283,12 @@ const app = new Vue({
                 },
                 callback: function (result) {
                     if (result === true) {
+                        self.loading_window_active = true;
                         bootbox.hideAll();
                         $(".masked").length > 0 ? $(".masked").unmask() : "";
                         $(".number_format").length > 0 ? AutoNumeric.getAutoNumericElement('.number_format').formUnformat() : '';
                         self.button_loading = true;
                         self.button_not_loading = false;
-                        self.loading_window_active = true;
                         form.submit();
                     }
                 }
@@ -433,8 +448,8 @@ const app = new Vue({
             let form = e.target;
             let options = {
                 enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 1
+                timeout: 10000,
+                maximumAge: 0
             };
             e.preventDefault();
             let message = $("#type").val() === "presence" ? "آیا برای ثبت ورود کارمند اطمینان دارید؟":"آیا برای ثبت خروج کارمند اطمینان دارید؟"
@@ -453,36 +468,44 @@ const app = new Vue({
                 },
                 callback: function (result) {
                     if (result === true) {
-                        navigator.permissions.query({ name: 'geolocation' })
-                            .then(function (){
-                                self.loading_window_active = true;
-                                if (navigator.geolocation) {
-                                    navigator.geolocation.getCurrentPosition(position => {
-                                        axios.post("/Dashboard/Desktop/get_geo_json", {"location_id" : self.location_id})
-                                            .then(function (response) {
-                                                self.loading_window_active = false;
-                                                if (response.data !== null) {
-                                                    const in_position = d3.geoContains(response.data,[position.coords.longitude, position.coords.latitude]);
-                                                    $("#ff").val(position.coords.latitude + " " + position.coords.longitude);
-                                                    if (in_position){
-                                                        bootbox.hideAll();
-                                                        self.button_loading = true;
-                                                        self.button_not_loading = false;
-                                                        self.loading_window_active = true;
-                                                        form.submit();
-                                                    }
-                                                    else {
-                                                        self.loading_window_active = false;
-                                                        bootbox.alert("در موقعیت انتخاب شده نمی باشید");
-                                                    }
-                                                }
-                                            }).catch(function (){self.loading_window_active = false;});
-                                    },positionError => {
+                        self.loading_window_active = true;
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(position => {
+                                axios.post("/Dashboard/Desktop/get_geo_json", {"location_id" : self.location_id})
+                                    .then(function (response) {
                                         self.loading_window_active = false;
-                                    },options);
-                                }}).catch(function () {
-                                bootbox.alert("با مجوز دسترسی به موقعیت یابی مخالفت شده است");
-                            });
+                                        if (response.data !== null) {
+                                            const in_position = d3.geoContains(response.data,[position.coords.longitude, position.coords.latitude]);
+                                            if (in_position){
+                                                bootbox.hideAll();
+                                                self.button_loading = true;
+                                                self.button_not_loading = false;
+                                                self.loading_window_active = true;
+                                                form.submit();
+                                            }
+                                            else {
+                                                self.loading_window_active = false;
+                                                bootbox.alert("در موقعیت انتخاب شده نمی باشید");
+                                            }
+                                        }
+                                    }).catch(function (){self.loading_window_active = false;});
+                            },positionError => {
+                                self.loading_window_active = false;
+                                switch (positionError.code) {
+                                    case 1:
+                                        bootbox.alert("اجازه دسترسی به سیستم ناوبری صادر نشده است");
+                                        break
+                                    case 2:
+                                        bootbox.alert("موقعیت مکانی شما مشخص نمی باشد");
+                                        break
+                                    case 3:
+                                        bootbox.alert("زمان سنجش موقعیت مکانی شما به اتمام رسیده است");
+                                        break
+                                }
+                            },options);
+                        }
+                        else
+                            bootbox.alert("مرورگر شما از سیستم ناوبری پشتیبانی نمی کند");
                     }
                 }
             }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
@@ -642,7 +665,6 @@ const app = new Vue({
                     .then(response =>
                     {
                         self.related_data_search_loading = false;
-                        console.log(response["data"].length)
                         self.searches_child = '';
                         self.related_data_select_child = '';
                         if (response["data"].length === 0) {

@@ -21,19 +21,6 @@ use ZipArchive;
 
 class ContractController extends Controller
 {
-    public function __construct()
-    {
-        $agent = new Agent();
-        if ($agent->isDesktop())
-            $this->agent = "desktop_dashboard";
-        else if($agent->isPhone() || $agent->isTablet())
-            $this->agent = "phone_dashboard";
-        else if ($agent->robot())
-            return view("errors/cant_detect_device");
-        else
-            return view("errors/cant_detect_device");
-        return false;
-    }
     public function index(Request $request){
         Gate::authorize("index","Contracts");
         try {
@@ -63,7 +50,7 @@ class ContractController extends Controller
                 }
             } else
                 $contracts = Contract::get_permissions(["contractor", "user", "unit"]);
-            $contractors = Contractor::get_permissions([]);
+            $contractors = Contractor::all();
             $projects = Project::get_permissions([]);
             $contract_branches = ContractBranch::all();
             $units = Unit::all();
@@ -78,7 +65,9 @@ class ContractController extends Controller
                 "contractors" => $contractors,
                 "projects" => $projects,
                 "contract_branches" => $contract_branches,
-                "units" => $units]);
+                "units" => $units,
+                "contract_row" => $this->contract_number()
+            ]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);

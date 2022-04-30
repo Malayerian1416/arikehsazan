@@ -53,10 +53,9 @@ class PrintController extends Controller
                 ])->where("contract_id","=",$invoice->contract->id)->orderBy("number","asc")->get();
             $invoice_flow_permissions = InvoiceFlow::query()->where("role_id","=",Auth::user()->role->id)->first();
             $bank_accounts = BankAccount::query()->with(["docs","checks"])->get();
-            $pdf = Storage::disk("invoice_pdfs")->exists("{$invoice->id}/invoicePDF.pdf");
             return view("desktop_dashboard.print_invoice",[
                 "invoice" => $invoice,"contract_details" => $contract_details,"main_amounts" => $main_amounts,"invoice_flow_permissions" => $invoice_flow_permissions,
-                "contractor_details" => $contractor_details, "bank_accounts" => $bank_accounts, "pdf" => $pdf
+                "contractor_details" => $contractor_details, "bank_accounts" => $bank_accounts
             ]);
         }
         catch (Throwable $ex){

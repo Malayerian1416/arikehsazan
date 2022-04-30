@@ -75,7 +75,7 @@
                         </div>
                         <div class="form-group col-md-12 col-lg-4 col-xl-3">
                             <label class="col-form-label iran_yekan black_color" for="contract_row">شماره قرارداد</label>
-                            <input type="text" class="form-control iran_yekan text-center @error('contract_row') is-invalid @enderror" id="contract_row" name="contract_row" value="{{old("contract_row")}}">
+                            <input type="text" readonly class="form-control iran_yekan text-center @error('contract_row') is-invalid @enderror" id="contract_row" name="contract_row" value="{{$contract_row}}">
                             @error('contract_row')
                             <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                             @enderror

@@ -12,7 +12,7 @@
                     موقعیت مکانی
                     <strong class="red_color">*</strong>
                 </label>
-                <select class="form-control iran_yekan select_picker @error('location_id') is-invalid @enderror" title="انتخاب کنید" data-size="10" data-live-search="true" id="location_id" name="location_id">
+                <select class="form-control iran_yekan select_picker @error('location_id') is-invalid @enderror" required title="انتخاب کنید" data-size="10" data-live-search="true" id="location_id" name="location_id" v-model="location_id">
                     @forelse($locations as $location)
                         <option @if(old("location_id") == $location->id) selected @endif value="{{$location->id}}">{{$location->name}}</option>
                     @empty
@@ -22,6 +22,7 @@
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>
+            <div id="attendance_map" style="width: 100vw;height: 400px;margin: 0"></div>
         </div>
     </form>
 @endsection

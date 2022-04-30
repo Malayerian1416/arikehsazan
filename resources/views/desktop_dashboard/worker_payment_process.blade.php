@@ -1,13 +1,4 @@
 @extends('desktop_dashboard.d_dashboard')
-@section('styles')
-    <link href="{{asset("/css/persianDatepicker-default.css")}}" rel="stylesheet">
-    <link href="{{asset("/css/bootstrap-select.css")}}" rel="stylesheet">
-@endsection
-@section('scripts')
-    <script type="text/javascript" src="{{asset("/js/persianDatepicker.min.js")}}"></script>
-    <script type="text/javascript" src="{{asset("/js/bootstrap-select.min.js")}}"></script>
-    <script type="text/javascript" src="{{asset("/js/jquery.mask.js")}}" defer></script>
-@endsection
 @section('page_title')
     عملیات پرداخت اتوماسیون پرداختی کارگری
 @endsection
@@ -26,6 +17,7 @@
             </button>
         </div>
     @endif
+    <div class="container">
     <form id="create_form" action="{{route("WorkerPayments.payment_process",$worker_automation->id)}}" method="post" v-on:submit="submit_create_form" enctype="multipart/form-data">
         @csrf
         @method("put")
@@ -187,6 +179,7 @@
             </table>
         </div>
     </form>
+    </div>
 @endsection
 @section('page_footer')
     <div class="form-row m-0 d-flex flex-row justify-content-center">

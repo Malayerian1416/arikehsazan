@@ -23,19 +23,6 @@ use Throwable;
 
 class WorkerPaymentAutomationController extends Controller
 {
-    public function __construct()
-    {
-        $agent = new Agent();
-        if ($agent->isDesktop())
-            $this->agent = "desktop_dashboard";
-        else if($agent->isPhone())
-            $this->agent = "phone_dashboard";
-        else if ($agent->robot())
-            return view("errors/cant_detect_device");
-        else
-            return view("errors/cant_detect_device");
-        return false;
-    }
     public function index(){
         Gate::authorize("index","WorkerPayments");
         try {
@@ -43,7 +30,7 @@ class WorkerPaymentAutomationController extends Controller
             $workers = Contractor::query()->where("type","=",1)->get();
             $worker_automations = WorkerPaymentAutomation::query()->with(["project","contractor","user"])
                 ->whereHas("user",function ($query){$query->where("id","=",Auth::id());})->get();
-            return view("{$this->agent}.worker_automations",["worker_automations" => $worker_automations,"projects" => $projects,"workers" => $workers]);
+            return view("{$this->agent}.created_worker_payments_index",["worker_automations" => $worker_automations,"projects" => $projects,"workers" => $workers]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
@@ -86,7 +73,7 @@ class WorkerPaymentAutomationController extends Controller
     public function edit($id){
         Gate::authorize("edit","WorkerPayments");
         try {
-            $projects = Project::get_permissions();
+            $projects = Project::get_permissions([]);
             $workers = Contractor::query()->where("type","=",1)->get();
             $worker_automation = WorkerPaymentAutomation::query()->with(["project","contractor"])->findOrFail($id);
             return view("{$this->agent}.edit_created_worker_automation",["worker_automation" => $worker_automation,"projects" => $projects,"workers" => $workers]);
@@ -127,17 +114,18 @@ class WorkerPaymentAutomationController extends Controller
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
-    public function get_new_items(){
-        Gate::authorize("new","WorkerPayments");
+    public function get_automation_items(){
+        Gate::authorize("automation","WorkerPayments");
         try {
             $worker_payments = WorkerPaymentAutomation::query()->with([
                 "project" => function($query){$query->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());});},"contractor","user","signs"])
                 ->where("current_role_id", "=", Auth::user()->role->id)->where("is_finished", "<>", 1)
-                ->orderBy("updated_at", "DESC")->get();
+                ->orderBy("created_at", "DESC")->get();
+            $sent_worker_payments = WorkerPaymentAutomation::query()->whereHas("signs",function ($query){$query->where("user_id",Auth::id());})->with(["contractor","user","signs","project","payments"])->get();
             WorkerPaymentAutomation::query()->whereHas("project.permitted_user",function ($query){$query->where("users.id","=",Auth::id());})
                 ->where("current_role_id", "=", Auth::user()->role->id)->where("is_finished", "<>", 1)
                 ->update(["is_read" => 1]);
-            return view("{$this->agent}.worker_automation_new",["worker_payments" => $worker_payments]);
+            return view("{$this->agent}.worker_payments_automation",["worker_payments" => $worker_payments,"sent_worker_payments" => $sent_worker_payments]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
@@ -280,7 +268,7 @@ class WorkerPaymentAutomationController extends Controller
                 "receipt_scan" => $request->hasFile('payment_receipt_scan') ? 1 : 0
             ]);
             DB::commit();
-            return redirect()->route("WorkerPayments.new")->with(["result" => "payed","print" => $worker_automation->id]);
+            return redirect()->route("WorkerPayments.automation")->with(["result" => "payed","print" => $worker_automation->id]);
         }
         catch (Throwable $ex){
             DB::rollBack();
