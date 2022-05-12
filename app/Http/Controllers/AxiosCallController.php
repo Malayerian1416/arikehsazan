@@ -15,6 +15,7 @@ use App\Models\Location;
 use App\Models\Project;
 use App\Models\Unit;
 use App\Models\WorkerPaymentAutomation;
+use http\Env;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -228,5 +229,8 @@ class AxiosCallController extends Controller
     public function check_online(): bool
     {
         return true;
+    }
+    public function get_vapid_key(){
+        $vapid = env("VAPID_KEY");
     }
 }

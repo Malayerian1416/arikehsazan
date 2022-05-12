@@ -1,4 +1,16 @@
 $(document).ready(function (){
+    document.addEventListener("popstate",function(e){
+        $(".loading_window").hide();
+    });
+    document.addEventListener("unload",function(e){
+        $(".loading_window").hide();
+    });
+    document.addEventListener("blur",function(e){
+        $(".loading_window").hide();
+    });
+    document.addEventListener("pagehide",function(e){
+        $(".loading_window").hide();
+    });
     if ($(".number_format").length > 0)
         new AutoNumeric.multiple('.number_format',['integer',{'digitGroupSeparator':',','watchExternalChanges':true}]);
     if ($('.number_format_dec').length > 0)
@@ -58,8 +70,5 @@ $(document).ready(function (){
         $(".table-responsive").toggleClass("smaller");
         $(".hide_section_icon").hasClass("fa-plus-square") ? $(".hide_section_icon").removeClass("fa-plus-square").addClass("fa-minus-square") : $(".hide_section_icon").removeClass("fa-minus-square").addClass("fa-plus-square");
     });
-    function goBack(){
-        console.log(history.state);
-    }
 });
 

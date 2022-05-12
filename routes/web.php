@@ -4,6 +4,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MenuActionController;
 use App\Http\Controllers\MenuHeaderController;
 use App\Http\Controllers\MenuItemsController;
+use App\Http\Controllers\PushController;
+use App\Http\Controllers\PusherController;
 use \App\Http\Controllers\ReportsController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -32,12 +34,15 @@ use \App\Http\Controllers\PhonebookController;
 use \App\Http\Controllers\PrintController;
 use \App\Http\Controllers\LocationController;
 use \App\Http\Controllers\AttendanceController;
+use \App\Http\Controllers\AppSettingController;
 
 Auth::routes();
 Route::get('/', function () {
     return redirect("login");
 });
-Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
+Route::post('/push',[PushController::class,"store"]);
+Route::get('/push',[PushController::class,"push"])->name('push');
+Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth','PreviousUrlSession']],function() {
     Route::get("/",[DashboardController::class,"DeviceCheck"])->name("dashboard_home");
     Route::group(['prefix'=>'Desktop'],function (){
         Route::get("/",[DesktopDashboardController::class,"index"])->name("idle");
@@ -51,6 +56,7 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
         Route::post("/get_bank_account_information",[AxiosCallController::class,"get_bank_account_information"]);
         Route::post("/change_extra_deduction_content",[AxiosCallController::class,"change_extra_deduction_content"]);
         Route::get("/get_new_notification",[AxiosCallController::class,"get_new_notification"]);
+        Route::post("/get_vapid_key",[AxiosCallController::class,"get_vapid_key"]);
         Route::get("/check_online",[AxiosCallController::class,"check_online"]);
         Route::post("/update_bank_information",[AxiosCallController::class,"update_bank_information"]);
         Route::post("/get_geo_json",[AxiosCallController::class,"get_geo_json"]);
@@ -134,6 +140,7 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
             Route::post("/InvoiceFlow/store",[InvoiceFlowController::class,"store"])->name("InvoiceFlow.store");
             Route::get("/InvoiceFlow/permissions",[InvoiceFlowController::class,"permissions"])->name("InvoiceFlow.permissions");
             Route::post("/InvoiceFlow/SetPermissions",[InvoiceFlowController::class,"set_permissions"])->name("InvoiceFlow.set_permissions");
+            Route::resource("/AppSettings",AppSettingController::class)->except("show","destroy","create","store","edit");
         });
     });
     Route::group(['prefix'=>'Phone'],function (){
@@ -162,7 +169,7 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
         Route::group(['prefix' => '/WorkerPayments'],function (){
             Route::get("/create",[WorkerPaymentAutomationController::class,"create"])->name("WorkerPayments.create");
             Route::post("/store",[WorkerPaymentAutomationController::class,"store"])->name("WorkerPayments.store");
-            Route::get("/new",[WorkerPaymentAutomationController::class,"get_new_items"])->name("WorkerPayments.new");
+            Route::get("/Automation",[WorkerPaymentAutomationController::class,"get_automation_items"])->name("WorkerPayments.automation");
             Route::put("/Agree&Send/{id}",[WorkerPaymentAutomationController::class,"automate_sending"])->name("WorkerPayments.automate_sending");
             Route::get("/Payment/{id}",[WorkerPaymentAutomationController::class,"payment"])->name("WorkerPayments.payment");
             Route::put("/PaymentProcess/{id}",[WorkerPaymentAutomationController::class,"payment_process"])->name("WorkerPayments.payment_process");
@@ -176,11 +183,18 @@ Route::group(['prefix'=>'Dashboard', 'middleware'=>['auth']],function() {
     });
 });
 Route::get('/linkstorage', function () {
-    Artisan::call('cache:clear');
+    Artisan::call('storage:link');
 });
 Route::get('/clear', function () {
     Artisan::call('cache:clear');
     Artisan::call('route:clear');
     Artisan::call('config:clear');
     Artisan::call('view:clear');
+});
+Route::get("/n",function (){
+    $flow_roles = \App\Models\InvoiceFlow::query()->where("is_starter","=",0)->get();
+    if ($flow_roles->contains("role_id",4))
+    {
+        dd($flow_roles);
+    }
 });

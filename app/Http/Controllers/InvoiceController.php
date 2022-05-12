@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewInvoiceAutomation;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Contract;
 use App\Models\Invoice;
@@ -18,19 +19,6 @@ use Throwable;
 
 class InvoiceController extends Controller
 {
-    public function __construct()
-    {
-        $agent = new Agent();
-        if ($agent->isDesktop())
-            $this->agent = "desktop_dashboard";
-        else if($agent->isPhone() || $agent->isTablet())
-            $this->agent = "phone_dashboard";
-        else if ($agent->robot())
-            return view("errors/cant_detect_device");
-        else
-            return view("errors/cant_detect_device");
-        return false;
-    }
     public function index()
     {
         Gate::authorize("index","Invoices");
@@ -69,10 +57,12 @@ class InvoiceController extends Controller
                 "user_id" => Auth::id(),
                 "is_final" => $request->has("final_invoice") ? 1 : 0
             ]);
+            $main_role = InvoiceFlow::query()->where("is_main","=",1)->value("role_id");
             $invoice->automation_amounts()->create([
                 "user_id" => Auth::id(),
                 "quantity" => $validated["quantity"],
                 "amount" => $validated["amount"],
+                "is_main" => Auth::user()->role->id == $main_role ? 1 : 0,
                 "payment_offer" => $validated["payment_offer"],
                 "payment_offer_percent" => $validated["payment_offer_percent"]
             ]);
@@ -100,6 +90,7 @@ class InvoiceController extends Controller
             $invoice_automation = InvoiceFlow::automate();
             $invoice->automation()->create($invoice_automation);
             DB::commit();
+            event(new NewInvoiceAutomation($invoice->automation));
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
@@ -134,7 +125,7 @@ class InvoiceController extends Controller
             DB::beginTransaction();
             $validated = $request->validated();
             $invoice = Invoice::query()->findOrFail($id);
-            $invoice->update(["is_final" => $request->has("final_invoice") ? 1 : 0]);
+            $invoice->update(["is_final" => $request->has("final_invoice") ? 1 : 0, "is_read" => 0]);
             InvoiceAutomationAmounts::query()->findOrFail($request->input("automation_amount_id"))->update([
                 "quantity" => $validated["quantity"],
                 "amount" => $validated["amount"],
@@ -165,6 +156,7 @@ class InvoiceController extends Controller
                 InvoiceComment::query()->findOrFail($request->input("invoice_comment_id"))->update(["comment" => $validated["comment"]]);
             $invoice_automation = InvoiceFlow::automate();
             $invoice->automation()->update($invoice_automation);
+            event(new NewInvoiceAutomation($invoice->automation));
             DB::commit();
             return redirect()->back()->with(["result" => "updated"]);
         }

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -12,7 +13,9 @@ use Illuminate\Support\Facades\Broadcast;
 | used to check if an authenticated user can listen to the channel.
 |
 */
-
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+Broadcast::channel('invoice_automation.{role_id}', function ($user,$role_id) {
+        return (int) $user->role->id === (int) $role_id;
+});
+Broadcast::channel('worker_automation.{role_id}', function ($user,$role_id) {
+    return (int) $user->role->id === (int) $role_id;
 });

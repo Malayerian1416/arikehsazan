@@ -238,7 +238,7 @@ body{
     left: 25px;
     top: 35px;
     background: #ffffff;
-    z-index: 1000;
+    z-index: 2000;
 }
 .account_info_item{
     font-size: 11px;
@@ -848,6 +848,9 @@ textarea{
 #main_table tbody tr:first-child td{
     border-top: none;!important;
 }
+.main_table tbody tr:first-child td{
+    border-top: none;!important;
+}
 .invoice_detail_modal{
     max-width: 100%;
 }
@@ -1059,6 +1062,9 @@ textarea{
 #main_table tr td{
     user-select: none!important;
 }
+.main_table tr td{
+    user-select: none!important;
+}
 #location_info{
     position: absolute;top:80px;right: 45px;z-index: 5000;width: 28rem;display: none;
 }
@@ -1073,4 +1079,17 @@ textarea{
 }
 .leaflet-default-shadow-path {
     background-image: url(./images/marker-icon.png) !important;
+}
+.lamp{
+    background-color: white;
+    color: red;
+    border: 1px;
+}
+.dropdown-menu {
+    min-width: 175px!important;
+    z-index: 10000!important;
+}
+.dropdown-menu li{
+    padding-top: 3px!important;
+    padding-bottom: 3px!important;
 }

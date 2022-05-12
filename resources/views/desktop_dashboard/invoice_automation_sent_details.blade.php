@@ -261,13 +261,13 @@
 @endsection
 @section('page_footer')
     <div class="form-row pt-3 pb-3 m-0 d-flex flex-row justify-content-end">
-        <a href="{{route("InvoiceAutomation.sent")}}" class="mr-2">
+        <a href="{{route("InvoiceAutomation.automation")}}" class="mr-2">
             <button type="button" class="btn btn-outline-info iran_yekan">
                 <i class="fa fa-arrow-circle-right button_icon"></i>
                 <span>بازگشت به لیست</span>
             </button>
         </a>
-        <a class="iran_yekan btn btn-outline-warning mr-2 print_anchor" target="_blank" href="{{route("print",$invoice->id)}}">
+        <a class="iran_yekan btn btn-outline-warning mr-2 print_anchor" target="_blank" href="{{route("InvoiceAutomation.print",$invoice->id)}}">
             <i class="fa fa-print button_icon"></i>
             <span>چاپ</span>
         </a>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewWorkerAutomation;
 use App\Http\Requests\WorkerPaymenProcesstRequest;
 use App\Http\Requests\WorkerPaymentRequest;
 use App\Models\BankAccount;
@@ -53,16 +54,15 @@ class WorkerPaymentAutomationController extends Controller
         $validated = $request->validated();
         try {
             DB::beginTransaction();
-            $invoice_flow = InvoiceFlow::all();
-            $validated["previous_role_id"] = Auth::user()->role->id;
-            $current_role_id = $invoice_flow->where("priority","=",2)->first()->role_id;
-            $validated["current_role_id"] = $current_role_id ?: 0;
-            $next_role_id = $invoice_flow->where("priority","=",3)->first()->role_id;
-            $validated["next_role_id"] = $next_role_id ?: 0;
+            $flow_roles = InvoiceFlow::automate();
+            $validated["previous_role_id"] = $flow_roles["previous_role_id"];
+            $validated["current_role_id"] =  $flow_roles["current_role_id"];
+            $validated["next_role_id"] = $flow_roles["next_role_id"];
             $validated["user_id"] = Auth::id();
             $worker_automation = WorkerPaymentAutomation::query()->create($validated);
             $worker_automation->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
             DB::commit();
+            event(new NewWorkerAutomation($worker_automation));
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
@@ -88,10 +88,12 @@ class WorkerPaymentAutomationController extends Controller
         try {
             DB::beginTransaction();
             $validated = $request->validated();
+            $validated["is_read"] = 0;
             $worker_automation = WorkerPaymentAutomation::query()->findOrFail($id);
             $worker_automation->update($validated);
             $worker_automation->signs()->where("user_id","=",Auth::id())->first()->touch();
             DB::commit();
+            event(new NewWorkerAutomation($worker_automation));
             return redirect()->back()->with(["result" => "updated"]);
         }
         catch (Throwable $ex){
@@ -142,6 +144,7 @@ class WorkerPaymentAutomationController extends Controller
             if ($worker_automation->signs->where("user_id","=",Auth::id())->isEmpty())
                 $worker_automation->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
             DB::commit();
+            event(new NewWorkerAutomation($worker_automation));
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){

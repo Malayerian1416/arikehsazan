@@ -1,4 +1,4 @@
-@extends('desktop_dashboard.d_dashboard')
+@extends('phone_dashboard.p_dashboard')
 @section('styles')
 @endsection
 @section('scripts')
@@ -9,7 +9,7 @@
     @endif
 @endsection
 @section('page_title')
-    اتوماسیون پرداختی کارگری
+    <span class="laleh external_page_title_text text-muted text-center">اتوماسیون پرداختی کارگری</span>
 @endsection
 @section('content')
     <div class="card h-100" style="overflow: hidden;max-height: 100%">
@@ -155,15 +155,5 @@
                 </div>
             </div>
         </div>
-    </div>
-@endsection
-@section('page_footer')
-    <div class="form-row text-center p-3 d-flex flex-row justify-content-center">
-        <a href="{{route("idle")}}">
-            <button type="button" class="btn btn-outline-light iran_yekan">
-                <i class="fa fa-backspace button_icon"></i>
-                <span>خروج</span>
-            </button>
-        </a>
     </div>
 @endsection

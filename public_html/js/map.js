@@ -73,6 +73,8 @@ $(document).ready(function (){
         let polygon = L.geoJson(state);
         let newLayer = polygon.getLayers()[0];
         editableLayers.addLayer(newLayer);
+        let coordination = state.geometry.coordinates[0][0];
+        map.flyTo([coordination[1],coordination[0]], 16);
         $("#location_info").show();
     }
 })

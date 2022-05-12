@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewInvoiceAutomation;
 use App\Http\Requests\InvoicePaymentRequest;
 use App\Models\BankAccount;
 use App\Models\CheckPaper;
@@ -151,6 +152,7 @@ class InvoiceAutomationController extends Controller
             if ($invoice->signs()->where("user_id","=",Auth::id())->count() == 0)
                 $invoice->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
             DB::commit();
+            event(new NewInvoiceAutomation($invoice->automation));
             return redirect()->route("InvoiceAutomation.automation")->with(["result" => "sent"]);
         }
         catch (Throwable $ex){

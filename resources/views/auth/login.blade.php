@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{csrf_token()}}">
     <title>
         {{$company_information->name}}
         -
@@ -16,9 +17,16 @@
 <div class="rtl container-fluid login_bg">
     <div class="login_window">
         <div class="w-100 login_body">
-            <div class="side"></div>
-            <div class="content text-center">
-                <h4 class="iran_yekan pb-4 black_color">صفحه ورود به ســیسـتم</h4>
+            <div class="side d-flex align-items-center justify-content-end">
+                <h6 class="iran_yekan" style="color: #1C5250">
+                    <span>نسخه</span>
+                    <span id="app_ver" class="text-center">{{$company_information->app_ver}}</span>
+                </h6>
+            </div>
+            <div class="content text-center position-relative">
+                <h4 class="iran_yekan pb-4 black_color">
+                    صفحه ورود به ســیسـتم
+                </h4>
                 <div>
                     <form id="login_form" method="POST" action="{{ route('login') }}">
                         @csrf

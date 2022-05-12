@@ -23,11 +23,11 @@
                 <div class="tab-pane fade show active" id="inbox" role="tabpanel" aria-labelledby="inbox-tab" style="overflow: hidden;height:calc(100vh - 200px)">
                     <div class="row pt-1 pb-3">
                         <div class="col-12">
-                            <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام پروژه، پیمان و پیمانکار" v-on:input="search_input_filter" aria-describedby="basic-addon3">
+                            <input type="search" data-table_id="inbox_table" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام پروژه، پیمان و پیمانکار" v-on:input="search_input_filter" aria-describedby="basic-addon3">
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-hover iran_yekan index_table" id="main_table" data-filter='[1,2,3]'>
+                        <table class="table table-hover iran_yekan index_table main_table" id="inbox_table" data-filter='[1,2,3]'>
                             <thead class="thead-bg-color">
                             <tr>
                                 <th scope="col">شماره</th>
@@ -63,11 +63,11 @@
                 <div class="tab-pane fade" id="outbox" role="tabpanel" aria-labelledby="outbox-tab" style="overflow: hidden;height:calc(100vh - 200px)">
                     <div class="row pt-1 pb-3">
                         <div class="col-12">
-                            <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام پروژه، پیمان و پیمانکار" v-on:input="search_input_filter" aria-describedby="basic-addon3">
+                            <input type="search" data-table_id="outbox_table" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام پروژه، پیمان و پیمانکار" v-on:input="search_input_filter" aria-describedby="basic-addon3">
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-hover iran_yekan index_table" id="main_table" data-filter='[1,2,3]'>
+                        <table class="table table-hover iran_yekan index_table main_table" id="outbox_table" data-filter='[1,2,3]'>
                             <thead class="thead-bg-color">
                             <tr>
                                 <th scope="col">شماره</th>

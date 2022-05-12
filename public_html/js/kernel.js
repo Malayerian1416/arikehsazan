@@ -91,10 +91,10 @@ const app = new Vue({
         current_check_number: '',
         deposit_kind_number: '',
         sidebar_visibility: false,
-        new_invoice_automation_show: false,
-        new_invoice_automation_text: "",
-        new_worker_payment_automation_show: false,
-        new_worker_payment_automation_text: "",
+        new_invoice_automation_show:  typeof new_invoice_automation_show_already !== "undefined",
+        new_invoice_automation_text: typeof new_invoice_automation_text_already !== "undefined" ? new_invoice_automation_text_already : 0,
+        new_worker_payment_automation_show: typeof new_worker_automation_show_already !== "undefined",
+        new_worker_payment_automation_text: typeof new_worker_automation_text_already !== "undefined" ? new_worker_automation_text_already : 0,
         invoice_total_previous_quantity: 0,
         linklist:'',
         notification_permission: false,
@@ -103,37 +103,55 @@ const app = new Vue({
         location_id: '',
     },
     mounted() {
-        console.log(navigator.connection);
         const self = this;
         this.loading_window_active = false;
+        setTimeout(function (){
+            if (localStorage.getItem("reload") === "true") {
+                localStorage.setItem("reload","false");
+                window.location.reload();
+            }
+        },100);
         this.linkList = document.getElementsByTagName('a');
         for( let i=0; i < this.linkList.length; i++ ) {
             if (!$(this.linkList[i]).hasClass("print_anchor"))
                 this.linkList[i].onclick = this.linkAction;
         }
+        Echo.private(`invoice_automation.${role_id}`)
+            .listen('NewInvoiceAutomation', () => {
+                navigator.serviceWorker.ready.then(registration => {
+                    const title = 'اریکه سازان';
+                    const options = {
+                        body: 'وضعیت جدید به صندوق اتوماسیون شما ارسال شده است',
+                        icon: '../img/new_notification.png',
+                    };
+                    registration.showNotification(title, options).then(() => {
+                        let notification = document.getElementsByClassName("badge");
+                        if (notification.length) {
+                            self.new_invoice_automation_text = self.new_invoice_automation_text + 1;
+                            self.new_invoice_automation_show = true;
+                        }
+                    });
+                });
+            });
+        Echo.private(`worker_automation.${role_id}`)
+            .listen('NewWorkerAutomation', () => {
+                navigator.serviceWorker.ready.then(registration => {
+                    const title = 'اریکه سازان';
+                    const options = {
+                        body: 'پرداختی کارگر جدید به صندوق اتوماسیون شما ارسال شده است',
+                        icon: '../img/new_notification.png',
+                    };
+                    registration.showNotification(title, options).then(() => {
+                        let notification = document.getElementsByClassName("badge");
+                        if (notification.length) {
+                            self.new_worker_payment_automation_text = self.new_worker_payment_automation_text + 1;
+                            self.new_worker_payment_automation_show = true;
+                        }
+                    });
+                });
+            });
         if ('serviceWorker' in navigator)
-            navigator.serviceWorker.register('/serviceworker.js', {scope: '/'});
-        let notification = document.getElementsByClassName("badge");
-        if (notification.length !== 0) {
-            let get_notification = new EventSource("/Dashboard/Desktop/get_new_notification");
-            get_notification.onmessage = function (event) {
-                let result = JSON.parse(event.data);
-                for (const [key, value] of Object.entries(result)) {
-                    switch (key) {
-                        case "new_invoice_automation": {
-                            value ? self.new_invoice_automation_text = value : "";
-                            value ? self.new_invoice_automation_show = true : false;
-                            break;
-                        }
-                        case "new_worker_payment_automation": {
-                            value ? self.new_worker_payment_automation_text = value : "";
-                            value ? self.new_worker_payment_automation_show = true : false;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+            navigator.serviceWorker.register(`/serviceworker.js`, {scope: '/'});
         if ($("#attendance_map").length){
             let map = L.map('attendance_map').setView([36.31559,59.56796], 12);
             L.tileLayer(
@@ -169,20 +187,13 @@ const app = new Vue({
             }
         }
 
-                if (Notification.permission !== "granted" && Notification.permission !== "denied") {
-                    if ('serviceWorker' in navigator && 'PushManager' in window) {
-                        this.notification_text = "لطفا جهت دریافت پیام از رویدادهای سامانه (Notification)، در پنجره نمایان شده گزینه Allow را انتخاب بفرمایید.";
-                        this.notification_permission = true;
-                        Notification.requestPermission().then(result => {
-                            this.notification_permission = false;
-                            navigator.serviceWorker.ready.then(registration => {
-                                registration.showNotification("سیستم Notification با موفقیت فعال شد!", {}).then(r => {
-                                });
-                            });
-                        });
-                    } else
-                        this.notification_text = "متاسفانه مرورگر دستگاه شما از سیستم پیام رسانی (Notification) پشتیبانی نمی کند";
-                }
+        if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+            if ('serviceWorker' in navigator && 'PushManager' in window) {
+                this.notification_text = "لطفا جهت دریافت پیام از رویدادهای سامانه (Notification)، در پنجره نمایان شده گزینه Allow را انتخاب بفرمایید.";
+                this.notification_permission = true;
+            } else
+                this.notification_text = "متاسفانه مرورگر دستگاه شما از سیستم پیام رسانی (Notification) پشتیبانی نمی کند";
+        }
         if ($(".select_picker").length)
             $(".select_picker").selectpicker('refresh');
     },
@@ -757,7 +768,7 @@ const app = new Vue({
         search_input_filter(e) {
             let filter = e.target.value;
             let table, columns, tr, td, i, j, txtValue;
-            table = document.getElementById("main_table");
+            typeof e.target.dataset.table_id !== 'undefined' ? table = document.getElementById(e.target.dataset.table_id) : table = document.getElementById("main_table");
             columns = JSON.parse(table.dataset.filter);
             tr = table.getElementsByTagName("tr");
             for (i = 1; i < tr.length; i++) {
@@ -1291,6 +1302,47 @@ const app = new Vue({
         },
         showPosition(position) {
             return [position.coords.latitude , position.coords.longitude];
+        },
+        update_software(){
+            this.loading_window_active = true;
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage('update-cache');
+            }
+        },
+        version() {
+            return new Promise((resolve) => {
+                const openingRequest = indexedDB.open('FrontDB-arikeh');
+                openingRequest.onsuccess = (event) => {
+                    let db = event.target.result;
+                    try {
+                        const transaction = db.transaction("application_settings", "readwrite");
+                        const store = transaction.objectStore("application_settings");
+                        const index = store.index("app_version");
+                        let version = index.get(1);
+                        return version.onsuccess = function () {
+                            if (version.result !== null) {
+                                resolve(version.result.ver);
+                            } else
+                                resolve(new Date().getTime());
+                        }
+                    } catch (e) {
+                        resolve(new Date().getTime());
+                    }
+                }
+            });
+        },
+        show_notif_permission(){
+            Notification.requestPermission().then(result => {
+                this.notification_permission = false;
+                navigator.serviceWorker.ready.then(registration => {
+                    registration.showNotification("سیستم Notification با موفقیت فعال شد!", {}).then(r => {
+                    });
+                });
+            });
+        },
+        history_back(page){
+            localStorage.setItem("reload","true");
+            history.go(page);
         }
     }
 });

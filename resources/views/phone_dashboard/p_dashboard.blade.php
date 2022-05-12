@@ -9,8 +9,9 @@
         -
         داشبورد
     </title>
-    <link href="{{asset("/css/app.css?v=".time())}}" rel="stylesheet">
-    <link href="{{asset("/css/p_dashboard.css?v=".time())}}" rel="stylesheet">
+    @laravelPWA
+    <link href="{{asset("/css/app.css?v=".$company_information->app_ver)}}" rel="stylesheet">
+    <link href="{{asset("/css/p_dashboard.css?v=".$company_information->app_ver)}}" rel="stylesheet">
     <link href="{{asset("/css/persianDatepicker-default.css")}}" rel="stylesheet">
     @yield('styles')
 </head>
@@ -21,7 +22,7 @@
     <div class="notification_permission_window" v-cloak v-show="notification_permission">
         <i class="fas fa-info-circle white_color fa-3x mb-2"></i>
         <h6 class="iran_yekan white_color" style="width: 200px;word-break: break-word;text-align: justify" v-text="notification_text"></h6>
-        <button class="btn btn-outline-light iran_yekan mt-3" v-on:click="notification_permission = false">متوجه شدم</button>
+        <button class="btn btn-outline-light iran_yekan mt-3" v-on:click="show_notif_permission">فعال سازی</button>
     </div>
     <div class="loading_window" v-show="loading_window_active">
         <i class="fas fa-circle-notch fa-spin white_color fa-3x"></i>
@@ -51,11 +52,15 @@
                 </div>
             @else
                 <div>
-                    <a href="javascript:history.back()">
-                        <button class="btn btn-outline-info">
+                    @if(session()->has("result"))
+                        <button class="btn btn-outline-info" v-on:click="history_back(-2)">
                             <i class="fa fa-long-arrow-alt-right return_icon white_color fa-1_6x"></i>
                         </button>
-                    </a>
+                    @else
+                        <button class="btn btn-outline-info" v-on:click="history_back(-1)">
+                            <i class="fa fa-long-arrow-alt-right return_icon white_color fa-1_6x"></i>
+                        </button>
+                    @endif
                 </div>
                 <div>
                     <i class="fa fa-bars return_icon white_color ml-0" v-on:click="sidebar_toggle"></i>
@@ -128,6 +133,7 @@
             @endif
         </div>
     </div>
+    <a href="{{route('push')}}">push</a>
 </div>
 @if(session()->has('result'))
     @if(session("result") == "saved")
@@ -188,12 +194,16 @@
     @endif
 @endif
 @yield('modal_alerts')
-<script type="text/javascript" src="{{asset("/js/app.js?v=".time())}}"></script>
-<script type="text/javascript" src="{{asset("/js/jquery.mask.js")}}" defer></script>
-<script type="text/javascript" src="{{asset("/js/numeral.js")}}"></script>
-<script type="text/javascript" src="{{asset("/js/persianDatepicker.min.js")}}"></script>
-<script type="text/javascript" src="{{asset("/js/p_dashboard.js?v=".time())}}"></script>
-<script src="{{asset("/js/kernel.js?v=".time())}}" defer></script>
+<script> const role_id = {{\Illuminate\Support\Facades\Auth::user()->role->id}};</script>
+<script src="{{asset("/js/app.js?v=".$company_information->app_ver)}}"></script>
+<script src="{{asset("/js/jquery.mask.js")}}" defer></script>
+<script src="{{asset("/js/numeral.js")}}"></script>
+<script src="{{asset("/js/persianDatepicker.min.js")}}"></script>
+<script src="{{asset("/js/p_dashboard.js?v=".$company_information->app_ver)}}"></script>
+<script src="{{asset("/js/kernel.js?v=".$company_information->app_ver.time())}}" defer></script>
+@auth
+    <script src="{{asset("/js/enable_push.js?v=".$company_information->app_ver.time())}}"></script>
+@endauth
 @yield('scripts')
 </body>
 </html>

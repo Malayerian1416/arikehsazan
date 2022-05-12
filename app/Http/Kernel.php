@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\AdminCheck;
 use App\Http\Middleware\DeviceCheck;
+use App\Http\Middleware\PreviousUrlSession;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -67,5 +68,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'DeviceCheck' => DeviceCheck::class,
         'AdminCheck' => AdminCheck::class,
+        'PreviousUrlSession' => PreviousUrlSession::class
     ];
 }

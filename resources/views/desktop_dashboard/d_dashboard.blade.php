@@ -10,9 +10,9 @@
         داشبورد
     </title>
     @laravelPWA
-    <link href="{{asset("/css/app.css")}}" rel="stylesheet">
-    <link href="{{asset("/css/d_dashboard.css?v=889")}}" rel="stylesheet">
-    <link href="{{asset("/css/persianDatepicker-default.css")}}" rel="stylesheet">
+    <link href="{{asset("/css/app.css?v=".$company_information->app_ver)}}" rel="stylesheet">
+    <link href="{{asset("/css/d_dashboard.css?v=".$company_information->app_ver)}}" rel="stylesheet">
+    <link href="{{asset("/css/persianDatepicker-default.css?v=".$company_information->app_ver)}}" rel="stylesheet">
     @yield('styles')
 </head>
 <body class="antialiased rtl">
@@ -21,7 +21,7 @@
     <div class="notification_permission_window" v-cloak v-show="notification_permission">
         <i class="fas fa-info-circle white_color fa-3x mb-2"></i>
         <h6 class="iran_yekan white_color" style="width: 200px;word-break: break-word;text-align: justify" v-text="notification_text"></h6>
-        <button class="btn btn-outline-light iran_yekan mt-3" v-on:click="notification_permission = false">متوجه شدم</button>
+        <button class="btn btn-outline-light iran_yekan mt-3" v-on:click="show_notif_permission">فعال سازی</button>
     </div>
     <div class="loading_window" v-show="loading_window_active">
         <i class="fas fa-cog fa-spin white_color"></i>
@@ -59,6 +59,7 @@
                         <li><a class="dropdown-item menu_item_text" href="{{route("Units.index")}}">ایجاد، مشاهده و ویرایش واحد های اندازه گیری</a></li>
                         <li><a class="dropdown-item menu_item_text" href="{{route("InvoiceFlow.index")}}">ایجاد، مشاهده و ویرایش جریان صورت وضعیت</a></li>
                         <li><a class="dropdown-item menu_item_text" href="{{route("system_status_index")}}">مشاهده و تغییر وضعیت سیستم</a>
+                        <li><a class="dropdown-item menu_item_text" href="{{route("AppSettings.index")}}">تنظیمات برنامه</a>
                     </ul>
                 </li>
                 @else
@@ -101,13 +102,17 @@
             <span class="account_info_item iran_yekan black_color border-bottom w-100 p-1">{{$user->role->name}}</span>
             <form action="{{route("logout")}}" method="post" class="p-3">
                 @csrf
-                <button type="button" class="account_info_item btn btn-outline-secondary">
-                    <a href="{{route("password.request")}}" style="text-decoration: none"><i class="fa fa-cogs fa-2x"></i></a>
+                <button type="button" title="ریست گذرواژه" class="account_info_item btn btn-outline-secondary">
+                    <a href="{{route("password.request")}}" style="text-decoration: none;color: inherit"><i class="fa fa-cogs fa-2x"></i></a>
                 </button>
-                <button type="submit" class="account_info_item btn btn-outline-secondary">
+                <button type="submit" title="خروج از حساب کاربری" class="account_info_item btn btn-outline-secondary">
                     <i class="fa fa-sign-out-alt fa-2x"></i>
                 </button>
             </form>
+            <h6 class="iran_yekan p-2 w-100 text-center">
+                <span class="iran_yekan text-center">نسخه</span>
+                <span class="iran_yekan text-center" id="app_ver">{{$company_information->app_ver}}</span>
+            </h6>
         </div>
     </nav>
     <div class="pages_container">
@@ -127,7 +132,7 @@
                                 <span> صورت وضعیت پیمانکاری مشاهده نشده</span>
                             </h6>
                         </a>
-                        <a class="white_color" v-show="{{"new_worker_payment_automation_show"}}" href="{{route("WorkerPayments.new")}}">
+                        <a class="white_color" v-show="{{"new_worker_payment_automation_show"}}" href="{{route("WorkerPayments.automation")}}">
                             <h6 class="card-title iran_yekan">
                                 <span class="badge badge-pill badge-danger" style="font-size: 11px" v-cloak v-text="new_worker_payment_automation_text"></span>
                                 <span> صورت وضعیت کارگری مشاهده نشده</span>
@@ -240,11 +245,22 @@
         </div>
     @endif
 @endif
-<script src="{{asset("js/app.js")}}"></script>
-<script src="{{asset("/js/numeral.js")}}"></script>
-<script src="{{asset("/js/persianDatepicker.min.js")}}"></script>
-<script src="{{asset("/js/d_dashboard.js")}}"></script>
-<script src="{{asset("/js/kernel.js?v=sdfsdf")}}" defer></script>
+<script>
+    const role_id = {{\Illuminate\Support\Facades\Auth::user()->role->id}};
+    @if($invoice_count > 0)
+    const new_invoice_automation_show_already = true;
+    const new_invoice_automation_text_already = {{$invoice_count}};
+    @endif
+    @if($worker_count > 0)
+    const new_worker_automation_show_already = true;
+    const new_worker_automation_text_already = {{$worker_count}};
+    @endif
+</script>
+<script src="{{asset("js/app.js?v=".$company_information->app_ver)}}"></script>
+<script src="{{asset("/js/numeral.js?v=".$company_information->app_ver)}}"></script>
+<script src="{{asset("/js/persianDatepicker.min.js?v=".$company_information->app_ver)}}"></script>
+<script src="{{asset("/js/d_dashboard.js?v=".$company_information->app_ver)}}"></script>
+<script src="{{asset("/js/kernel.js?v=".$company_information->app_ver)}}" defer></script>
 @yield('scripts')
 <div id="menu_search" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
