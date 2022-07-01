@@ -97,7 +97,7 @@ class LeaveAutomationController extends Controller
             DB::commit();
             $message = "درخواست مرخصی جدید به صندوق اتوماسیون شما ارسال شده است";
             $this->send_push_notification(PushMessageLeave::class,$message,"role_id",$automation->current_role_id);
-            $this->send_event_notification(LeaveEvent::class,$automation,$message);
+            //$this->send_event_notification(LeaveEvent::class,$automation,$message);
             return redirect()->route("LeaveAutomation.automation")->with(["result" => "sent"]);
         }
         catch (Throwable $ex){
@@ -115,7 +115,7 @@ class LeaveAutomationController extends Controller
             DB::commit();
             $message = "درخواست مرخصی به صندوق اتوماسیون شما ارجاع شده است";
             $this->send_push_notification(PushMessageLeave::class,$message,"role_id",$automation->current_role_id);
-            $this->send_event_notification(LeaveEvent::class,$automation,$message);
+            //$this->send_event_notification(LeaveEvent::class,$automation,$message);
             return redirect()->route("LeaveAutomation.automation")->with(["result" => "referred"]);
         }
         catch (Throwable $ex){

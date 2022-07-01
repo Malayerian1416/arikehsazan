@@ -40,7 +40,12 @@ return [
                 'encrypted' => true,
                 'host' => 'localhost',
                 'port' => 6001,
-                'scheme' => 'http'
+                'scheme' => 'https',
+                'useTLS' => true,
+                'curl_options' => [
+                    CURLOPT_SSL_VERIFYHOST => 0,
+                    CURLOPT_SSL_VERIFYPEER => 0
+                ]
             ],
         ],
 

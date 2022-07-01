@@ -69,7 +69,7 @@ class WorkerPaymentAutomationController extends Controller
             DB::commit();
             $message = "درخواست پرداخت جدید کارگری به اتوماسیون شما ارسال شده است";
             $this->send_push_notification(PushMessageWorker::class,$message,"role_id",$worker_automation->current_role_id);
-            $this->send_event_notification(WorkerEvent::class,$worker_automation,$message);
+            //$this->send_event_notification(WorkerEvent::class,$worker_automation,$message);
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
@@ -102,7 +102,7 @@ class WorkerPaymentAutomationController extends Controller
             DB::commit();
             $message = "درخواست پرداخت جدید کارگری پس از ویرایش به اتوماسیون شما ارسال شده است";
             $this->send_push_notification(PushMessageWorker::class,$message,"role_id",$worker_automation->current_role_id);
-            $this->send_event_notification(WorkerEvent::class,$worker_automation,$message);
+            //$this->send_event_notification(WorkerEvent::class,$worker_automation,$message);
             return redirect()->back()->with(["result" => "updated"]);
         }
         catch (Throwable $ex){
@@ -157,7 +157,7 @@ class WorkerPaymentAutomationController extends Controller
             DB::commit();
             $message = "درخواست پرداخت جدید کارگری به اتوماسیون شما ارسال شده است";
             $this->send_push_notification(PushMessageWorker::class,$message,"role_id",$worker_automation->current_role_id);
-            $this->send_event_notification(WorkerEvent::class,$worker_automation,$message);
+            //$this->send_event_notification(WorkerEvent::class,$worker_automation,$message);
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
@@ -176,7 +176,7 @@ class WorkerPaymentAutomationController extends Controller
             DB::commit();
             $message = "درخواست پرداخت وضعیت پرداختی کارگری به اتوماسیون شما ارجاع شده است";
             $this->send_push_notification(PushMessageWorker::class,$message,"role_id",$worker_automation->current_role_id);
-            $this->send_event_notification(WorkerEvent::class,$worker_automation,$message);
+            //$this->send_event_notification(WorkerEvent::class,$worker_automation,$message);
             return redirect()->back()->with(["result" => "referred"]);
         }
         catch (Throwable $ex){
