@@ -37,7 +37,7 @@ window.Echo = new Echo({
     key: 'masoud1364',
     wsHost: window.location.hostname,
     wsPort: 6001,
-    forceTLS: false,
+    forceTLS: true,
     encrypted: true,
 });
 Pusher.logToConsole = true;
