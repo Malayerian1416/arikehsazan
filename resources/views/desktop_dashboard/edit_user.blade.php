@@ -3,7 +3,7 @@
     {{"ویرایش کاربر ".$user->name}}
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("Users.update",$user->id)}}" method="post" v-on:submit="submit_update_form" enctype="multipart/form-data">
+    <form id="update_form" action="{{route("Users.update",$user->id)}}" method="post" data-type="update" v-on:submit="submit_form" enctype="multipart/form-data">
         @csrf
         @method('put')
         <div class="form-row">
@@ -11,6 +11,17 @@
                 <label class="col-form-label iran_yekan black_color" for="name">نام و نام خانوادگی</label>
                 <strong class="red_color">*</strong>
                 <input type="text" class="form-control iran_yekan text-center @error('name') is-invalid @enderror" id="name" name="name" value="{{$user->name}}">
+                @error('name')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="gender">جنسیت</label>
+                <strong class="red_color">*</strong>
+                <select class="form-control select_picker iran_yekan" title="انتخاب کنید" name="gender" id="gender">
+                    <option @if($user->gender == "مرد") selected @endif value="مرد">مرد</option>
+                    <option @if($user->gender == "زن") selected @endif value="زن">زن</option>
+                </select>
                 @error('name')
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
@@ -69,6 +80,28 @@
                 @enderror
             </div>
             <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="email">پست الکترونیکی</label>
+                <input type="text" class="form-control iran_yekan text-center @error('email') is-invalid @enderror" id="email" name="email" value="{{$user->email}}">
+                @error('email')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="mobile">تلفن همراه</label>
+                <strong class="red_color">*</strong>
+                <input type="text" class="form-control iran_yekan text-center @error('mobile') is-invalid @enderror" id="mobile" name="mobile" value="{{$user->mobile}}">
+                @error('mobile')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-8 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="address">آدرس</label>
+                <input type="text" class="form-control iran_yekan text-center @error('address') is-invalid @enderror" id="address" name="address" value="{{$user->address}}">
+                @error('address')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-4 col-xl-3">
                 <label class="col-form-label iran_yekan black_color" for="role_id">
                     سمت
                     <strong class="red_color">*</strong>
@@ -77,7 +110,6 @@
                     @forelse($roles as $role)
                         <option @if($user->role->id == $role->id) selected @endif value="{{$role->id}}">{{$role->name}}</option>
                     @empty
-                        <option value="0">سمتی وجود ندارد</option>
                     @endforelse
                 </select>
                 @error('role_id')
@@ -85,9 +117,17 @@
                 @enderror
             </div>
             <div class="form-group col-md-12 col-lg-4 col-xl-3">
-                <label class="col-form-label iran_yekan black_color" for="email">پست الکترونیکی</label>
-                <input type="text" class="form-control iran_yekan text-center @error('email') is-invalid @enderror" id="email" name="email" value="{{$user->email}}">
-                @error('email')
+                <label class="col-form-label iran_yekan black_color" for="work_shift_id">
+                    نوبت کاری
+                </label>
+                <select class="form-control iran_yekan text-center select_picker @error('work_shift_id') is-invalid @enderror" data-size="8" data-live-search="true" id="work_shift_id" name="work_shift_id">
+                    <option value="">هیچکدام</option>
+                    @forelse($shifts as $shift)
+                        <option @if($user->work_shift && $shift->id == $user->work_shift->id) selected @endif value="{{$shift->id}}">{{$shift->name}}</option>
+                    @empty
+                    @endforelse
+                </select>
+                @error('work_shift_id')
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>
@@ -100,7 +140,6 @@
                     @forelse($projects as $project)
                         <option @if(in_array($project->id,array_column($user->permitted_project->toArray(),"id"))) selected @endif value="{{$project->id}}">{{$project->name}}</option>
                     @empty
-                        <option>پروژه ای وجود ندارد</option>
                     @endforelse
                 </select>
                 @error('role_id')
@@ -108,41 +147,66 @@
                 @enderror
             </div>
             <div class="form-group col-md-12 col-lg-4 col-xl-3">
-                <label class="col-form-label iran_yekan black_color" for="mobile">تلفن همراه</label>
+                <label class="col-form-label iran_yekan black_color" for="daily_wage">دستمزد روزانه</label>
                 <strong class="red_color">*</strong>
-                <input type="text" class="form-control iran_yekan text-center @error('mobile') is-invalid @enderror" id="mobile" name="mobile" value="{{$user->mobile}}">
-                @error('mobile')
+                <input type="text" class="form-control iran_yekan text-center number_format @error('daily_wage') is-invalid @enderror" id="daily_wage" name="daily_wage" value="{{$user->daily_wage}}">
+                @error('daily_wage')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="overtime_rate">ضریب اضافه کاری</label>
+                <strong class="red_color">*</strong>
+                <input type="number" step=".01" class="form-control iran_yekan text-center @error('overtime_rate') is-invalid @enderror" id="overtime_rate" name="overtime_rate" value="{{$user->overtime_rate}}">
+                @error('overtime_rate')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="delay_rate">ضریب تاخیر</label>
+                <strong class="red_color">*</strong>
+                <input type="number" step=".01" class="form-control iran_yekan text-center @error('delay_rate') is-invalid @enderror" id="delay_rate" name="delay_rate" value="{{$user->delay_rate}}">
+                @error('delay_rate')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="acceleration_rate">ضریب تعجیل</label>
+                <strong class="red_color">*</strong>
+                <input type="number" step=".01" class="form-control iran_yekan text-center @error('acceleration_rate') is-invalid @enderror" id="acceleration_rate" name="acceleration_rate" value="{{$user->acceleration_rate}}">
+                @error('acceleration_rate')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="absence_rate">ضریب غیبت</label>
+                <strong class="red_color">*</strong>
+                <input type="number" step=".01" class="form-control iran_yekan text-center @error('absence_rate') is-invalid @enderror" id="absence_rate" name="absence_rate" value="{{$user->absence_rate}}">
+                @error('absence_rate')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                <label class="col-form-label iran_yekan black_color" for="mission_rate">ضریب ماموریت</label>
+                <strong class="red_color">*</strong>
+                <input type="number" step=".01" class="form-control iran_yekan text-center @error('mission_rate') is-invalid @enderror" id="mission_rate" name="mission_rate" value="{{$user->mission_rate}}">
+                @error('mission_rate')
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>
             <div class="form-group col-md-12 col-lg-4 col-xl-3">
                 <label class="col-form-label iran_yekan black_color" for="sign">اسکن امضاء</label>
                 <input type="file" hidden class="form-control iran_yekan text-center @error('sign') is-invalid @enderror" v-on:change="file_browser_change" id="sign" name="sign" accept=".jpg,.png,.bmp,.jpeg">
-                @if($user->sign == null)
-                    <input type="text" class="form-control iran_yekan text-center file_selector_box" v-on:click="popup_file_browser" id="file_browser_box" readonly value="فایلی انتخاب نشده است">
-                @else
-                    <input type="text" class="form-control iran_yekan text-center file_selector_box" v-on:click="popup_file_browser" id="file_browser_box" readonly value="امضاء آپلود شده است">
-                @endif
+                <input type="text" class="form-control iran_yekan text-center file_selector_box" v-on:click="popup_file_browser" id="file_browser_box1" readonly value="فایلی انتخاب نشده است">
                 @error('sign')
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>
             <div class="form-group col-md-12 col-lg-4 col-xl-3">
                 <label class="col-form-label iran_yekan black_color" for="agreement_sample">اسکن مدارک</label>
-                @if($docs)
-                    <input type="text" class="form-control iran_yekan text-center file_selector_box" v-on:click="popup_file_browser" id="file_browser_box" readonly value="{{count($docs) . " فایل آپلود شده است"}}">
-                @else
-                    <input type="text" class="form-control iran_yekan text-center file_selector_box" v-on:click="popup_file_browser" id="file_browser_box" readonly value="فایلی انتخاب نشده است">
-                @endif
                 <input type="file" hidden class="form-control iran_yekan text-center @error('agreement_sample') is-invalid @enderror" v-on:change="file_browser_change" multiple id="agreement_sample" name="agreement_sample[]" accept=".pdf,.doc,.docx,.jpg,.png,.bmp,.jpeg,.xls,.xlsx,.txt">
+                <input type="text" class="form-control iran_yekan text-center file_selector_box" v-on:click="popup_file_browser" id="file_browser_box2" readonly value="فایلی انتخاب نشده است">
                 @error('agreement_sample')
-                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
-                @enderror
-            </div>
-            <div class="form-group col-md-12 col-lg-8 col-xl-6">
-                <label class="col-form-label iran_yekan black_color" for="address">آدرس</label>
-                <input type="text" class="form-control iran_yekan text-center @error('address') is-invalid @enderror" id="address" name="address" value="{{$user->address}}">
-                @error('address')
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>
@@ -164,7 +228,7 @@
                                 <i class="fa fa-download white_color border p-2 doc_icon"></i>
                             </a>
                         </div>
-                        <form id="delete_form" action="{{route("DestroyUserDoc")}}" method="post" v-on:submit="submit_delete_form">
+                        <form id="delete_form" action="{{route("DestroyUserDoc")}}" method="post" data-type="delete" v-on:submit="submit_form">
                             @csrf
                             @method('delete')
                             <input type="text" hidden value="{{$user->id}}" name="id">

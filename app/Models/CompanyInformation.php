@@ -15,4 +15,7 @@ class CompanyInformation extends Model
     {
         return $this->belongsTo(User::class,"ceo_user_id");
     }
+    public static function app_version(){
+        return self::query()->first()->value("app_ver");
+    }
 }

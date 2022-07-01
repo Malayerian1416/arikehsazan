@@ -1,18 +1,18 @@
 @extends('phone_dashboard.p_dashboard')
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center">مشاهده و ویرایش اتوماسیون پرداختی های کارگری ایجاد شده</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center">مشاهده و ویرایش اتوماسیون پرداختی های کارگری ایجاد شده</span>
 @endsection
 @section('content')
     @can('create','WorkerPayments')
         <div class="row pt-1 pb-3">
             <div class="col-12 hide_section_container">
-                <h6 class="pb-3">
-                    <i class="fa fa-plus-square fa-2x hide_section_icon" style="vertical-align: middle"></i>
+                <button class="btn btn-outline-success">
+                    <i class="fa fa-plus-square fa-1_4x mr-2 hide_section_icon" style="vertical-align: middle"></i>
                     <span class="iran_yekan hide_section_title">تعریف وضعیت جدید</span>
-                </h6>
+                </button>
             </div>
             <div class="col-12 hide_section @if($errors->any())) active @endif">
-                <form id="create_form" action="{{route("WorkerPayments.store")}}" method="post" v-on:submit="submit_create_form">
+                <form id="create_form" action="{{route("WorkerPayments.store")}}" method="post" data-type="create" v-on:submit="submit_form">
                     @csrf
                     <div class="form-row">
                         <div class="form-group col-md-12 col-lg-4">
@@ -134,7 +134,7 @@
                     @can('destroy','WorkerPayments')
                         <td>
                             @if($worker_automation->previous_role_id == \App\Models\InvoiceFlow::query()->where("is_starter",1)->first()->role_id)
-                                <form id="delete_form_{{$worker_automation->id}}" class="d-inline-block" action="{{route("WorkerPayments.destroy",$worker_automation->id)}}" method="post" v-on:submit="submit_delete_form">
+                                <form id="delete_form_{{$worker_automation->id}}" class="d-inline-block" action="{{route("WorkerPayments.destroy",$worker_automation->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                                     @csrf
                                     @method('delete')
                                     <button class="index_form_submit_button" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>

@@ -95,34 +95,63 @@ const app = new Vue({
         new_invoice_automation_text: typeof new_invoice_automation_text_already !== "undefined" ? new_invoice_automation_text_already : 0,
         new_worker_payment_automation_show: typeof new_worker_automation_show_already !== "undefined",
         new_worker_payment_automation_text: typeof new_worker_automation_text_already !== "undefined" ? new_worker_automation_text_already : 0,
+        new_leave_automation_show:  typeof new_leave_automation_show_already !== "undefined",
+        new_leave_automation_text: typeof new_leave_automation_text_already !== "undefined" ? new_leave_automation_text_already : 0,
         invoice_total_previous_quantity: 0,
         linklist:'',
         notification_permission: false,
         notification_text:'',
         invoice_detail_head_role:[],
         location_id: '',
+        contract_info: [],
+        contract_info_total: {"total_quantity":'0',"total_sum":'0',"total_payed":'0',"total_remain":'0',"unit":''},
+        leave_type_show: false,
+        leave_type: '',
+        leave_type_hidden:'',
+        leave_date: '',
+        departure_time: '',
+        arrival_time: '',
+        leave_items: [],
+        worker_comment:''
     },
     mounted() {
         const self = this;
         this.loading_window_active = false;
-        setTimeout(function (){
-            if (localStorage.getItem("reload") === "true") {
-                localStorage.setItem("reload","false");
-                window.location.reload();
-            }
-        },100);
         this.linkList = document.getElementsByTagName('a');
         for( let i=0; i < this.linkList.length; i++ ) {
             if (!$(this.linkList[i]).hasClass("print_anchor"))
                 this.linkList[i].onclick = this.linkAction;
         }
+        if ('serviceWorker' in navigator)
+            navigator.serviceWorker.register(`/serviceworker.js`, {scope: '/'});
+        if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+            if ('serviceWorker' in navigator && 'PushManager' in window) {
+                Notification.requestPermission().then(function (permission) {
+                    navigator.serviceWorker.ready.then(registration => {
+                        const title = 'اریکه سازان';
+                        const options = {
+                            body: 'سیستم پیام رسانی با موفقیت فعال شد',
+                            icon: `${window.location.protocol}//${window.location.host}/img/new_notification.png`,
+                            tag: 'renotify',
+                            renotify: true,
+                        };
+                        registration.showNotification(title, options).then(() => {});
+                    });
+                });
+            } else
+                this.notification_text = "متاسفانه مرورگر دستگاه شما از سیستم پیام رسانی (Notification) پشتیبانی نمی کند";
+        }
         Echo.private(`invoice_automation.${role_id}`)
-            .listen('NewInvoiceAutomation', () => {
+            .listen('InvoiceEvent', (notification) => {
                 navigator.serviceWorker.ready.then(registration => {
                     const title = 'اریکه سازان';
                     const options = {
-                        body: 'وضعیت جدید به صندوق اتوماسیون شما ارسال شده است',
-                        icon: '../img/new_notification.png',
+                        body: notification.message,
+                        icon: `${window.location.protocol}//${window.location.host}/img/new_notification.png`,
+                        data: notification,
+                        tag: 'renotify',
+                        badge: '/img/notification_badge.png',
+                        renotify: true,
                     };
                     registration.showNotification(title, options).then(() => {
                         let notification = document.getElementsByClassName("badge");
@@ -134,12 +163,16 @@ const app = new Vue({
                 });
             });
         Echo.private(`worker_automation.${role_id}`)
-            .listen('NewWorkerAutomation', () => {
+            .listen('WorkerEvent', (notification) => {
                 navigator.serviceWorker.ready.then(registration => {
                     const title = 'اریکه سازان';
                     const options = {
-                        body: 'پرداختی کارگر جدید به صندوق اتوماسیون شما ارسال شده است',
-                        icon: '../img/new_notification.png',
+                        body: notification.message,
+                        icon: `${window.location.protocol}//${window.location.host}/img/new_notification.png`,
+                        data: notification,
+                        tag: 'renotify',
+                        badge: '/img/notification_badge.png',
+                        renotify: true,
                     };
                     registration.showNotification(title, options).then(() => {
                         let notification = document.getElementsByClassName("badge");
@@ -150,8 +183,27 @@ const app = new Vue({
                     });
                 });
             });
-        if ('serviceWorker' in navigator)
-            navigator.serviceWorker.register(`/serviceworker.js`, {scope: '/'});
+        Echo.private(`leave_automation.${role_id}`)
+            .listen('LeaveEvent', (notification) => {
+                navigator.serviceWorker.ready.then(registration => {
+                    const title = 'اریکه سازان';
+                    const options = {
+                        body: notification.message,
+                        icon: `${window.location.protocol}//${window.location.host}/img/new_notification.png`,
+                        data: notification,
+                        tag: 'renotify',
+                        badge: '/img/notification_badge.png',
+                        renotify: true,
+                    };
+                    registration.showNotification(title, options).then(() => {
+                        let notification = document.getElementsByClassName("badge");
+                        if (notification.length) {
+                            self.new_leave_automation_text = self.new_leave_automation_text + 1;
+                            self.new_leave_automation_show = true;
+                        }
+                    });
+                });
+            });
         if ($("#attendance_map").length){
             let map = L.map('attendance_map').setView([36.31559,59.56796], 12);
             L.tileLayer(
@@ -186,16 +238,31 @@ const app = new Vue({
                 },options);
             }
         }
-
-        if (Notification.permission !== "granted" && Notification.permission !== "denied") {
-            if ('serviceWorker' in navigator && 'PushManager' in window) {
-                this.notification_text = "لطفا جهت دریافت پیام از رویدادهای سامانه (Notification)، در پنجره نمایان شده گزینه Allow را انتخاب بفرمایید.";
-                this.notification_permission = true;
-            } else
-                this.notification_text = "متاسفانه مرورگر دستگاه شما از سیستم پیام رسانی (Notification) پشتیبانی نمی کند";
+        const installApp = document.getElementById('installApp');
+        const denyApp = document.getElementById('denyApp');
+        let deferredPrompt;
+        if (installApp) {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                $('.install-app-btn-container').css("display", "flex");
+                deferredPrompt = e;
+            });
+            denyApp.addEventListener('click', () => {
+                $('.install-app-btn-container').hide();
+            });
+            installApp.addEventListener('click', async () => {
+                if (deferredPrompt !== null) {
+                    deferredPrompt.prompt();
+                    const {outcome} = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted')
+                        deferredPrompt = null;
+                    else
+                        $('.install-app-btn-container').hide();
+                }
+            });
         }
         if ($(".select_picker").length)
             $(".select_picker").selectpicker('refresh');
+        window.addEventListener("resize",self.resize_window);
     },
     beforeMount() {
         if ($("#invoice_automation_quantity").length && $("#invoice_automation_amount").length){
@@ -245,188 +312,65 @@ const app = new Vue({
         account_information_open() {
             (this.account_info_active === true) ? this.account_info_active = false : this.account_info_active = false;
         },
-        submit_create_form(e) {
+        submit_form(e) {
+            e.preventDefault();
             let form = e.target;
             let self = this;
-            e.preventDefault();
-            bootbox.confirm({
-                message: "آیا برای ذخیره اطلاعات اطمینان دارید؟",
-                closeButton: false,centerVertical: true,
-                buttons: {
-                    confirm: {
-                        label: 'بله',
-                        className: 'btn-success',
-                    },
-                    cancel: {
-                        label: 'خیر',
-                        className: 'btn-danger',
-                    }
-                },
-                callback: function (result) {
-                    if (result === true) {
-                        self.loading_window_active = true;
-                        bootbox.hideAll();
-                        $(".masked").length > 0 ? $(".masked").unmask() : "";
-                        $(".number_format").length > 0 ? AutoNumeric.getAutoNumericElement('.number_format').formUnformat() : '';
-                        self.button_loading = true;
-                        self.button_not_loading = false;
-                        form.submit();
-                    }
+            let message;
+            switch (form.dataset.type){
+                case "create":{
+                    message = "آیا برای ارسال و ذخیره اطلاعات اطمینان دارید؟";
+                    break;
                 }
-            }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
-        },
-        submit_update_form(e) {
-            let self = this;
-            let form = e.target;
-            e.preventDefault();
-            bootbox.confirm({
-                message: "آیا برای ویرایش اطلاعات اطمینان دارید؟",
-                closeButton: false,centerVertical: true,
-                buttons: {
-                    confirm: {
-                        label: 'بله',
-                        className: 'btn-success',
-                    },
-                    cancel: {
-                        label: 'خیر',
-                        className: 'btn-danger',
-                    }
-                },
-                callback: function (result) {
-                    if (result === true) {
-                        self.loading_window_active = true;
-                        bootbox.hideAll();
-                        $(".masked").length > 0 ? $(".masked").unmask() : "";
-                        $(".number_format").length > 0 ? AutoNumeric.getAutoNumericElement('.number_format').formUnformat() : '';
-                        self.button_loading = true;
-                        self.button_not_loading = false;
-                        form.submit();
-                    }
+                case "update":{
+                    message = "آیا برای ارسال ویرایش اطلاعات اطمینان دارید؟";
+                    break;
                 }
-            }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
-        },
-        submit_delete_form(e) {
-            let self = this;
-            let form = e.target;
-            e.preventDefault();
-            bootbox.confirm({
-                message: "آیا برای حذف این رکورد اطمینان دارید؟",
-                closeButton: false,centerVertical: true,
-                buttons: {
-                    confirm: {
-                        label: 'بله',
-                        className: 'btn-success',
-                    },
-                    cancel: {
-                        label: 'خیر',
-                        className: 'btn-danger',
-                    }
-                },
-                callback: function (result) {
-                    if (result === true) {
-                        bootbox.hideAll();
-                        self.loading_window_active = true;
-                        form.submit();
-                    }
+                case "delete":{
+                    message = "آیا برای حذف اطلاعات اطمینان دارید؟";
+                    break;
                 }
-            }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
-        },
-        submit_pay_form(e) {
-            let form = e.target;
-            e.preventDefault();
-            bootbox.confirm({
-                message: "آیا برای تایید و پرداخت اطمینان دارید؟",
-                closeButton: false,centerVertical: true,
-                buttons: {
-                    confirm: {
-                        label: 'بله',
-                        className: 'btn-success',
-                    },
-                    cancel: {
-                        label: 'خیر',
-                        className: 'btn-danger',
+                case "active":{
+                    let status_code = form.dataset.status;
+                    let status = '';
+                    switch (status_code) {
+                        case "0": {
+                            status = "فعال";
+                            break
+                        }
+                        case "1": {
+                            status = "غیر فعال";
+                            break
+                        }
                     }
-                },
-                callback: function (result) {
-                    if (result === true) {
-                        let self = this;
-                        bootbox.hideAll();
-                        $(".masked").length > 0 ? $(".masked").unmask() : "";
-                        $(".number_format").length > 0 ? AutoNumeric.getAutoNumericElement('.number_format').formUnformat() : '';
-                        self.button_loading = true;
-                        self.button_not_loading = false;
-                        self.loading_window_active = true;
-                        form.submit();
-                    }
+                    message = `آیا برای ${status} کردن این رکورد اطمینان دارید؟`;
+                    break;
                 }
-            }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
-        },
-        submit_refer_form(e) {
-            let self = this;
-            let form = e.target;
-            e.preventDefault();
-            bootbox.confirm({
-                message: "آیا برای ارجاع اطلاعات اطمینان دارید؟",
-                closeButton: false,centerVertical: true,
-                buttons: {
-                    confirm: {
-                        label: 'بله',
-                        className: 'btn-success',
-                    },
-                    cancel: {
-                        label: 'خیر',
-                        className: 'btn-danger',
-                    }
-                },
-                callback: function (result) {
-                    if (result === true) {
-                        bootbox.hideAll();
-                        form.submit();
-                    }
+                case "send":{
+                    message = "آیا برای تایید و ارسال اطلاعات اطمینان دارید؟";
+                    break;
                 }
-            }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
-        },
-        submit_activation_form(e) {
-            let self = this;
-            let form = e.target;
-            let status_code = form.dataset.status;
-            let status = '';
-            switch (status_code) {
-                case "0": {
-                    status = "فعال";
-                    break
+                case "refer":{
+                    message = "آیا برای ارجاع اطلاعات اطمینان دارید؟";
+                    break;
                 }
-                case "1": {
-                    status = "غیر فعال";
-                    break
+                case "approve":{
+                    message = "آیا برای تایید اطلاعات و اتمام جریان اطمینان دارید؟";
+                    break;
+                }
+                case "reject":{
+                    message = "آیا برای عدم تایید اطلاعات و اتمام جریان اطمینان دارید؟";
+                    break;
+                }
+                case "pay":{
+                    message = "آیا برای تایید اطلاعات و پرداخت اطمینان دارید؟";
+                    break;
+                }
+                case "attendance":{
+                    message = $("#type").val() === "presence" ? "آیا برای ثبت ورود کارمند اطمینان دارید؟":"آیا برای ثبت خروج کارمند اطمینان دارید؟";
+                    break;
                 }
             }
-            e.preventDefault();
-            bootbox.confirm({
-                message: `آیا برای ${status} کردن این رکورد اطمینان دارید؟`,
-                closeButton: false,centerVertical: true,
-                buttons: {
-                    confirm: {
-                        label: 'بله',
-                        className: 'btn-success',
-                    },
-                    cancel: {
-                        label: 'خیر',
-                        className: 'btn-danger',
-                    }
-                },
-                callback: function (result) {
-                    if (result === true) {
-                        bootbox.hideAll();
-                        form.submit();
-                    }
-                }
-            }).find('.modal-content').css({'background-color': '#343a40', color: '#ffffff'});
-        },
-        submit_attendance_form(e) {
-            let form = e.target;
-            e.preventDefault();
-            let message = $("#type").val() === "presence" ? "آیا برای ثبت ورود کارمند اطمینان دارید؟":"آیا برای ثبت خروج کارمند اطمینان دارید؟"
             bootbox.confirm({
                 message: message,
                 closeButton: false,centerVertical: true,
@@ -442,13 +386,12 @@ const app = new Vue({
                 },
                 callback: function (result) {
                     if (result === true) {
-                        let self = this;
+                        self.loading_window_active = true;
                         bootbox.hideAll();
                         $(".masked").length > 0 ? $(".masked").unmask() : "";
                         $(".number_format").length > 0 ? AutoNumeric.getAutoNumericElement('.number_format').formUnformat() : '';
                         self.button_loading = true;
                         self.button_not_loading = false;
-                        self.loading_window_active = true;
                         form.submit();
                     }
                 }
@@ -482,7 +425,7 @@ const app = new Vue({
                         self.loading_window_active = true;
                         if (navigator.geolocation) {
                             navigator.geolocation.getCurrentPosition(position => {
-                                axios.post("/Dashboard/Desktop/get_geo_json", {"location_id" : self.location_id})
+                                axios.post("/get_geo_json", {"location_id" : self.location_id})
                                     .then(function (response) {
                                         self.loading_window_active = false;
                                         if (response.data !== null) {
@@ -567,7 +510,7 @@ const app = new Vue({
                             self.live_adding_data_content.title = self.live_data_adding_value;
                             bootbox.hideAll();
                             self.loading_window_active = true;
-                            axios.post("/Dashboard/Desktop/live_adding_data", self.live_adding_data_content)
+                            axios.post("/live_adding_data", self.live_adding_data_content)
                                 .then(function (response) {
                                     self.loading_window_active = false;
                                     alerify.success("ارسال و ذخیره سازی با موفقیت انجام شد");
@@ -672,7 +615,7 @@ const app = new Vue({
                 self.related_data_select = '';
                 self.related_data_search_loading = true;
                 const values = {"id": target.value, "type": target.dataset.type};
-                axios.post("/Dashboard/Desktop/related_data_search", values)
+                axios.post("/related_data_search", values)
                     .then(response =>
                     {
                         self.related_data_search_loading = false;
@@ -707,7 +650,7 @@ const app = new Vue({
                 self.related_data_select_child = '';
                 self.related_data_search_loading_child = true;
                 const values = {"id": target.value, "parent_id": self.parent_id, "type": target.dataset.type};
-                axios.post("/Dashboard/Desktop/related_data_search", values)
+                axios.post("/related_data_search", values)
                     .then(response =>
                     {
                         if (response["data"].length === 0){
@@ -753,7 +696,7 @@ const app = new Vue({
             }
             if (values["desc"] !== null && values["amount"] !== null && target.dataset.action === "edit" || target.dataset.action === "delete") {
                 self.loading_window_active = true;
-                axios.post("/Dashboard/Desktop/change_extra_deduction_content", values)
+                axios.post("/change_extra_deduction_content", values)
                     .then(response => {
                         self.loading_window_active = false;
                         if (response["data"] === "done")
@@ -838,6 +781,7 @@ const app = new Vue({
                     if (selected === "finisher" && $("#finisher_list").children().length > 0)
                         $("#finisher_list").html('');
                     let item = $(this).clone(true);
+                    console.log(selected);
                     switch (selected){
                         case "starter":{
                             self.final_starter.push($(item).data("id"));
@@ -938,17 +882,19 @@ const app = new Vue({
             let contract_id = $("#contract_id").val();
             if (project_id !== null && contract_id !== null){
                 const values = {"project_id": project_id, "contract_id": contract_id};
-                axios.post("/Dashboard/Desktop/get_new_invoice_information", values)
+                axios.post("/get_new_invoice_information", values)
                     .then(response =>
                     {
-                        self.contract_branch = response["data"]["category"]["branch"]["branch"];
-                        self.contract_category = response["data"]["category"]["category"];
-                        self.contractor_name = response["data"]["contractor"]["name"];
-                        self.invoices_count = parseInt(response["data"]["invoices_count"]) + 1;
+                        self.contract_branch = response["data"]["contract"]["category"]["branch"]["branch"];
+                        self.contract_category = response["data"]["contract"]["category"]["category"];
+                        self.contractor_name = response["data"]["contract"]["contractor"]["name"];
+                        self.invoices_count = parseInt(response["data"]["contract"]["invoices_count"]) + 1;
                         self.new_invoice_frame = true;
-                        self.new_invoice_unit = response["data"]["unit"]["name"];
-                        self.new_invoice_amount = response["data"]["amount"];
-                        self.invoice_total_previous_quantity = response["data"]["automation_amounts_sum_quantity"] ? response["data"]["automation_amounts_sum_quantity"] : 0;
+                        self.new_invoice_unit = response["data"]["contract"]["unit"]["name"];
+                        self.new_invoice_amount = response["data"]["contract"]["amount"];
+                        self.invoice_total_previous_quantity = response["data"]["contract"]["automation_amounts_sum_quantity"] ? response["data"]["contract"]["automation_amounts_sum_quantity"] : 0;
+                        self.contract_info = response["data"]["report"]["details"];
+                        self.contract_info_total = response["data"]["report"]["totals"];
                     });
             }
         },
@@ -1150,7 +1096,7 @@ const app = new Vue({
             if (invoice_id) {
                 const values = {"invoice_id": invoice_id};
                 this.loading_window_active = true;
-                axios.post("/Dashboard/Desktop/get_invoice_details", values).then(response => {
+                axios.post("/get_invoice_details", values).then(response => {
                         self.loading_window_active = false;
                         const header = $("#roles_head");
                         const titles = $("#roles_titles");
@@ -1266,7 +1212,7 @@ const app = new Vue({
                         if (result === true) {
                             bootbox.hideAll();
                             self.loading_window_active = true;
-                            axios.post("/Dashboard/Desktop/update_bank_information", data)
+                            axios.post("/update_bank_information", data)
                                 .then(function (response) {
                                     self.loading_window_active = false;
                                     if (response.data === "ok")
@@ -1331,18 +1277,94 @@ const app = new Vue({
                 }
             });
         },
-        show_notif_permission(){
-            Notification.requestPermission().then(result => {
-                this.notification_permission = false;
-                navigator.serviceWorker.ready.then(registration => {
-                    registration.showNotification("سیستم Notification با موفقیت فعال شد!", {}).then(r => {
-                    });
-                });
-            });
+        resize_window() {
+            const width = window.innerWidth;
+            switch (true){
+                case (width > 1024):{
+                    if (window.location.href.includes("Phone"))
+                        window.location.replace(window.location.href.replace("Phone","Desktop"));
+                    break;
+                }
+                case (width < 1024):{
+                    if (window.location.href.includes("Desktop"))
+                        window.location.replace(window.location.href.replace("Desktop","Phone"));
+                    break;
+                }
+            }
         },
-        history_back(page){
-            localStorage.setItem("reload","true");
-            history.go(page);
+        calender_selection(e){
+            const target = $(e.currentTarget).find(".cover");
+            let checked = !$(target).hasClass("active");
+            // if($(".cover.active").length === 3 && checked === true) {
+            //     bootbox.alert("حداکثر 3 روز قابل انتخاب می باشد");
+            // }
+            // else {
+                $(target).toggleClass("active");
+                $(target).find("input[name='selected_dates[]']").prop("checked", checked);
+            // }
+        },
+        show_modal(e){
+            const type = typeof e.currentTarget.dataset.type !== "undefined" ? e.currentTarget.dataset.type : null;
+            this.leave_date='';this.departure_time='';this.arrival_time='';
+            if(type !== null && type === "daily") {
+                this.leave_type_show = false;
+                this.leave_type_hidden = "daily";
+                this.leave_type = "روزانه";
+            }
+            else if(type !== null && type === "hourly") {
+                this.leave_type_show = true;
+                this.leave_type_hidden = "hourly";
+                this.leave_type = "ساعتی";
+            }
+            $(`#${e.currentTarget.dataset.modal_name}`).modal("show");
+        },
+        add_leave_information(){
+            if (this.leave_type_hidden === "daily" && this.leave_date || this.leave_type_hidden === "hourly" && this.leave_date && this.departure_time && this.arrival_time){
+                let tmp = {"type":this.leave_type_hidden,"leave_type":this.leave_type,"leave_date":this.leave_date,"departure_time":this.departure_time,"arrival_time":this.arrival_time};
+                this.leave_items.push(tmp);
+            }
+        },
+        set_work_shift(){
+            const work_shift_id = $("#staff_id").find("option:selected").data("work_shift");
+            $("#work_shift_id").val(work_shift_id).selectpicker('refresh');
+        },
+        worker_payment_automation_details(e){
+            const automation_id = e.currentTarget.dataset.id;
+            automation_items.forEach(function (item,index) {
+                if(item.id === parseInt(automation_id)){
+                    $("#project_name").val(automation_items[index]["project"]["name"]);
+                    $("#worker_name").val(automation_items[index]["contractor"]["name"]);
+                    $("#amount").val(automation_items[index]["amount"]);
+                    $(".comments_container,.sign_container").html('');
+                    automation_items[index]["comments"].forEach(function (item){
+                        let date = moment.from(item.created_at, 'en', 'YYYY/MM/DD').format('YYYY/MM/DD')
+                        $(".comments_container").append(`
+                        <div class="comment_box iran_yekan mt-2">
+                                        <div class="commenter">
+                                            <i class="fa fa-user-circle fa-2x mr-2"></i>
+                                            <span class="text-muted">${item.user.name}(${item.user.role.name})</span>
+                                        </div>
+                                        <p class="mt-2 comment">${item.comment}</p>
+                                        <span class="time-left" dir="ltr">${date}</span>
+                                    </div>
+                        `);
+                    });
+                    automation_items[index]["signs"].forEach(function (item){
+                        let date = moment.from(item.created_at, 'en', 'YYYY/MM/DD').format('YYYY/MM/DD')
+                        $(".sign_container").append(`
+                        <div class="sign_box iran_yekan bg-light mr-4">
+                                        <i class="fa fa-user-circle fa-2x mr-2"></i>
+                                        <span class="text-muted">${item.user.role.name}</span>
+                                        <span>${item.user.name}</span>
+                                        <span class="text-muted" dir="ltr" style="font-size: 10px">${date}</span>
+                                    </div>
+                        `);
+                    });
+                }
+            });
+            $("#automation_details").modal("show");
+            $("#send_form").prop("action",e.currentTarget.dataset.route);
+            $("#refer_form").prop("action",e.currentTarget.dataset.refer);
         }
     }
 });

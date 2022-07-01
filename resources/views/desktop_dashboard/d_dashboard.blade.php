@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{csrf_token()}}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>
         {{$company_information->name}}
         -
@@ -11,23 +11,18 @@
     </title>
     @laravelPWA
     <link href="{{asset("/css/app.css?v=".$company_information->app_ver)}}" rel="stylesheet">
-    <link href="{{asset("/css/d_dashboard.css?v=".$company_information->app_ver)}}" rel="stylesheet">
+    <link href="{{asset("/css/d_dashboard.css?v=".$company_information->app_ver.time())}}" rel="stylesheet">
     <link href="{{asset("/css/persianDatepicker-default.css?v=".$company_information->app_ver)}}" rel="stylesheet">
     @yield('styles')
 </head>
 <body class="antialiased rtl">
 <button id="select_refresher" onclick="$('.select_picker').selectpicker('refresh')" hidden></button>
 <div id="app" v-on:click="account_information_open">
-    <div class="notification_permission_window" v-cloak v-show="notification_permission">
-        <i class="fas fa-info-circle white_color fa-3x mb-2"></i>
-        <h6 class="iran_yekan white_color" style="width: 200px;word-break: break-word;text-align: justify" v-text="notification_text"></h6>
-        <button class="btn btn-outline-light iran_yekan mt-3" v-on:click="show_notif_permission">فعال سازی</button>
-    </div>
     <div class="loading_window" v-show="loading_window_active">
         <i class="fas fa-cog fa-spin white_color"></i>
     </div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light iran_yekan" style="height: 50px">
-        <a class="navbar-brand laleh" href="{{route("dashboard_home")}}">اریکه سازان</a>
+        <a class="navbar-brand laleh" href="">اریکه سازان</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main_nav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -58,7 +53,8 @@
                         </li>
                         <li><a class="dropdown-item menu_item_text" href="{{route("Units.index")}}">ایجاد، مشاهده و ویرایش واحد های اندازه گیری</a></li>
                         <li><a class="dropdown-item menu_item_text" href="{{route("InvoiceFlow.index")}}">ایجاد، مشاهده و ویرایش جریان صورت وضعیت</a></li>
-                        <li><a class="dropdown-item menu_item_text" href="{{route("system_status_index")}}">مشاهده و تغییر وضعیت سیستم</a>
+                        <li><a class="dropdown-item menu_item_text" href="{{route("LeaveFlow.index")}}">ایجاد، مشاهده و ویرایش جریان مرخصی</a></li>
+                        <li><a class="dropdown-item menu_item_text" href="{{route("system_status_index")}}">مشاهده و تغییر پارامترهای سیستم</a>
                         <li><a class="dropdown-item menu_item_text" href="{{route("AppSettings.index")}}">تنظیمات برنامه</a>
                     </ul>
                 </li>
@@ -117,8 +113,8 @@
     </nav>
     <div class="pages_container">
         @if(Route::is("idle"))
-            <div class="w-100 d-flex flex-column align-items-end justify-content-center p-5" v-cloak v-show="{{"new_invoice_automation_show"}} || {{"new_worker_payment_automation_show"}}">
-                <div class="card text-white bg-success mb-3" style="width: 22rem;" v-cloak v-show="{{"new_invoice_automation_show"}} || {{"new_worker_payment_automation_show"}}">
+            <div class="w-100 d-flex flex-column align-items-end justify-content-center p-5" v-cloak v-show="new_invoice_automation_show || new_worker_payment_automation_show || new_leave_automation_show">
+                <div class="card text-white bg-success mb-3" style="width: 22rem;" v-cloak v-show="new_invoice_automation_show || new_worker_payment_automation_show || new_leave_automation_show">
                     <div class="card-header iran_yekan">
                         <h6 class="m-0" style="font-weight: 600">
                             <i class="fa fa-bullhorn" style="vertical-align: middle;font-size: 1.2rem"></i>
@@ -126,16 +122,22 @@
                         </h6>
                     </div>
                     <div class="card-body">
-                        <a class="white_color" v-show="{{"new_invoice_automation_show"}}" href="{{route("InvoiceAutomation.automation")}}">
+                        <a class="white_color" v-show="new_invoice_automation_show" href="{{route("InvoiceAutomation.automation")}}">
                             <h6 class="card-title iran_yekan">
-                                <span class="badge badge-pill badge-danger" style="font-size: 11px" v-cloak v-text="new_invoice_automation_text"></span>
+                                <span class="badge badge-pill badge-danger" style="font-size: 11px;min-width: 25px" v-cloak v-text="new_invoice_automation_text"></span>
                                 <span> صورت وضعیت پیمانکاری مشاهده نشده</span>
                             </h6>
                         </a>
-                        <a class="white_color" v-show="{{"new_worker_payment_automation_show"}}" href="{{route("WorkerPayments.automation")}}">
+                        <a class="white_color" v-show="new_worker_payment_automation_show" href="{{route("WorkerPayments.automation")}}">
                             <h6 class="card-title iran_yekan">
-                                <span class="badge badge-pill badge-danger" style="font-size: 11px" v-cloak v-text="new_worker_payment_automation_text"></span>
+                                <span class="badge badge-pill badge-danger" style="font-size: 11px;min-width: 25px" v-cloak v-text="new_worker_payment_automation_text"></span>
                                 <span> صورت وضعیت کارگری مشاهده نشده</span>
+                            </h6>
+                        </a>
+                        <a class="white_color" v-show="new_leave_automation_show" href="{{route("LeaveAutomation.automation")}}">
+                            <h6 class="card-title iran_yekan">
+                                <span class="badge badge-pill badge-danger" style="font-size: 11px;min-width: 25px" v-cloak v-text="new_leave_automation_text"></span>
+                                <span> درخواست مرخصی مشاهده نشده</span>
                             </h6>
                         </a>
                     </div>
@@ -152,7 +154,10 @@
                 <span class="iran_yekan white_color page_title">
                     @yield('page_title')
                 </span>
-                    <a href="{{route("idle")}}"><i class="fa fa-times-circle fa-1_4x white_color close_button"></i></a>
+                    <form id="back_form" action="{{route("back")}}" method="post">
+                        @csrf
+                        <button class="btn btn-sm btn-outline-success" type="submit" form="back_form" v-on:click="loading_window_active=true"><i class="fa fa-arrow-circle-left fa-1_4x white_color close_button"></i></button>
+                    </form>
                 </div>
                 <div class="page_content_body">
                     @if(session()->has("action_error"))
@@ -244,9 +249,25 @@
             </h6>
         </div>
     @endif
+    @if(session("result") == "approved")
+        <div class="alert_container">
+            <h6 class="iran_yekan">
+                <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
+                <span class="white_color">عملیات تایید و اتمام با موفقیت انجام شد</span>
+            </h6>
+        </div>
+    @endif
+    @if(session("result") == "rejected")
+        <div class="alert_container">
+            <h6 class="iran_yekan">
+                <i class="fa fa-check-circle d-block fa-4x pb-2" style="color: #69fc3d;vertical-align: middle;text-align:center"></i>
+                <span class="white_color">عملیات عدم تایید و اتمام با موفقیت انجام شد</span>
+            </h6>
+        </div>
+    @endif
 @endif
 <script>
-    const role_id = {{\Illuminate\Support\Facades\Auth::user()->role->id}};
+    const role_id = {{$user->role->id}};
     @if($invoice_count > 0)
     const new_invoice_automation_show_already = true;
     const new_invoice_automation_text_already = {{$invoice_count}};
@@ -255,12 +276,16 @@
     const new_worker_automation_show_already = true;
     const new_worker_automation_text_already = {{$worker_count}};
     @endif
+    @if($leave_count > 0)
+    const new_leave_automation_show_already = true;
+    const new_leave_automation_text_already = {{$leave_count}};
+    @endif
 </script>
 <script src="{{asset("js/app.js?v=".$company_information->app_ver)}}"></script>
 <script src="{{asset("/js/numeral.js?v=".$company_information->app_ver)}}"></script>
 <script src="{{asset("/js/persianDatepicker.min.js?v=".$company_information->app_ver)}}"></script>
-<script src="{{asset("/js/d_dashboard.js?v=".$company_information->app_ver)}}"></script>
-<script src="{{asset("/js/kernel.js?v=".$company_information->app_ver)}}" defer></script>
+<script src="{{asset("/js/d_dashboard.js?v=".$company_information->app_ver.time())}}"></script>
+<script src="{{asset("/js/kernel.js?v=".$company_information->app_ver.time())}}" defer></script>
 @yield('scripts')
 <div id="menu_search" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">

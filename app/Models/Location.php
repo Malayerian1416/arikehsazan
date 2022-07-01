@@ -9,7 +9,7 @@ class Location extends Model
 {
     use HasFactory;
     protected $table = "locations";
-    protected $fillable = ["project_id","name","geoJson","is_active","user_id"];
+    protected $fillable = ["project_id","name","geoJson","is_active","user_id","hash"];
 
     public function project(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

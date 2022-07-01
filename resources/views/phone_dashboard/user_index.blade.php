@@ -1,18 +1,18 @@
 @extends('phone_dashboard.p_dashboard')
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center">تعریف و ویرایش کارمندان</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center">تعریف و ویرایش کارمندان</span>
 @endsection
 @section('content')
     @if(auth()->user()->is_admin)
         <div class="row pt-1 pb-3">
             <div class="col-12 hide_section_container">
-                <h6>
-                    <i class="fa fa-plus-square fa-2x hide_section_icon" style="vertical-align: middle"></i>
+                <button class="btn btn-outline-success">
+                    <i class="fa fa-plus-square fa-1_4x mr-2 hide_section_icon" style="vertical-align: middle"></i>
                     <span class="iran_yekan hide_section_title">تعریف کارمند جدید</span>
-                </h6>
+                </button>
             </div>
             <div class="col-12 hide_section @if($errors->any())) active @endif">
-                <form id="create_form" action="{{route("Users.store")}}" method="post" v-on:submit="submit_create_form" enctype="multipart/form-data">
+                <form id="create_form" action="{{route("Users.store")}}" method="post" data-type="create" v-on:submit="submit_form" enctype="multipart/form-data">
                     @csrf
                     <div class="form-row">
                         <div class="form-group col-md-12 col-lg-4 col-xl-3">
@@ -169,7 +169,7 @@
                 </h6>
             </div>
             <div class="col-12 hide_section @if($errors->any()) active @endif">
-                <form id="create_form" action="{{route("Users.store")}}" method="post" v-on:submit="submit_create_form" enctype="multipart/form-data">
+                <form id="create_form" action="{{route("Users.store")}}" method="post" data-type="create" v-on:submit="submit_form" enctype="multipart/form-data">
                     @csrf
                     <div class="form-row">
                         <div class="form-group col-md-12 col-lg-4 col-xl-3">
@@ -381,7 +381,7 @@
                         </form>
                     </td>
                     <td>
-                        <form id="delete_form_{{$user->id}}" action="{{route("Users.destroy",$user->id)}}" method="post" v-on:submit="submit_delete_form">
+                        <form id="delete_form_{{$user->id}}" action="{{route("Users.destroy",$user->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                             @csrf
                             @method('delete')
                             <button class="index_form_submit_button" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>

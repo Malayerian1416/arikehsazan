@@ -4,24 +4,29 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Session;
 
 class PreviousUrlSession
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-     */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->method() == "GET") {
-            $links = session()->has('links') ? session('links') : [];
-            $currentLink = $request->path();
+        Session::has('forward') ? Session::get('forward') : Session::put('forward',true);
+        $forward = Session::get('forward');
+        if ($request->method() == "GET" && $forward) {
+            $links = Session::has('links') ? Session::get('links') : [];
+            $currentLink = $request->getRequestUri();
+            if ($request->getRequestUri() == "/Dashboard/Desktop" || $request->getRequestUri() == "/Dashboard/Phone"){
+                $links = [];
+            }
+            else {
+                if ($currentLink == $links[0])
+                    array_shift($links);
+            }
             array_unshift($links, $currentLink);
-            session(['links' => $links]);
+            Session::put('links', $links);
         }
+        Session::put('forward',true);
         return $next($request);
     }
 }

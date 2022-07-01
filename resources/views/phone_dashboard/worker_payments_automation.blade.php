@@ -1,15 +1,6 @@
 @extends('phone_dashboard.p_dashboard')
-@section('styles')
-@endsection
-@section('scripts')
-    @if(session()->has("print"))
-        <script>
-            window.open("{{route("WorkerPayments.print",session("print"))}}","_blanc");
-        </script>
-    @endif
-@endsection
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center">اتوماسیون پرداختی کارگری</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center">اتوماسیون پرداختی کارگری</span>
 @endsection
 @section('content')
     <div class="card h-100" style="overflow: hidden;max-height: 100%">
@@ -65,7 +56,7 @@
                                     @can('send','WorkerPayments')
                                         <td>
                                             @if($worker_payment->next_role_id != 0)
-                                                <form id="send_form_{{$worker_payment->id}}" class="d-inline-block" action="{{route("WorkerPayments.automate_sending",$worker_payment->id)}}" method="post" v-on:submit="submit_create_form">
+                                                <form id="send_form_{{$worker_payment->id}}" class="d-inline-block" action="{{route("WorkerPayments.automate_sending",$worker_payment->id)}}" method="post" data-type="create" v-on:submit="submit_form">
                                                     @csrf
                                                     @method('put')
                                                     <button class="index_form_submit_button" type="submit"><i class="fa fa-check-circle index_edit_icon" style="font-size: 1.8rem"></i></button>

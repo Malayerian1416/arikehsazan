@@ -4,6 +4,8 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+import {win} from "leaflet/src/core/Browser";
+
 require('./bootstrap');
 
 window.Vue = require('vue').default;

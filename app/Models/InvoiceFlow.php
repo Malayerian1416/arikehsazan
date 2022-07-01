@@ -73,12 +73,44 @@ class InvoiceFlow extends Model
                 "is_read" => 0
             ]);
             $invoice->automation_amounts()->where("user_id", "=", Auth::user()->id)->delete();
-            $invoice->comments()->where("user_id", "=", Auth::user()->id)->delete();
             $invoice->signs()->where("user_id", "=", Auth::user()->id)->delete();
         }
         else {
             $previous_role_id = User::query()->findOrFail($invoice->user_id)->role->id;
             $invoice_automation->update([
+                "previous_role_id" => $previous_role_id,
+                "current_role_id" => 0,
+                "next_role_id" => 0,
+                "is_read" => 0
+            ]);
+        }
+    }
+    public static function worker_refer($id)
+    {
+        $worker_automation = Invoice::query()->findOrFail($id);
+        $worker_automation = WorkerPaymentAutomation::query()->findOrFail($id);
+        $flow_roles = self::query()->where("is_starter","=",0)->get();
+        $previous_role_id = 0;$current_role_id = $worker_automation->previous_role_id;$next_role_id = $worker_automation->current_role_id;
+        if ($flow_roles->contains("role_id",$current_role_id)){
+            $previous_role = $flow_roles->where("role_id","=",$current_role_id)->first();
+            $priority = $previous_role->priority - 1;
+            if ($priority > 1){
+                $previous_role = $flow_roles->where("priority","=",$priority)->first();
+                $previous_role_id = $previous_role->role_id;
+            }
+            else
+                $previous_role_id = User::query()->findOrFail($worker_automation->user_id)->role->id;
+            $worker_automation->update([
+                "previous_role_id" => $previous_role_id,
+                "current_role_id" => $current_role_id,
+                "next_role_id" => $next_role_id,
+                "is_read" => 0
+            ]);
+            $worker_automation->signs()->where("user_id", "=", Auth::user()->id)->delete();
+        }
+        else {
+            $previous_role_id = User::query()->findOrFail($worker_automation->user_id)->role->id;
+            $worker_automation->update([
                 "previous_role_id" => $previous_role_id,
                 "current_role_id" => 0,
                 "next_role_id" => 0,

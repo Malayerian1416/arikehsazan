@@ -21,7 +21,7 @@
             </button>
         </div>
     @endif
-    <form id="create_form" action="{{route("InvoicesLimited.store")}}" method="post" v-on:submit="submit_create_form" enctype="multipart/form-data">
+    <form id="create_form" action="{{route("InvoicesLimited.store")}}" method="post" data-type="create" v-on:submit="submit_form" enctype="multipart/form-data">
         @csrf
         <div class="form-row border rounded pb-2">
             <div class="col-12 position-relative form_label_container">

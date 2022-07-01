@@ -3,7 +3,7 @@
     تنظیمات برنامه
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("AppSettings.update",$company_information->id)}}" method="post" v-on:submit="submit_update_form" enctype="multipart/form-data">
+    <form id="update_form" data-type="update" action="{{route("AppSettings.update",$company_information->id)}}" method="post" v-on:submit="submit_form" enctype="multipart/form-data">
         @csrf
         @method('put')
         <div class="form-row">

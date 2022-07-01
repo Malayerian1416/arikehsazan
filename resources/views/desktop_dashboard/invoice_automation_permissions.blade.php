@@ -7,7 +7,7 @@
     تعیین مجوزهای ویرایش مقادیر صورت وضعیت
 @endsection
 @section('content')
-    <form id="create_form" action="{{route("InvoiceFlow.set_permissions")}}" method="post" v-on:submit="submit_create_form">
+    <form id="create_form" action="{{route("InvoiceFlow.set_permissions")}}" method="post" data-type="create" v-on:submit="submit_form">
         @csrf
         <div class="form-row">
             @forelse($invoice_flow as $flow)

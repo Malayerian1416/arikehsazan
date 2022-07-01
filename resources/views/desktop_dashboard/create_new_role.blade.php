@@ -3,7 +3,7 @@
     ایجاد سمت جدید
 @endsection
 @section('content')
-    <form id="create_form" action="{{route("Roles.store")}}" method="post" v-on:submit="submit_create_form">
+    <form id="create_form" action="{{route("Roles.store")}}" method="post" data-type="create" v-on:submit="submit_form">
         @csrf
         <div class="form-row">
             <div class="form-group col-md-12">

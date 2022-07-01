@@ -26,7 +26,7 @@
                         </button>
                     </div>
                 @endif
-                <form id="create_form" action="{{route("InvoicesLimited.store")}}" method="post" v-on:submit="submit_create_form" enctype="multipart/form-data">
+                <form id="create_form" action="{{route("InvoicesLimited.store")}}" method="post" data-type="create" v-on:submit="submit_form" enctype="multipart/form-data">
                     @csrf
                     <div class="form-row border rounded pb-2">
                         <div class="col-12 position-relative form_label_container">
@@ -209,7 +209,7 @@
                     </td>
                     <td>
                         @if($invoice->automation->previous_role_id == \Illuminate\Support\Facades\Auth::user()->role->id)
-                            <form id="delete_form_{{$invoice->id}}" class="d-inline-block" action="{{route("InvoicesLimited.destroy",$invoice->id)}}" method="post" v-on:submit="submit_delete_form">
+                            <form id="delete_form_{{$invoice->id}}" class="d-inline-block" action="{{route("InvoicesLimited.destroy",$invoice->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                                 @csrf
                                 @method('delete')
                                 <button class="index_form_submit_button" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>

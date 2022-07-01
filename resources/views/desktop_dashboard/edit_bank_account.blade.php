@@ -11,7 +11,7 @@
     {{"ویرایش مشخصات حساب بانکی - ".$bank_account->name}}
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("BankAccounts.update",$bank_account->id)}}" method="post" v-on:submit="submit_update_form">
+    <form id="update_form" action="{{route("BankAccounts.update",$bank_account->id)}}" method="post" data-type="update" v-on:submit="submit_form">
         @csrf
         @method('put')
         <div class="form-row border rounded pb-2">

@@ -31,4 +31,8 @@ class WorkerPaymentAutomation extends Model
     {
         return $this->hasOne(WorkerAutomationPayments::class,"worker_payments_automation_id");
     }
+    public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(WorkerPaymentAutomationComment::class,"automation_id");
+    }
 }

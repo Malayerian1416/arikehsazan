@@ -3,7 +3,7 @@
     {{"ویرایش عملیات وابسته منو - ".$menu_action->name}}
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("MenuActions.update",$menu_action->id)}}" method="post" v-on:submit="submit_update_form">
+    <form id="update_form" action="{{route("MenuActions.update",$menu_action->id)}}" method="post" data-type="update" v-on:submit="submit_form">
         @csrf
         @method('put')
         <div class="form-row">

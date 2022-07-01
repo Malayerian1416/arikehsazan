@@ -1,4 +1,3 @@
-@charset "UTF-8";
 @import "fontiran.css";
 .antialiased{
     -webkit-font-smoothing:antialiased;
@@ -6,6 +5,9 @@
 }
 .iran_yekan{
     font-family: iranyekan,'sans-serif';
+}
+.iran_sans{
+    font-family: iransansfont,'sans-serif';
 }
 .mitra{
     font-family: mitra,'sans-serif';

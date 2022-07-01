@@ -16,7 +16,7 @@
                 </h6>
             </div>
             <div class="col-12 hide_section @if($errors->has(["name","role_menu"]))) active @endif">
-                <form id="create_form" action="{{route("Roles.store")}}" method="post" v-on:submit="submit_create_form">
+                <form id="create_form" action="{{route("Roles.store")}}" method="post" data-type="create" v-on:submit="submit_form">
                     @csrf
                     <div class="form-row">
                         <div class="form-group col-md-12">
@@ -31,7 +31,7 @@
                         </div>
                         @forelse($menu_headers as $menu_header)
                             @if($menu_header->items->isNotEmpty())
-                                <div class="form-group col-md-12 col-lg-4 col-xl-3 iran_yekan mt-3">
+                                <div class="form-group col-md-12 col-lg-3 col-xl-2 iran_yekan mt-3">
                                     <label style="font-size: 14px;font-weight: 700" class="col-form-label">{{$menu_header->name}}</label>
                                     <ul class="menu_list main_menu_list border">
                                         <li>
@@ -113,7 +113,7 @@
                 </h6>
             </div>
             <div class="col-12 hide_section @if($errors->has(["name","role_menu"])) active @endif">
-                <form id="create_form" action="{{route("Roles.store")}}" method="post" v-on:submit="submit_create_form">
+                <form id="create_form" action="{{route("Roles.store")}}" method="post" data-type="create" v-on:submit="submit_form">
                     @csrf
                     <div class="form-row">
                         <div class="form-group col-md-12">
@@ -237,7 +237,7 @@
                         <a class="index_action" href="{{route("Roles.edit",$role->id)}}"><i class="fa fa-pen index_edit_icon"></i></a>
                     </td>
                     <td>
-                        <form id="delete_form_{{$role->id}}" class="d-inline-block" action="{{route("Roles.destroy",$role->id)}}" method="post" v-on:submit="submit_delete_form">
+                        <form id="delete_form_{{$role->id}}" class="d-inline-block" action="{{route("Roles.destroy",$role->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                             @csrf
                             @method('delete')
                             <button class="index_form_submit_button" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>

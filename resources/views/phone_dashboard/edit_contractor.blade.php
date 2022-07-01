@@ -2,16 +2,15 @@
 @section('styles')
 @endsection
 @section('scripts')
-    <script type="text/javascript" src="{{asset("/js/jquery.mask.js")}}" defer></script>
     <script>
         const bank_already_information = @json($contractor->banks->toArray());
     </script>
 @endsection
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center">{{"ویرایش مشخصات پیمانکاران - ".$contractor->name}}</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center">{{"ویرایش مشخصات پیمانکاران - ".$contractor->name}}</span>
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("Contractors.update",$contractor->id)}}" method="post" v-on:submit="submit_update_form">
+    <form id="update_form" action="{{route("Contractors.update",$contractor->id)}}" method="post" data-type="update" v-on:submit="submit_form">
         @csrf
         @method('put')
         <div class="form-row border rounded pb-2">
@@ -165,7 +164,7 @@
                                 <i class="fa fa-download white_color border p-2 doc_icon"></i>
                             </a>
                         </div>
-                        <form id="delete_form" action="{{route("DestroyContractorDoc")}}" method="post" v-on:submit="submit_delete_form">
+                        <form id="delete_form" action="{{route("DestroyContractorDoc")}}" method="post" data-type="delete" v-on:submit="submit_form">
                             @csrf
                             @method('delete')
                             <input type="text" hidden value="{{$contractor->id}}" name="id">

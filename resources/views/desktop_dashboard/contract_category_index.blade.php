@@ -39,7 +39,7 @@
                         <i class="fa fa-pen index_edit_icon" data-route="{{route("ContractCategories.update",$category->id)}}" data-value="{{$category->category}}" data-extra_value="{{$category->branch->id}}" v-on:click="static_data_edit_modal"></i>
                     </td>
                     <td>
-                        <form id="delete_form_{{$category->id}}" class="d-inline-block" action="{{route("ContractCategories.destroy",$category->id)}}" method="post" v-on:submit="submit_delete_form">
+                        <form id="delete_form_{{$category->id}}" class="d-inline-block" action="{{route("ContractCategories.destroy",$category->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                             @csrf
                             @method('delete')
                             <button class="index_form_submit_button" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>
@@ -77,7 +77,7 @@
                     <div class="form-row">
                         <div class="form-group col-12">
                             <label class="form-check-label p-0">عنوان رشته</label>
-                            <form id="create_form" action="{{route("ContractCategories.store")}}" method="post" v-on:submit="submit_create_form">
+                            <form id="create_form" action="{{route("ContractCategories.store")}}" method="post" data-type="create" v-on:submit="submit_form">
                                 @csrf
                                 <select class="form-control mb-2" id="contract_branch_id_add" name="contract_branch_id">
                                     @forelse($contract_branches as $branch)
@@ -108,7 +108,7 @@
                 <div class="modal-body">
                     <div class="form-row">
                         <div class="form-group col-12">
-                            <form id="update_form" action="" method="post" v-on:submit="submit_update_form">
+                            <form id="update_form" action="" method="post" data-type="update" v-on:submit="submit_form">
                                 @csrf
                                 @method('put')
                                 <label class="form-check-label p-0">عنوان رشته</label>

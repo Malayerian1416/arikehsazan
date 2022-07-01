@@ -3,7 +3,7 @@
     {{"ویرایش عنوان اصلی منو - ".$menu_title->name}}
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("MenuTitles.update",$menu_title->id)}}" method="post" v-on:submit="submit_update_form">
+    <form id="update_form" action="{{route("MenuTitles.update",$menu_title->id)}}" method="post" data-type="update" v-on:submit="submit_form">
         @csrf
         @method('put')
         <div class="form-row">

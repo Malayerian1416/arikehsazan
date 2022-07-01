@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewInvoiceAutomation;
+use App\Events\InvoiceEvent;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Contract;
 use App\Models\Invoice;
@@ -10,11 +10,12 @@ use App\Models\InvoiceAutomationAmounts;
 use App\Models\InvoiceComment;
 use App\Models\InvoiceFlow;
 use App\Models\Project;
-use Illuminate\Http\Request;
+use App\Models\User;
+use App\Notifications\PushMessageInvoice;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Jenssegers\Agent\Agent;
+use Illuminate\Support\Facades\Notification;
 use Throwable;
 
 class InvoiceController extends Controller
@@ -90,7 +91,9 @@ class InvoiceController extends Controller
             $invoice_automation = InvoiceFlow::automate();
             $invoice->automation()->create($invoice_automation);
             DB::commit();
-            event(new NewInvoiceAutomation($invoice->automation));
+            $message = "درخواست پرداخت وضعیت جدید پیمانکاری به اتوماسیون شما ارسال شده است";
+            $this->send_push_notification(PushMessageInvoice::class,$message,"role_id",$invoice->automation->current_role_id);
+            $this->send_event_notification(InvoiceEvent::class,$invoice->automation,$message);
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
@@ -154,10 +157,11 @@ class InvoiceController extends Controller
                 $invoice->comments()->create(["user_id" => Auth::id(),"comment" => $validated["comment"]]);
             elseif($request->input("invoice_comment_id") != null && $validated["comment"] != null)
                 InvoiceComment::query()->findOrFail($request->input("invoice_comment_id"))->update(["comment" => $validated["comment"]]);
-            $invoice_automation = InvoiceFlow::automate();
-            $invoice->automation()->update($invoice_automation);
-            event(new NewInvoiceAutomation($invoice->automation));
+            $invoice->automation()->update(InvoiceFlow::automate());
             DB::commit();
+            $message = "درخواست پرداخت وضعیت جدید پیمانکاری پس از ویرایش به اتوماسیون شما ارسال شده است";
+            $this->send_push_notification(PushMessageInvoice::class,$message,"role_id",$invoice->automation->current_role_id);
+            $this->send_event_notification(InvoiceEvent::class,$invoice->automation,$message);
             return redirect()->back()->with(["result" => "updated"]);
         }
         catch (Throwable $ex){

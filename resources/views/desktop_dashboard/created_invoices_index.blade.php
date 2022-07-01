@@ -12,7 +12,7 @@
                 </h6>
             </div>
             <div class="col-12 hide_section @if($errors->any()) active @endif">
-                <form id="create_form" action="{{route("Invoices.store")}}" method="post" v-on:submit="submit_create_form">
+                <form id="create_form" action="{{route("Invoices.store")}}" method="post" data-type="create" v-on:submit="submit_form">
                     @csrf
                     <div class="form-row border rounded pb-2">
                         <div class="col-12 position-relative form_label_container">
@@ -61,7 +61,14 @@
                         </div>
                         <div class="form-group col-md-12 col-lg-2">
                             <label class="col-form-label iran_yekan black_color" for="new_invoice_total_amount_process">میزان کارکرد</label>
-                            <input class="form-control iran_yekan text-center number_format_dec" type="text" name="quantity" v-model="new_invoice_quantity" v-on:input="new_invoice_total_amount_process">
+                            <div class="input-group">
+                                <input class="form-control iran_yekan text-center number_format_dec" type="text" name="quantity" v-model="new_invoice_quantity" v-on:input="new_invoice_total_amount_process">
+                                <div class="input-group-prepend" onclick="$('#contract_information').modal('show')">
+                                    <span class="input-group-text" id="basic-addon1">
+                                        <i title="مشاهده جزئیات کارکرد پیمان" class="fa fa-search fa-1_6x search_handle"></i>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group col-md-12 col-lg-2">
                             <label class="col-form-label iran_yekan black_color" for="new_invoice_unit">واحد</label>
@@ -80,7 +87,7 @@
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1">%</span>
-                                    <input class="form-control iran_yekan text-center" style="height: 30px" step="1" type="number" name="payment_offer_percent" :disabled="payment_offer_disabled" v-model="invoice_payment_offer_percent" v-on:input="invoice_payment_offer_percent_change">
+                                    <input class="form-control iran_yekan text-center" style="height: 30px;width: 90px" step="1" type="number" name="payment_offer_percent" :disabled="payment_offer_disabled" v-model="invoice_payment_offer_percent" v-on:input="invoice_payment_offer_percent_change">
                                 </div>
                                 <input class="form-control iran_yekan text-center number_format" type="text" name="payment_offer" :disabled="payment_offer_disabled" v-model="invoice_payment_offer" v-on:input="invoice_payment_offer_change">
                             </div>
@@ -200,7 +207,7 @@
                     </td>
                     <td>
                         @if($invoice->automation->previous_role_id == \Illuminate\Support\Facades\Auth::user()->role->id)
-                            <form id="delete_form_{{$invoice->id}}" class="d-inline-block" action="{{route("Invoices.destroy",$invoice->id)}}" method="post" v-on:submit="submit_delete_form">
+                            <form id="delete_form_{{$invoice->id}}" class="d-inline-block" action="{{route("Invoices.destroy",$invoice->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                                 @csrf
                                 @method('delete')
                                 <button class="index_form_submit_button" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>
@@ -229,5 +236,68 @@
                 <span>بستن</span>
             </button>
         </a>
+    </div>
+@endsection
+@section('modal_alerts')
+    <div class="modal fade iran_yekan" id="contract_information" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">جزئیات پیمان</h6>
+                </div>
+                <div class="modal-body" style="max-height: 70vh;overflow-y: auto">
+                    <div class="table-responsive">
+                        <table class="table table-borderless table-striped table-light table-hover">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th class="text-center">ردیف</th>
+                                <th class="text-center">وضعیت</th>
+                                <th class="text-center">تاریخ</th>
+                                <th class="text-center">کارکرد</th>
+                                <th class="text-center">جمع کل</th>
+                                <th class="text-center">پرداختی</th>
+                                <th class="text-center">باقیمانده</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="row in contract_info" :key="row.row">
+                                <td>@{{row.row}}</td>
+                                <td>@{{ row.number }}</td>
+                                <td>@{{ row.date }}</td>
+                                <td>@{{ row.quantity }}</td>
+                                <td>@{{ row.total }}</td>
+                                <td>@{{ row.payment }}</td>
+                                <td v-bind:style="[row.remain !== 'undefined' && parseFloat(row.remain.replaceAll(',','')) > 0 ? {'color':'red'}:{'color':'green'}]">@{{ row.remain }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row bg-dark white_color no-gutters p-2">
+                        <div class="col-md-12 col-lg-3 text-center">
+                            <span class="iran_yekan">
+                                جمع کل کارکرد
+                                <span class="iran_yekan" v-text="contract_info_total.unit"></span>
+                            </span>
+                            <h5 class="iran_yekan mb-0 mt-1" style="color: #fff300" v-text="contract_info_total.total_quantity"></h5>
+                        </div>
+                        <div class="col-md-12 col-lg-3 text-center">
+                            <span class="iran_yekan">جمع کل وضعیت</span>
+                            <h5 class="iran_yekan mb-0 mt-1" style="color: #fff300" v-text="contract_info_total.total_sum"></h5>
+                        </div>
+                        <div class="col-md-12 col-lg-3 text-center">
+                            <span class="iran_yekan">جمع کل پرداختی</span>
+                            <h5 class="iran_yekan mb-0 mt-1" style="color: #fff300" v-text="contract_info_total.total_payed"></h5>
+                        </div>
+                        <div class="col-md-12 col-lg-3 text-center">
+                            <span class="iran_yekan">جمع کل باقیمانده</span>
+                            <h5 class="iran_yekan mb-0 mt-1" v-bind:style="parseFloat(contract_info_total.total_remain.replaceAll(',','')) > 0 ? {'color':'#ff3939'}:{'color':'#31f842'}" v-text="contract_info_total.total_remain"></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection

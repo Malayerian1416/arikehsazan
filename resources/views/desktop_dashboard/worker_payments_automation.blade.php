@@ -2,11 +2,16 @@
 @section('styles')
 @endsection
 @section('scripts')
+    <script src="{{asset("/js/jalali-moment.browser.js")}}"></script>
     @if(session()->has("print"))
         <script>
             window.open("{{route("WorkerPayments.print",session("print"))}}","_blanc");
         </script>
     @endif
+    <script>
+        moment.locale('fa');
+        const automation_items = @json($worker_payments);
+    </script>
 @endsection
 @section('page_title')
     اتوماسیون پرداختی کارگری
@@ -37,14 +42,11 @@
                             <tr>
                                 <th scope="col">شماره</th>
                                 <th scope="col">نام پروژه</th>
-                                <th scope="col">نام کارگر</th>
                                 <th scope="col">توسط</th>
-                                <th scope="col">مبلغ</th>
-                                <th scope="col">توضیحات</th>
                                 <th scope="col">تاریخ ثبت</th>
                                 <th scope="col">تاریخ ویرایش</th>
                                 @can('send','WorkerPayments')
-                                    <th scope="col">تایید و ارسال</th>
+                                    <th scope="col">جزئیات</th>
                                 @endcan
                                 @can('pay','WorkerPayments')
                                     <th scope="col">تایید و پرداخت</th>
@@ -56,23 +58,12 @@
                                 <tr>
                                     <td><span>{{$worker_payment->id}}</span></td>
                                     <td><span>{{$worker_payment->project->name}}</span></td>
-                                    <td><span>{{$worker_payment->contractor->name}}</span></td>
                                     <td><span >{{$worker_payment->user->name}}</span></td>
-                                    <td><span>{{number_format($worker_payment->amount)}}</span></td>
-                                    <td><span>{{$worker_payment->description}}</span></td>
                                     <td><span>{{verta($worker_payment->created_at)->format("Y/n/d")}}</span></td>
                                     <td><span>{{verta($worker_payment->updated_at)->format("Y/n/d")}}</span></td>
-                                    @can('send','WorkerPayments')
+                                    @can('details','WorkerPayments')
                                         <td>
-                                            @if($worker_payment->next_role_id != 0)
-                                                <form id="send_form_{{$worker_payment->id}}" class="d-inline-block" action="{{route("WorkerPayments.automate_sending",$worker_payment->id)}}" method="post" v-on:submit="submit_create_form">
-                                                    @csrf
-                                                    @method('put')
-                                                    <button class="index_form_submit_button" type="submit"><i class="fa fa-check-circle index_edit_icon" style="font-size: 1.8rem"></i></button>
-                                                </form>
-                                            @else
-                                                <i class="fa fa-times-circle index_delete_icon red_color"></i>
-                                            @endif
+                                            <button class="btn btn-sm btn-info iran_yekan" data-route="{{route("WorkerPayments.automate_sending",$worker_payment->id)}}" data-refer="{{route("WorkerPayments.refer",$worker_payment->id)}}" data-id="{{$worker_payment->id}}" v-on:click="worker_payment_automation_details">مشاهده</button>
                                         </td>
                                     @endcan
                                     @can('pay','WorkerPayments')
@@ -165,5 +156,60 @@
                 <span>خروج</span>
             </button>
         </a>
+    </div>
+@endsection
+@section('modal_alerts')
+    <div class="modal fade iran_yekan" id="automation_details" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">جزئیات صورت وضعیت</h6>
+                </div>
+                <div class="modal-body" style="max-height: 70vh">
+                    <div class="row no-gutters">
+                        <form class="w-100" id="send_form" action="" data-type="send" method="post" v-on:submit="submit_form">
+                            @csrf
+                            @method('put')
+                            <div class="col-12">
+                                <label class="col-form-label iran_yekan black_color" for="bank_name">نام پروژه</label>
+                                <input type="text" id="project_name" readonly class="form-control text-center">
+                            </div>
+                            <div class="col-12">
+                                <label class="col-form-label iran_yekan black_color" for="bank_name">نام کارگر</label>
+                                <input type="text" id="worker_name" readonly class="form-control text-center">
+                            </div>
+                            <div class="col-12">
+                                <label class="col-form-label iran_yekan black_color" for="bank_name">مبلغ</label>
+                                <input type="text" id="amount" name="amount" class="form-control text-center">
+                            </div>
+                            <div class="col-12">
+                                <label class="col-form-label iran_yekan black_color" for="bank_name">ثبت توضیحات</label>
+                                <textarea id="comment" name="comment" class="form-control" v-model="worker_comment"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="col-form-label iran_yekan black_color" for="project_name">توضیحات ثبت شده</label>
+                                <div class="comments_container">
+
+                                </div>
+                            </div>
+                            <div class="form-group col-12">
+                                <label class="col-form-label iran_yekan black_color" for="project_name">امضاء شده توسط</label>
+                                <div class="sign_container">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="send_form" class="btn btn-success">تایید و ارسال</button>
+                    <form id="refer_form" action="" data-type="refer" method="post" v-on:submit="submit_form">
+                        @csrf
+                        <input type="hidden" id="refer_comment" name="refer_comment" v-model="worker_comment"/>
+                        <button type="submit" form="refer_form" class="btn btn-danger">عدم تایید و ارجاع</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection

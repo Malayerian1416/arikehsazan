@@ -70,9 +70,11 @@ class AxiosCallController extends Controller
     }
     function get_new_invoice_information(Request $request): array
     {
-        return Contract::query()->with(["category.branch","contractor","unit"])
+         $contract = Contract::query()->with(["category.branch","contractor","unit"])
             ->withSum(["automation_amounts" => function($query){$query->where("is_main",1);}],"quantity")
             ->withCount("invoices")->findOrFail($request->input("contract_id"))->toArray();
+         $report = Invoice::report($request->input("contract_id"));
+         return ["contract" => $contract,"report" => $report];
     }
     function get_invoice_details(Request $request): array
     {

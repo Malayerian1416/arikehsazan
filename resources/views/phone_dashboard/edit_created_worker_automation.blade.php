@@ -1,17 +1,9 @@
 @extends('phone_dashboard.p_dashboard')
-@section('styles')
-    <link href="{{asset("/css/persianDatepicker-default.css")}}" rel="stylesheet">
-    <link href="{{asset("/css/bootstrap-select.css")}}" rel="stylesheet">
-@endsection
-@section('scripts')
-    <script type="text/javascript" src="{{asset("/js/persianDatepicker.min.js")}}"></script>
-    <script type="text/javascript" src="{{asset("/js/bootstrap-select.min.js")}}"></script>
-@endsection
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center">ویرایش پرداختی کارگری</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center">ویرایش پرداختی کارگری</span>
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("WorkerPayments.update",$worker_automation->id)}}" method="post" v-on:submit="submit_update_form">
+    <form id="update_form" action="{{route("WorkerPayments.update",$worker_automation->id)}}" method="post" data-type="update" v-on:submit="submit_form">
         @csrf
         @method('put')
         <div class="form-row">

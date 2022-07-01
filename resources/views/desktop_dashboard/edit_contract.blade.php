@@ -11,7 +11,7 @@
     {{"ویرایش پیمان ".$contract->name}}
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("Contracts.update",$contract->id)}}" method="post" v-on:submit="submit_update_form" enctype="multipart/form-data">
+    <form id="update_form" action="{{route("Contracts.update",$contract->id)}}" method="post" data-type="update" v-on:submit="submit_form" enctype="multipart/form-data">
         @csrf
         @method('put')
         <div class="form-row">
@@ -167,7 +167,7 @@
                                 <i class="fa fa-download white_color border p-2 doc_icon"></i>
                             </a>
                         </div>
-                        <form id="delete_form" action="{{route("DestroyContractDoc")}}" method="post" v-on:submit="submit_delete_form">
+                        <form id="delete_form" action="{{route("DestroyContractDoc")}}" method="post" data-type="delete" v-on:submit="submit_form">
                             @csrf
                             @method('delete')
                             <input type="text" hidden value="{{$contract->id}}" name="id">

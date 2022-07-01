@@ -23,7 +23,7 @@
             </h6>
         </div>
         <div class="card-body">
-            <form id="update_form" action="{{route("Locations.update",$location->id)}}" method="post" v-on:submit="submit_update_form">
+            <form id="update_form" action="{{route("Locations.update",$location->id)}}" method="post" data-type="update" v-on:submit="submit_form">
                 @csrf
                 @method("put")
                 <input type="hidden" name="geoJson" id="geoJson" value="{{$location->geoJson}}">

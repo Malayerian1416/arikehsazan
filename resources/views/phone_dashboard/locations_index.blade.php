@@ -13,7 +13,7 @@
     <script type="text/javascript" src="{{asset("/js/map.js")}}" defer></script>
 @endsection
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center">تعریف و ویرایش موقعیت مکانی</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center">تعریف و ویرایش موقعیت مکانی</span>
 @endsection
 @section('content')
     <div class="card h-100" style="overflow: hidden;max-height: 100%">
@@ -39,7 +39,7 @@
                                 </h6>
                             </div>
                             <div class="card-body">
-                                <form id="create_form" action="{{route("Locations.store")}}" method="post" v-on:submit="submit_create_form">
+                                <form id="create_form" action="{{route("Locations.store")}}" method="post" data-type="create" v-on:submit="submit_form">
                                     @csrf
                                     <input type="hidden" name="geoJson" id="geoJson" value="{{old("geoJson")}}">
                                     <div class="form-row">
@@ -129,7 +129,7 @@
                                         </form>
                                     </td>
                                     <td>
-                                        <form id="delete_form_{{$location->id}}" class="d-inline-block" action="{{route("Locations.destroy",$location->id)}}" method="post" v-on:submit="submit_delete_form">
+                                        <form id="delete_form_{{$location->id}}" class="d-inline-block" action="{{route("Locations.destroy",$location->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                                             @csrf
                                             @method('delete')
                                             <button class="index_form_submit_button" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>

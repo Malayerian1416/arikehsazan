@@ -27,6 +27,7 @@ class UserRequest extends FormRequest
         if ($this->method() == "POST") {
             return [
                 'name' => 'required|max:255',
+                "gender" => "required",
                 'username' => 'required|string|max:255|unique:users',
                 'password' => 'required|string|min:8|confirmed',
                 'role_id' => 'required',
@@ -37,12 +38,21 @@ class UserRequest extends FormRequest
                 "birth_date" => "sometimes|nullable|max:100|jdate:Y/m/d",
                 "national_code" => ["required", "digits:10", new NationalCodeChecker, "unique:users"],
                 "identify_number" => "sometimes|nullable|numeric",
-                "address" => "sometimes|nullable|max:500"
+                "address" => "sometimes|nullable|max:500",
+                "work_shift_id" => "sometimes|nullable|numeric",
+                "contract_number" => "sometimes|nullable",
+                "daily_wage" => "required|between:0,99999999999999999999999999",
+                "overtime_rate" => "required|between:0,99.99",
+                "delay_rate" => "required|between:0,99.99",
+                "acceleration_rate" => "required|between:0,99.99",
+                "absence_rate" => "required|between:0,99.99",
+                "mission_rate" => "required|between:0,99.99",
             ];
         }
         elseif ($this->method() == "PUT"){
             return [
                 'name' => 'required|string|max:255',
+                "gender" => "required",
                 'username' => ['required','string','max:255','unique:users,username,'.$this->route('User').",id"],
                 'password' => 'sometimes|nullable|string|min:8|confirmed',
                 'role_id' => 'required',
@@ -53,7 +63,15 @@ class UserRequest extends FormRequest
                 "birth_date" => "sometimes|nullable|max:100|jdate:Y/m/d",
                 "national_code" => ["required", "digits:10", new NationalCodeChecker, "unique:users,national_code,".$this->route('User').",id"],
                 "identify_number" => "sometimes|nullable|numeric",
-                "address" => "sometimes|nullable|max:500"
+                "address" => "sometimes|nullable|max:500",
+                "work_shift_id" => "sometimes|nullable",
+                "contract_number" => "sometimes|nullable",
+                "daily_wage" => "required|between:0,99999999999999999999999999",
+                "overtime_rate" => "required|between:0,99.99",
+                "delay_rate" => "required|between:0,99.99",
+                "acceleration_rate" => "required|between:0,99.99",
+                "absence_rate" => "required|between:0,99.99",
+                "mission_rate" => "required|between:0,99.99",
             ];
         }
         else return [];
@@ -63,6 +81,7 @@ class UserRequest extends FormRequest
         return [
             "name.required" => "درج نام کاربر الزامی می باشد.",
             "name.max" => "طول نام حداکثر 255 کاراکتر می باشد.",
+            "gender.required" => "انتخاب جنسیت الزامی می باشد.",
             "username.required" => "درج نام کاربری الزامی می باشد.",
             "username.string" => "نام کاربری باید به صورت رشته ای از حروف و اعداد باشد.",
             "username.max" => "طول نام کاربری حداکثر 255 کاراکتر می باشد.",
@@ -87,7 +106,19 @@ class UserRequest extends FormRequest
             "national_code.unique" => "کد ملی درج شده تکراری می باشد.",
             "national_code.digits" => "کد ملی پیمانکار 10 کاراکتر می باشد.",
             "identify_number.numeric" => "شماره شناسنامه مقدار عددی نمی باشد.",
-            "address.max" => "طول آدرس حداکثر 500 کاراکتر قابل قبول است."
+            "address.max" => "طول آدرس حداکثر 500 کاراکتر قابل قبول است.",
+            "daily_wage.required" => "درج دستمزد روزانه الزامی می باشد.",
+            "daily_wage.between" => "فرمت دستمزد روزانه صحیح نمی باشد.",
+            "overtime_rate.required" => "درج ضریب اضافه کاری الزامی می باشد.",
+            "overtime_rate.between" => "فرمت ضریب اضافه کاری صحیح نمی باشد.",
+            "delay_rate.required" => "درج ضریب تاخیر الزامی می باشد.",
+            "delay_rate.between" => "فرمت ضریب تاخیر صحیح نمی باشد.",
+            "acceleration_rate.required" => "درج ضریب تعجیل الزامی می باشد.",
+            "acceleration_rate.between" => "فرمت ضریب تعجیل صحیح نمی باشد.",
+            "absence_rate.required" => "درج ضریب غیبت الزامی می باشد.",
+            "absence_rate.between" => "فرمت ضریب غیبت صحیح نمی باشد.",
+            "mission_rate.required" => "درج ضریب ماموریت الزامی می باشد.",
+            "mission_rate.between" => "فرمت ضریب ماموریت صحیح نمی باشد.",
         ];
     }
 }

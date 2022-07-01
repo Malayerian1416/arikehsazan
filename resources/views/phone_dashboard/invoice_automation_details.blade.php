@@ -1,11 +1,6 @@
 @extends('phone_dashboard.p_dashboard')
-@section('styles')
-@endsection
-@section('scripts')
-    <script type="text/javascript" src="{{asset("/js/jquery.mask.js")}}" defer></script>
-@endsection
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center">{{"جزئیات صورت وضعیت پیمان " . $invoice->contract->name . " از پروژه " . $invoice->contract->project->name}}</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center">{{"جزئیات صورت وضعیت پیمان " . $invoice->contract->name . " از پروژه " . $invoice->contract->project->name}}</span>
 @endsection
 @section('content')
     @if($errors->any())
@@ -22,7 +17,7 @@
             </button>
         </div>
     @endif
-    <form @if($invoice->automation->next_role_id != 0) id="create_form" action="{{route("InvoiceAutomation.automate_sending",$invoice->id)}}" method="post" v-on:submit="submit_create_form" @else id="pay_form" action="{{route("InvoiceAutomation.payment_process",$invoice->id)}}" method="post" v-on:submit="submit_pay_form" enctype="multipart/form-data" @endif>
+    <form @if($invoice->automation->next_role_id != 0) id="create_form" action="{{route("InvoiceAutomation.automate_sending",$invoice->id)}}" method="post" data-type="create" v-on:submit="submit_form" @else id="pay_form" action="{{route("InvoiceAutomation.payment_process",$invoice->id)}}" method="post" data-type="pay" v-on:submit="submit_form" enctype="multipart/form-data" @endif>
         @csrf
         <div class="form-row border rounded pb-2">
             <div class="col-12 position-relative form_label_container">
@@ -617,7 +612,7 @@
     <div class="modal fade iran_yekan" id="enter_new_invoice_amounts" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form id="new_invoice_amounts_form" action="{{route("InvoiceAutomation.amounts",$invoice->id)}}" method="post" v-on:submit="submit_create_form">
+                <form id="new_invoice_amounts_form" action="{{route("InvoiceAutomation.amounts",$invoice->id)}}" method="post" data-type="create" v-on:submit="submit_form">
                     @csrf
                     <div class="modal-header">
                         <h6 class="modal-title">{{"ثبت مقادیر جدید برای صورت وضعیت"}}</h6>

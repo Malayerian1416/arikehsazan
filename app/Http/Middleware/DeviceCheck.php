@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helper\Helper;
 use Closure;
 use Illuminate\Http\Request;
 use Jenssegers\Agent\Agent;
@@ -17,12 +18,6 @@ class DeviceCheck
      */
     public function handle(Request $request, Closure $next)
     {
-        $agent = new Agent();
-        if ($agent->isDesktop())
-            return redirect("/Dashboard/Desktop/");
-        else if($agent->isPhone() || $agent->isTablet())
-            return view("phone_dashboard/p_dashboard");
-        else
-            return view("home");
+
     }
 }

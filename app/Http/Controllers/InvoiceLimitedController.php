@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\InvoiceEvent;
+use App\Events\NewInvoiceAutomation;
 use App\Http\Requests\InvoiceLimitedRequest;
 use App\Models\Contract;
 use App\Models\Invoice;
@@ -9,29 +11,20 @@ use App\Models\InvoiceAutomationAmounts;
 use App\Models\InvoiceComment;
 use App\Models\InvoiceFlow;
 use App\Models\Project;
+use App\Models\User;
+use App\Notifications\PushMessageInvoice;
+use App\Notifications\PushNewInvoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Jenssegers\Agent\Agent;
 use Throwable;
 
 class InvoiceLimitedController extends Controller
 {
-    public function __construct()
-    {
-        $agent = new Agent();
-        if ($agent->isDesktop())
-            $this->agent = "desktop_dashboard";
-        else if($agent->isPhone() || $agent->isTablet())
-            $this->agent = "phone_dashboard";
-        else if ($agent->robot())
-            return view("errors/cant_detect_device");
-        else
-            return view("errors/cant_detect_device");
-        return false;
-    }
     public function index()
     {
         Gate::authorize("index","InvoicesLimited");
@@ -117,6 +110,9 @@ class InvoiceLimitedController extends Controller
                     Storage::disk('invoice_images')->put($invoice->id,$file);
             }
             DB::commit();
+            $message = "درخواست پرداخت وضعیت جدید پیمانکاری به اتوماسیون شما ارسال شده است";
+            $this->send_push_notification(PushMessageInvoice::class,$message,"role_id",$invoice->automation->current_role_id);
+            $this->send_event_notification(InvoiceEvent::class,$invoice->automation,$message);
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
@@ -194,6 +190,9 @@ class InvoiceLimitedController extends Controller
             $invoice_automation = ["previous_role_id" => Auth::user()->role->id,"current_role_id" => $current_role_id,"next_role_id" => $next_role_id, "is_read" => 0];
             $invoice->automation()->update($invoice_automation);
             DB::commit();
+            $message = "درخواست پرداخت وضعیت جدید پیمانکاری پس از ویرایش به اتوماسیون شما ارسال شده است";
+            $this->send_push_notification(PushMessageInvoice::class,$message,"role_id",$invoice->automation->current_role_id);
+            $this->send_event_notification(InvoiceEvent::class,$invoice->automation,$message);
             return redirect()->back()->with(["result" => "updated"]);
         }
         catch (Throwable $ex){

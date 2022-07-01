@@ -1,6 +1,6 @@
 @extends('phone_dashboard.p_dashboard')
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center">{{"جزئیات صورت وضعیت تایید و ارسال شده پیمان " . $invoice->contract->name . " از پروژه " . $invoice->contract->project->name}}</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center">{{"جزئیات صورت وضعیت تایید و ارسال شده پیمان " . $invoice->contract->name . " از پروژه " . $invoice->contract->project->name}}</span>
 @endsection
 @section('content')
     @if($errors->any())

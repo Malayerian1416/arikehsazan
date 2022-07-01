@@ -9,7 +9,7 @@
     {{"ویرایش سمت ".$role->name}}
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("Roles.update",$role->id)}}" method="post" v-on:submit="submit_update_form">
+    <form id="update_form" action="{{route("Roles.update",$role->id)}}" method="post" data-type="update" v-on:submit="submit_form">
         @csrf
         @method('put')
         <div class="form-row" style="height: calc(100vh - 150px);overflow-y: auto">
@@ -25,7 +25,7 @@
             </div>
             @forelse($menu_headers as $menu_header)
                 @if($menu_header->items->isNotEmpty())
-                    <div class="form-group col-md-12 col-lg-4 col-xl-3  iran_yekan mt-3">
+                    <div class="form-group col-md-12 col-lg-3 col-xl-2  iran_yekan mt-3">
                         <label style="font-size: 14px;font-weight: 700" class="col-form-label">{{$menu_header->name}}</label>
                         <ul class="menu_list main_menu_list border">
                             <li>

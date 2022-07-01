@@ -21,7 +21,7 @@ class MenuHeader extends Model
     }
     public function items(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(MenuItem::class,"menu_header_id");
+        return $this->hasMany(MenuItem::class,"menu_header_id")->orderBy("priority");
     }
     public function icon(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

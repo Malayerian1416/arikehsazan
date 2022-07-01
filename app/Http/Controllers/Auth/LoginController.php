@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helper\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\CompanyInformation;
 use App\Providers\RouteServiceProvider;
@@ -31,7 +32,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected string $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -91,7 +92,7 @@ class LoginController extends Controller
     }
     protected function authenticated(Request $request, $user)
     {
-        return redirect("/Dashboard");
+        return redirect("/Dashboard/".Helper::platform());
     }
     public function redirectPath(): string
     {
@@ -99,6 +100,6 @@ class LoginController extends Controller
             return $this->redirectTo();
         }
 
-        return property_exists($this, 'redirectTo') ? $this->redirectTo : '/Dashboard';
+        return property_exists($this, 'redirectTo') ? $this->redirectTo : 'Dashboard/'.Helper::platform();
     }
 }

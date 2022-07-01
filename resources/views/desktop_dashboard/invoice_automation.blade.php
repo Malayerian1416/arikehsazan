@@ -39,11 +39,12 @@
                                 <th scope="col"> شماره وضعیت</th>
                                 <th scope="col">تاریخ ثبت</th>
                                 <th scope="col">تاریخ ارسال</th>
+                                <th scope="col">جزئیات</th>
                             </tr>
                             </thead>
                             <tbody>
                             @forelse($invoice_automations_inbox as $invoice_automation)
-                                <tr class="@if($invoice_automation->is_read == 0) bold_font black_color @else text-muted @endif" data-details_route="{{route("InvoiceAutomation.details",$invoice_automation->invoice->id)}}" v-on:dblclick="invoice_details_navigation">
+                                <tr class="@if($invoice_automation->is_read == 0) bold_font black_color @else text-muted @endif">
                                     <td><span>{{$invoice_automation->id}}</span></td>
                                     <td><span>{{$invoice_automation->invoice->contract->project->name}}</span></td>
                                     <td><span>{{$invoice_automation->invoice->contract->name}}</span></td>
@@ -53,6 +54,7 @@
                                     <td><span>{{$invoice_automation->invoice->number}}</span></td>
                                     <td><span>{{verta($invoice_automation->created_at)->format("Y/n/d")}}</span></td>
                                     <td><span>{{verta($invoice_automation->updated_at)->format("Y/n/d")}}</span></td>
+                                    <td><a href="{{route("InvoiceAutomation.details",$invoice_automation->invoice->id)}}" class="btn btn-sm btn-info iran_yekan">مشاهده</a></td>
                                 </tr>
                             @empty
                             @endforelse

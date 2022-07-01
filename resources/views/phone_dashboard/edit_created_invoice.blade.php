@@ -10,7 +10,7 @@
     </script>
 @endsection
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center">{{"ویرایش وضعیت شماره ".$invoice->number." پیمان ".$invoice->contract->name}}</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center">{{"ویرایش وضعیت شماره ".$invoice->number." پیمان ".$invoice->contract->name}}</span>
 @endsection
 @section('content')
     @if($errors->any())
@@ -27,7 +27,7 @@
             </button>
         </div>
     @endif
-    <form id="update_form" action="{{route("Invoices.update",$invoice->id)}}" method="post" v-on:submit="submit_update_form">
+    <form id="update_form" action="{{route("Invoices.update",$invoice->id)}}" method="post" data-type="update" v-on:submit="submit_form">
         @csrf
         @method('put')
         <div class="form-row border rounded pb-2">

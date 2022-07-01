@@ -6,6 +6,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\Project;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\WorkShift;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,28 +27,15 @@ class UserController extends Controller
             Gate::authorize("index","Users");
         try {
             $docs = [];
-            $users = User::query()->with(["role", "user", "permitted_project"])->where("is_admin", 0)->get();
-            $roles = Role::all();
+            $shifts = WorkShift::all();
+            $users = User::query()->with(["role", "user", "permitted_project","work_shift"])->where("is_admin", 0)->get();
+            $roles = Role::query()->where("name","<>","ادمین")->get();
             $projects = Project::all();
             foreach ($users as $user) {
                 if (Storage::disk('users_doc')->exists("$user->id"))
                     $docs[] = $user->id;
             }
-            return view("{$this->agent}.user_index", ["users" => $users, "roles" => $roles, "projects" => $projects, "docs" => $docs]);
-        }
-        catch (Throwable $ex){
-            return redirect()->back()->with(["action_error" => $ex->getMessage()]);
-        }
-    }
-
-    public function create()
-    {
-        if (Auth::user()->is_staff)
-            Gate::authorize("create","Users");
-        try {
-            $roles = Role::all();
-            $projects = Project::all();
-            return view("{$this->agent}.create_new_user", ["roles" => $roles, "projects" => $projects]);
+            return view("{$this->agent}.user_index", ["users" => $users, "roles" => $roles, "projects" => $projects, "docs" => $docs, "shifts" => $shifts]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
@@ -89,11 +77,12 @@ class UserController extends Controller
         try {
             $docs = null;
             $roles = Role::all();
+            $shifts = WorkShift::all();
             $projects = Project::all();
-            $user = User::query()->with(["role", "permitted_project"])->findOrFail($id);
+            $user = User::query()->with(["role", "permitted_project","work_shift"])->findOrFail($id);
             if (Storage::disk('users_doc')->exists("$id"))
                 $docs = Storage::disk('users_doc')->allFiles("$id");
-            return view("{$this->agent}.edit_user", ["user" => $user, "roles" => $roles, "projects" => $projects, "docs" => $docs]);
+            return view("{$this->agent}.edit_user", ["user" => $user, "roles" => $roles, "projects" => $projects, "docs" => $docs, "shifts" => $shifts]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);

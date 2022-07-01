@@ -3,7 +3,7 @@
     ایجاد سرفصل منوی جدید
 @endsection
 @section('content')
-    <form id="create_form" action="{{route("MenuHeaders.store")}}" method="post" v-on:submit="submit_create_form" enctype="multipart/form-data">
+    <form id="create_form" action="{{route("MenuHeaders.store")}}" method="post" data-type="create" v-on:submit="submit_form" enctype="multipart/form-data">
         @csrf
         <div class="form-row">
             <div class="form-group col-md-12">

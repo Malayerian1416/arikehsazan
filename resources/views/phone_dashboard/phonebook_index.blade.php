@@ -1,6 +1,4 @@
 @extends('phone_dashboard.p_dashboard')
-@section('styles')
-@endsection
 @section('scripts')
     @if($errors->has('name') || $errors->has('email'))
         <script>
@@ -23,7 +21,7 @@
     @endif
 @endsection
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center">تعریف و ویرایش مخاطبین</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center">تعریف و ویرایش مخاطبین</span>
 @endsection
 @section('content')
     @error('any')
@@ -45,13 +43,13 @@
     @can("create","Phonebook")
         <div class="row pt-1 pb-3">
             <div class="col-12 hide_section_container">
-                <h6>
-                    <i class="fa fa-plus-square fa-2x hide_section_icon" style="vertical-align: middle"></i>
+                <button class="btn btn-outline-success">
+                    <i class="fa fa-plus-square fa-1_4x mr-2 hide_section_icon" style="vertical-align: middle"></i>
                     <span class="iran_yekan hide_section_title">تعریف مخاطب جدید</span>
-                </h6>
+                </button>
             </div>
             <div class="col-12 hide_section @if($errors->any()) active @endif">
-                <form id="create_form" action="{{route("Phonebook.store")}}" method="post" v-on:submit="submit_create_form">
+                <form id="create_form" action="{{route("Phonebook.store")}}" method="post" data-type="create" v-on:submit="submit_form">
                     @csrf
                     <div class="form-row">
                         <div class="form-group col-md-12 col-lg-4 col-xl-3">
@@ -153,7 +151,7 @@
                     <td>{{$phonebook->note}}</td>
                     <td>{{$phonebook->address}}</td>
                     <td>
-                        <form id="delete_form_{{$phonebook->id}}" class="d-inline-block" action="{{route("Phonebook.destroy",$phonebook->id)}}" method="post" v-on:submit="submit_delete_form">
+                        <form id="delete_form_{{$phonebook->id}}" class="d-inline-block" action="{{route("Phonebook.destroy",$phonebook->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                             @csrf
                             @method('delete')
                             <button class="index_form_submit_button" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>
@@ -180,7 +178,7 @@
     <div class="modal fade iran_yekan" id="contact_information" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form id="update_form" method="post" v-on:submit="submit_update_form">
+                <form id="update_form" method="post" data-type="update" v-on:submit="submit_form">
                     @csrf
                     @method("put")
                     <div class="modal-header">

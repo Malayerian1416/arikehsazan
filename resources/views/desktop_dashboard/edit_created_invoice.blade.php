@@ -31,7 +31,7 @@
             </button>
         </div>
     @endif
-    <form id="update_form" action="{{route("Invoices.update",$invoice->id)}}" method="post" v-on:submit="submit_update_form">
+    <form id="update_form" action="{{route("Invoices.update",$invoice->id)}}" method="post" data-type="update" v-on:submit="submit_form">
         @csrf
         @method('put')
         <div class="form-row border rounded pb-2">

@@ -16,19 +16,6 @@ use Throwable;
 
 class ReportsController extends Controller
 {
-    public function __construct()
-    {
-        $agent = new Agent();
-        if ($agent->isDesktop())
-            $this->agent = "desktop_dashboard";
-        else if($agent->isPhone() || $agent->isTablet())
-            $this->agent = "phone_dashboard";
-        else if ($agent->robot())
-            return view("errors/cant_detect_device");
-        else
-            return view("errors/cant_detect_device");
-        return false;
-    }
     public function project_reports_index(){
         Gate::authorize("project_reports_index","Reports");
         try {

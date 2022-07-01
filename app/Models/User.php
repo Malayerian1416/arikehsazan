@@ -34,6 +34,15 @@ class User extends Authenticatable
         'national_code',
         'identify_number',
         'address',
+        'work_shift_id',
+        'contract_number',
+        'daily_wage',
+        'overtime_rate',
+        'delay_rate',
+        'acceleration_rate',
+        'absence_rate',
+        'mission_rate',
+        'gender'
     ];
 
     /**
@@ -70,9 +79,29 @@ class User extends Authenticatable
     {
         return $this->belongsTo($this,"user_id");
     }
+    public function work_shift(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(WorkShift::class,"work_shift_id");
+    }
     public function permitted_project(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Project::class,"project_user","user_id","project_id");
+    }
+    public function attendances(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Attendance::class,"staff_id");
+    }
+    public function daily_leaves(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(DailyLeave::class,"staff_id");
+    }
+    public function leave_days(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(LeaveDay::class,DailyLeave::class,"staff_id","daily_leave_id");
+    }
+    public function hourly_leaves(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(HourlyLeave::class,"staff_id");
     }
     public function hasPermission($action,$model): bool
     {

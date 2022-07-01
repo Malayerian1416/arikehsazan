@@ -2,7 +2,7 @@
 @section('scripts')
 @endsection
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center">ثبت حضور و غیاب</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center">ثبت حضور و غیاب</span>
 @endsection
 @section('content')
     <form id="update_form" action="{{route("RegisterAttendance.register")}}" method="post" v-on:submit="submit_attendance_register_form">

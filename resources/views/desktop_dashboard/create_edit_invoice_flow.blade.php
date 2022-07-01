@@ -7,7 +7,7 @@
     ایجاد و ویرایش جریان وضعیت
 @endsection
 @section('content')
-    <form id="create_form" action="{{route("InvoiceFlow.store")}}" method="post" v-on:submit="submit_create_form">
+    <form id="create_form" action="{{route("InvoiceFlow.store")}}" method="post" data-type="create" v-on:submit="submit_form">
         @csrf
         <select hidden id="final_starter" name="final_starter[]" multiple v-model="final_starter">
             <option v-for="item in final_starter" v-bind:value="item">@{{item}}</option>

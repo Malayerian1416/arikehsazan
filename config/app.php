@@ -225,6 +225,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
         'Verta' => Hekmatinasser\Verta\Verta::class,
+        'Helper' => App\Helper\Helper::class,
 
     ],
 

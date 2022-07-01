@@ -112,6 +112,18 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
+        'daily_leave_docs' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/daily_leave_docs'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+        'hourly_leave_docs' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/hourly_leave_docs'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
     ],
 
     /*

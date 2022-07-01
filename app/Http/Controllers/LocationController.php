@@ -9,25 +9,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 use Throwable;
 
 class LocationController extends Controller
 {
     public function index()
     {
-        $projects = Project::get_permissions([]);
-        $locations = Location::query()->with("project")->get();
-        return view("{$this->agent}.locations_index",["projects" => $projects, "locations" => $locations]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        try {
+            $projects = Project::get_permissions([]);
+            $locations = Location::query()->with("project")->get();
+            return view("{$this->agent}.locations_index", ["projects" => $projects, "locations" => $locations]);
+        }
+        catch (Throwable $ex){
+            return redirect()->back()->with(["action_error" => $ex->getMessage()]);
+        }
     }
 
     public function store(LocationRequest $request): \Illuminate\Http\RedirectResponse
@@ -37,6 +33,7 @@ class LocationController extends Controller
             DB::beginTransaction();
             $validated = $request->validated();
             $validated["user_id"] = Auth::id();
+            $validated["hash"] = Hash::make($validated["geoJson"].$validated["name"]);
             Location::query()->create($validated);
             DB::commit();
             return redirect()->back()->with(["result" => "saved"]);
@@ -44,17 +41,6 @@ class LocationController extends Controller
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     public function edit($id)
@@ -82,6 +68,7 @@ class LocationController extends Controller
             DB::beginTransaction();
             $validated = $request->validated();
             $validated["user_id"] = Auth::id();
+            $validated["hash"] = Hash::make($validated["geoJson"].$validated["name"]);
             $location = Location::query()->findOrFail($id);
             $location->update($validated);
             DB::commit();
@@ -92,12 +79,6 @@ class LocationController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         //

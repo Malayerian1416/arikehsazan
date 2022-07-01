@@ -2,7 +2,10 @@
 
 namespace App\Exceptions;
 
+use App\Helper\Helper;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use \Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -34,6 +37,16 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
+        $this->renderable(function (NotFoundHttpException $e, $request) {
+            if ($request->path() == "Dashboard/Desktop" && Helper::platform() == "Phone")
+                return redirect('Dashboard/Phone');
+            elseif ($request->path() == "Dashboard/Phone" && Helper::platform() == "Desktop")
+                return redirect('Dashboard/Desktop');
+            elseif ($request->path() == "Dashboard")
+                return redirect('Dashboard/'.Helper::platform());
+            else
+                return response()->view("errors.404",[],404);
+        });
         $this->reportable(function (Throwable $e) {
             //
         });

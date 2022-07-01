@@ -16,7 +16,7 @@
                 </h6>
             </div>
             <div class="col-12 hide_section @if($errors->any())) active @endif">
-                <form id="create_form" action="{{route("WorkerPayments.store")}}" method="post" v-on:submit="submit_create_form">
+                <form id="create_form" action="{{route("WorkerPayments.store")}}" method="post" data-type="create" v-on:submit="submit_form">
                     @csrf
                     <div class="form-row">
                         <div class="form-group col-md-12 col-lg-4">
@@ -138,7 +138,7 @@
                     @can('destroy','WorkerPayments')
                         <td>
                             @if($worker_automation->previous_role_id == \App\Models\InvoiceFlow::query()->where("is_starter",1)->first()->role_id)
-                                <form id="delete_form_{{$worker_automation->id}}" class="d-inline-block" action="{{route("WorkerPayments.destroy",$worker_automation->id)}}" method="post" v-on:submit="submit_delete_form">
+                                <form id="delete_form_{{$worker_automation->id}}" class="d-inline-block" action="{{route("WorkerPayments.destroy",$worker_automation->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                                     @csrf
                                     @method('delete')
                                     <button class="index_form_submit_button" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>

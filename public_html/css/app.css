@@ -176,7 +176,7 @@
   top: 50%;
   margin-left: -40px;
   margin-top: -40px;
-  background: url(/images/vendor/owl.carousel/dist/owl.video.play.png?7f01b07148f205f6e8258e92bbf652d9) no-repeat;
+  background: url(../images/vendor/owl.carousel/dist/owl.video.play.png?7f01b07148f205f6e8258e92bbf652d9) no-repeat;
   cursor: pointer;
   z-index: 1;
   -webkit-backface-visibility: hidden;
@@ -549,12 +549,12 @@ svg.leaflet-image-layer.leaflet-interactive path {
 	border-radius: 5px;
 	}
 .leaflet-control-layers-toggle {
-	background-image: url(/images/vendor/leaflet/dist/layers.png?416d91365b44e4b4f4777663e6f009f3);
+	background-image: url(../images/vendor/leaflet/dist/layers.png?416d91365b44e4b4f4777663e6f009f3);
 	width: 36px;
 	height: 36px;
 	}
 .leaflet-retina .leaflet-control-layers-toggle {
-	background-image: url(/images/vendor/leaflet/dist/layers-2x.png?8f2c4d11474275fbc1614b9098334eae);
+	background-image: url(../images/vendor/leaflet/dist/layers-2x.png?8f2c4d11474275fbc1614b9098334eae);
 	background-size: 26px 26px;
 	}
 .leaflet-touch .leaflet-control-layers-toggle {
@@ -595,7 +595,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 
 /* Default icon URLs */
 .leaflet-default-icon-path {
-	background-image: url(/images/vendor/leaflet/dist/marker-icon.png?2b3e1faf89f94a4835397e7a43b4f77d);
+	background-image: url(../images/vendor/leaflet/dist/marker-icon.png?2b3e1faf89f94a4835397e7a43b4f77d);
 	}
 
 
@@ -835,7 +835,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 	border-right-color: #fff;
 	}
 
-.leaflet-draw-section{position:relative}.leaflet-draw-toolbar{margin-top:12px}.leaflet-draw-toolbar-top{margin-top:0}.leaflet-draw-toolbar-notop a:first-child{border-top-right-radius:0}.leaflet-draw-toolbar-nobottom a:last-child{border-bottom-right-radius:0}.leaflet-draw-toolbar a{background-image:url(/images/vendor/leaflet-draw/dist/spritesheet.png?ef32ea2bdf63ba132b4ced047203650d);background-image:linear-gradient(transparent,transparent),url(/images/vendor/leaflet-draw/dist/spritesheet.svg?a4e0eb7ad904a4858361202555b38aee);background-repeat:no-repeat;background-size:300px 30px;background-clip:padding-box}.leaflet-retina .leaflet-draw-toolbar a{background-image:url(/images/vendor/leaflet-draw/dist/spritesheet-2x.png?7ea3a6d428136b87ab95ee89b6e956e7);background-image:linear-gradient(transparent,transparent),url(/images/vendor/leaflet-draw/dist/spritesheet.svg?a4e0eb7ad904a4858361202555b38aee)}
+.leaflet-draw-section{position:relative}.leaflet-draw-toolbar{margin-top:12px}.leaflet-draw-toolbar-top{margin-top:0}.leaflet-draw-toolbar-notop a:first-child{border-top-right-radius:0}.leaflet-draw-toolbar-nobottom a:last-child{border-bottom-right-radius:0}.leaflet-draw-toolbar a{background-image:url(../images/vendor/leaflet-draw/dist/spritesheet.png?ef32ea2bdf63ba132b4ced047203650d);background-image:linear-gradient(transparent,transparent),url(../images/vendor/leaflet-draw/dist/spritesheet.svg?a4e0eb7ad904a4858361202555b38aee);background-repeat:no-repeat;background-size:300px 30px;background-clip:padding-box}.leaflet-retina .leaflet-draw-toolbar a{background-image:url(../images/vendor/leaflet-draw/dist/spritesheet-2x.png?7ea3a6d428136b87ab95ee89b6e956e7);background-image:linear-gradient(transparent,transparent),url(../images/vendor/leaflet-draw/dist/spritesheet.svg?a4e0eb7ad904a4858361202555b38aee)}
 .leaflet-draw a{display:block;text-align:center;text-decoration:none}.leaflet-draw a .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}.leaflet-draw-actions{display:none;list-style:none;margin:0;padding:0;position:absolute;left:26px;top:0;white-space:nowrap}.leaflet-touch .leaflet-draw-actions{left:32px}.leaflet-right .leaflet-draw-actions{right:26px;left:auto}.leaflet-touch .leaflet-right .leaflet-draw-actions{right:32px;left:auto}.leaflet-draw-actions li{display:inline-block}
 .leaflet-draw-actions li:first-child a{border-left:0}.leaflet-draw-actions li:last-child a{border-radius:0 4px 4px 0}.leaflet-right .leaflet-draw-actions li:last-child a{border-radius:0}.leaflet-right .leaflet-draw-actions li:first-child a{border-radius:4px 0 0 4px}.leaflet-draw-actions a{background-color:#919187;border-left:1px solid #AAA;color:#FFF;font:11px/19px "Helvetica Neue",Arial,Helvetica,sans-serif;line-height:28px;text-decoration:none;padding-left:10px;padding-right:10px;height:28px}
 .leaflet-touch .leaflet-draw-actions a{font-size:12px;line-height:30px;height:30px}.leaflet-draw-actions-bottom{margin-top:0}.leaflet-draw-actions-top{margin-top:1px}.leaflet-draw-actions-top a,.leaflet-draw-actions-bottom a{height:27px;line-height:27px}.leaflet-draw-actions a:hover{background-color:#a0a098}.leaflet-draw-actions-top.leaflet-draw-actions-bottom a{height:26px;line-height:26px}.leaflet-draw-toolbar .leaflet-draw-draw-polyline{background-position:-2px -2px}.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polyline{background-position:0 -1px}
@@ -18516,8 +18516,8 @@ readers do not read off random characters that represent icons */
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-regular-400.eot?77206a6bb316fa0aded5083cc57f92b9);
-  src: url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-regular-400.eot?77206a6bb316fa0aded5083cc57f92b9) format("embedded-opentype"), url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-regular-400.woff2?7a3337626410ca2f40718481c755640f) format("woff2"), url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-regular-400.woff?bb58e57c48a3e911f15fa834ff00d44a) format("woff"), url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-regular-400.ttf?491974d108fe4002b2aaf7ffc48249a0) format("truetype"), url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-regular-400.svg?4689f52cc96215721344e51e5831eec1) format("svg");
+  src: url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-regular-400.eot?77206a6bb316fa0aded5083cc57f92b9);
+  src: url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-regular-400.eot?77206a6bb316fa0aded5083cc57f92b9) format("embedded-opentype"), url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-regular-400.woff2?7a3337626410ca2f40718481c755640f) format("woff2"), url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-regular-400.woff?bb58e57c48a3e911f15fa834ff00d44a) format("woff"), url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-regular-400.ttf?491974d108fe4002b2aaf7ffc48249a0) format("truetype"), url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-regular-400.svg?4689f52cc96215721344e51e5831eec1) format("svg");
 }
 .far {
   font-family: "Font Awesome 5 Free";
@@ -18533,8 +18533,8 @@ readers do not read off random characters that represent icons */
   font-style: normal;
   font-weight: 900;
   font-display: block;
-  src: url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-solid-900.eot?9bbb245e67a133f6e486d8d2545e14a5);
-  src: url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-solid-900.eot?9bbb245e67a133f6e486d8d2545e14a5) format("embedded-opentype"), url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-solid-900.woff2?1551f4f60c37af51121f106501f69b80) format("woff2"), url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-solid-900.woff?eeccf4f66002c6f2ba24d3d22f2434c2) format("woff"), url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-solid-900.ttf?be9ee23c0c6390141475d519c2c5fb8f) format("truetype"), url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-solid-900.svg?7a8b4f130182d19a2d7c67d80c090397) format("svg");
+  src: url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-solid-900.eot?9bbb245e67a133f6e486d8d2545e14a5);
+  src: url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-solid-900.eot?9bbb245e67a133f6e486d8d2545e14a5) format("embedded-opentype"), url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-solid-900.woff2?1551f4f60c37af51121f106501f69b80) format("woff2"), url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-solid-900.woff?eeccf4f66002c6f2ba24d3d22f2434c2) format("woff"), url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-solid-900.ttf?be9ee23c0c6390141475d519c2c5fb8f) format("truetype"), url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-solid-900.svg?7a8b4f130182d19a2d7c67d80c090397) format("svg");
 }
 .fa,
 .fas {
@@ -18551,8 +18551,8 @@ readers do not read off random characters that represent icons */
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-brands-400.eot?23f19bb08961f37aaf692ff943823453);
-  src: url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-brands-400.eot?23f19bb08961f37aaf692ff943823453) format("embedded-opentype"), url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-brands-400.woff2?d878b0a6a1144760244ff0665888404c) format("woff2"), url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-brands-400.woff?2285773e6b4b172f07d9b777c81b0775) format("woff"), url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-brands-400.ttf?527940b104eb2ea366c8630f3f038603) format("truetype"), url(/fonts/vendor/@fortawesome/fontawesome-free/webfa-brands-400.svg?2f517e09eb2ca6650ff5bec5a95157ab) format("svg");
+  src: url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-brands-400.eot?23f19bb08961f37aaf692ff943823453);
+  src: url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-brands-400.eot?23f19bb08961f37aaf692ff943823453) format("embedded-opentype"), url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-brands-400.woff2?d878b0a6a1144760244ff0665888404c) format("woff2"), url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-brands-400.woff?2285773e6b4b172f07d9b777c81b0775) format("woff"), url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-brands-400.ttf?527940b104eb2ea366c8630f3f038603) format("truetype"), url(../fonts/vendor/@fortawesome/fontawesome-free/webfa-brands-400.svg?2f517e09eb2ca6650ff5bec5a95157ab) format("svg");
 }
 .fab {
   font-family: "Font Awesome 5 Brands";
@@ -18943,65 +18943,55 @@ select.selectpicker {
   width: 100%;
   float: none;
 }
-/**
-*
-*	Name:			IRANYekan Font
-*	Version:			3.0
-*	Author:			Moslem Ebrahimi (moslemebrahimi.com)
-*	Created on:		Dec 20, 2018
-*	Updated on:		Dec 20, 2018
-*	Website:			http://fontiran.com
-*	Copyright:		Commercial/Proprietary Software
---------------------------------------------------------------------------------------
-فونت ایران یکان یک نرم افزار مالکیتی محسوب می شود. جهت آگاهی از قوانین استفاده از این فونت ها لطفا به وب سایت (فونت ایران دات کام) مراجعه نمایید
---------------------------------------------------------------------------------------
-IRANYekan fonts are considered a proprietary software. To gain information about the laws regarding the use of these fonts, please visit www.fontiran.com
---------------------------------------------------------------------------------------
-This set of fonts are used in this project under the license: (.....)
---------------------------------------------------------------------------------------
-*
-**/
 @font-face {
 	font-family: iranyekan;
 	font-style: normal;
 	font-weight: normal;
-	src: url('/fonts/iranyekanwebregularfanum.eot');
-	src: url('/fonts/iranyekanwebregularfanum.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
-		 url('/fonts/iranyekanwebregularfanum.woff') format('font-woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
-		 url('/fonts/iranyekanwebregularfanum.ttf') format('truetype');
+	src: url(../fonts/iranyekanwebregularfanum.eot?babee3f4dafb202f0e6c0f4eb0b1e021);
+	src: url(../fonts/iranyekanwebregularfanum.eot?babee3f4dafb202f0e6c0f4eb0b1e021?#iefix) format("embedded-opentype"),  /* IE6-8 */
+		 url(../fonts/iranyekanwebregularfanum.woff?f01e9ae5ea918523d370142f38934b49) format("font-woff"),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+		 url(../fonts/iranyekanwebregularfanum.ttf?db98fec7e82c04693b7debed7e5e78d1) format("truetype");
 }
 
 @font-face {
-    src: url("/fonts/IranNastaliq.ttf");
+    src: url(../fonts/IRANSansWebFaNum.ttf?732cabbff87f779b74d3ee5741eb933f);
+    font-family: iransansfont;
+    font-style: normal;
+}
+
+@font-face {
+    src: url(../fonts/IranNastaliq.ttf?244ccc29fc6f22b136fab5460d0ecd41);
     font-family: nastaliq;
     font-style: normal;
 }
 
 @font-face {
-    src: url("/fonts/Sedaghat.woff2");
+    src: url(../fonts/Sedaghat.woff2?f448cb02e90e5807f3f68fa44b236251);
     font-family: sedaghat;
     font-style: normal;
 }
 @font-face {
     font-family: mitra;
-    src: url('/fonts/BMitra.eot');
-    src: url('/fonts/BMitra.eot?#iefix') format("embedded-opentype"), url('/fonts/BMitra.woff') format("font-woff"), url('/fonts/BMitra.ttf') format("truetype");
+    src: url(../fonts/BMitra.eot?edb9e9c3faa60f7c05cf66d3dc7d1c79);
+    src: url(../fonts/BMitra.eot?edb9e9c3faa60f7c05cf66d3dc7d1c79?#iefix) format("embedded-opentype"), url(../fonts/BMitra.woff?c28d9c5b1246e606dd9e5efed4214857) format("font-woff"), url(../fonts/BMitra.ttf?0549b69cbdcab37380d39ab33c3a9288) format("truetype");
     font-weight: normal;
     font-style: normal
 }
 @font-face {
     font-family: lalehzar;
-    src: url('/fonts/Lalezar-Regular.ttf') format("truetype");
+    src: url(../fonts/Lalezar-Regular.ttf?241ca811c53de4ed36a4f62e55d1eb98) format("truetype");
     font-style: normal
 }
 
-@charset "UTF-8";
 .antialiased{
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
 }
 .iran_yekan{
     font-family: iranyekan,'sans-serif';
+}
+.iran_sans{
+    font-family: iransansfont,'sans-serif';
 }
 .mitra{
     font-family: mitra,'sans-serif';

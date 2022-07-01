@@ -18,7 +18,7 @@
         </div>
     @endif
     <div class="container">
-    <form id="create_form" action="{{route("WorkerPayments.payment_process",$worker_automation->id)}}" method="post" v-on:submit="submit_create_form" enctype="multipart/form-data">
+    <form id="create_form" action="{{route("WorkerPayments.payment_process",$worker_automation->id)}}" method="post" data-type="create" v-on:submit="submit_form" enctype="multipart/form-data">
         @csrf
         @method("put")
         <div class="table-responsive iran_yekan">

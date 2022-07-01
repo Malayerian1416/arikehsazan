@@ -1,15 +1,15 @@
 @extends('phone_dashboard.p_dashboard')
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center">تعریف و ویرایش حضور و غیاب</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center">تعریف و ویرایش حضور و غیاب</span>
 @endsection
 @section('content')
     @can('create','Attendances')
         <div class="row pt-1 pb-3">
             <div class="col-12 hide_section_container">
-                <h6>
-                    <i class="fa fa-plus-square fa-2x hide_section_icon" style="vertical-align: middle"></i>
+                <button class="btn btn-outline-success">
+                    <i class="fa fa-plus-square fa-1_4x mr-2 hide_section_icon" style="vertical-align: middle"></i>
                     <span class="iran_yekan hide_section_title">تعریف حضور و غیاب جدید</span>
-                </h6>
+                </button>
             </div>
             <div class="col-12 hide_section @if($errors->any()) active @endif">
                 <form id="create_form" action="{{route("Attendances.store")}}" method="post" v-on:submit="submit_attendance_form">
@@ -133,7 +133,7 @@
                     @endcan
                     @can('destroy','Attendances')
                         <td>
-                            <form id="delete_form_{{$attendance->id}}" class="d-inline-block" action="{{route("Attendances.destroy",$attendance->id)}}" method="post" v-on:submit="submit_delete_form">
+                            <form id="delete_form_{{$attendance->id}}" class="d-inline-block" action="{{route("Attendances.destroy",$attendance->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                                 @csrf
                                 @method('delete')
                                 <button class="index_form_submit_button" form="delete_form_{{$attendance->id}}" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>

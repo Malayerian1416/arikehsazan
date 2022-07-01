@@ -76,6 +76,48 @@
     @endcan
     <div class="row pt-1 pb-3">
         <div class="col-12">
+            <form id="search_form" action="{{route("Attendances.index")}}" method="get">
+                @csrf
+                <div class="form-row">
+                    <div class="form-group col-md-12 col-lg-2 col-xl-1">
+                        <label class="col-form-label iran_yekan black_color" for="staff_id">پرسنل</label>
+                        <select class="form-control iran_yekan select_picker @error('staff_id') is-invalid @enderror" title="انتخاب کنید" data-size="10" data-live-search="true" id="staff_id" name="staff_id">
+                            @forelse($users as $user)
+                                <option @if($staff_id == $user->id || $loop->iteration == 1) selected @endif value="{{$user->id}}">{{$user->name}}</option>
+                            @empty
+                            @endforelse
+                        </select>
+                    </div>
+                    <div class="form-group col-md-12 col-lg-2 col-xl-1">
+                        <label class="col-form-label iran_yekan black_color" for="year">سال</label>
+                        <select class="form-control iran_yekan select_picker @error('year') is-invalid @enderror" title="انتخاب کنید" data-size="10" data-live-search="true" id="year" name="year">
+                            <option @if($year == verta()->format("Y")) selected @elseif($year == '') selected @endif value="{{verta()->format("Y")}}">{{verta()->format("Y")}}</option>
+                            <option @if($year == verta()->subYear()->format("Y")) selected @endif value="{{verta()->subYear()->format("Y")}}">{{verta()->subYear()->format("Y")}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-12 col-lg-2 col-xl-1">
+                        <label class="col-form-label iran_yekan black_color" for="month">ماه</label>
+                        <select class="form-control iran_yekan select_picker @error('month') is-invalid @enderror" title="انتخاب کنید" data-size="10" data-live-search="true" id="month" name="month">
+                            @forelse($jalali_month_names as $month_name)
+                                <option @if($month == $loop->iteration) selected @elseif($month == '' & $loop->iteration == verta()->format("n")) selected @endif value="{{$loop->iteration}}">{{$month_name}}</option>
+                            @empty
+                            @endforelse
+                        </select>
+                    </div>
+                    <div class="form-group col-md-12 col-lg-3 col-xl-2 align-self-end">
+                        <button type="submit" form="search_form" class="btn btn-info h-30 iran_yekan">
+                            <i class="fa fa-filter fa-1_4x"></i>
+                            فیلتر
+                        </button>
+                        <a href="{{route("Attendances.index")}}"  class="btn btn-danger h-30 iran_yekan ml-2">
+                            <i class="fa fa-eraser fa-1_4x"></i>
+                            حذف فیلتر
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-12">
             <input type="search" class="form-control iran_yekan text-center" placeholder="جستجو در جدول با نام کارمند" v-on:input="search_input_filter" aria-describedby="basic-addon3">
         </div>
     </div>
@@ -133,7 +175,7 @@
                     @endcan
                     @can('destroy','Attendances')
                         <td>
-                            <form id="delete_form_{{$attendance->id}}" class="d-inline-block" action="{{route("Attendances.destroy",$attendance->id)}}" method="post" v-on:submit="submit_delete_form">
+                            <form id="delete_form_{{$attendance->id}}" class="d-inline-block" action="{{route("Attendances.destroy",$attendance->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                                 @csrf
                                 @method('delete')
                                 <button class="index_form_submit_button" form="delete_form_{{$attendance->id}}" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>
@@ -146,6 +188,13 @@
             </tbody>
         </table>
     </div>
+    @if($paginate)
+        <div class="row m-auto iran_yekan">
+            <div class="w-100 d-flex justify-content-center iranYekanFont p-2 flex-wrap">
+                {!! $attendances->render() !!}
+            </div>
+        </div>
+    @endif
 @endsection
 @section('page_footer')
     <div class="form-row text-center p-3 d-flex flex-row justify-content-center">

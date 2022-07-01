@@ -9,7 +9,7 @@
     {{"ویرایش سرفصل منو - ".$menu_header->name}}
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("MenuHeaders.update",$menu_header->id)}}" method="post" v-on:submit="submit_update_form" enctype="multipart/form-data">
+    <form id="update_form" action="{{route("MenuHeaders.update",$menu_header->id)}}" method="post" data-type="update" v-on:submit="submit_form" enctype="multipart/form-data">
         @csrf
         @method('put')
         <div class="form-row">

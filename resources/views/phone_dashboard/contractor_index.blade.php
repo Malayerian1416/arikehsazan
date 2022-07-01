@@ -12,19 +12,19 @@
     @endif
 @endsection
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center">تعریف و ویرایش پیمانکاران</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center">تعریف و ویرایش پیمانکاران</span>
 @endsection
 @section('content')
     @can('create','Contractors')
         <div class="row pt-1 pb-3">
             <div class="col-12 hide_section_container">
-                <h6 class="pb-3">
-                    <i class="fa fa-plus-square fa-2x hide_section_icon" style="vertical-align: middle"></i>
+                <button class="btn btn-outline-success">
+                    <i class="fa fa-plus-square fa-1_4x mr-2 hide_section_icon" style="vertical-align: middle"></i>
                     <span class="iran_yekan hide_section_title">تعریف پیمانکار جدید</span>
-                </h6>
+                </button>
             </div>
             <div class="col-12 hide_section @if($errors->any()) active @endif">
-                <form id="create_form" action="{{route("Contractors.store")}}" method="post" v-on:submit="submit_create_form" enctype="multipart/form-data">
+                <form id="create_form" action="{{route("Contractors.store")}}" method="post" data-type="create" v-on:submit="submit_form" enctype="multipart/form-data">
                     @csrf
                     <div class="form-row border rounded pb-2">
                         <div class="col-12 position-relative form_label_container">
@@ -221,7 +221,7 @@
                         <a class="index_action" href="{{route("Contractors.edit",$contractor->id)}}"><i class="fa fa-pen index_edit_icon"></i></a>
                     </td>
                     <td>
-                        <form id="delete_form_{{$contractor->id}}" class="d-inline-block" action="{{route("Contractors.destroy",$contractor->id)}}" method="post" v-on:submit="submit_delete_form">
+                        <form id="delete_form_{{$contractor->id}}" class="d-inline-block" action="{{route("Contractors.destroy",$contractor->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                             @csrf
                             @method('delete')
                             <button class="index_form_submit_button" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>

@@ -33,6 +33,7 @@ class MenuItemRequest extends FormRequest
             "main" => "sometimes|nullable",
             "notifiable" => "sometimes|nullable",
             "notification_channel" => "sometimes|nullable",
+            "priority" => "sometimes|nullable"
         ];
     }
     public function messages()

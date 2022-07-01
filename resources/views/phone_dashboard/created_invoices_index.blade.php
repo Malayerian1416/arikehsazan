@@ -1,18 +1,18 @@
 @extends('phone_dashboard.p_dashboard')
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center">مشاهده لیست وضعیت های ایجاد شده و ویرایش</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center">مشاهده لیست وضعیت های ایجاد شده و ویرایش</span>
 @endsection
 @section('content')
     @can('create','Invoices')
         <div class="row pt-1 pb-3">
             <div class="col-12 hide_section_container pb-3">
-                <h6>
-                    <i class="fa fa-plus-square fa-2x hide_section_icon" style="vertical-align: middle"></i>
+                <button class="btn btn-outline-success">
+                    <i class="fa fa-plus-square fa-1_4x mr-2 hide_section_icon" style="vertical-align: middle"></i>
                     <span class="iran_yekan hide_section_title">تعریف وضعیت جدید</span>
-                </h6>
+                </button>
             </div>
             <div class="col-12 hide_section @if($errors->any()) active @endif">
-                <form id="create_form" action="{{route("Invoices.store")}}" method="post" v-on:submit="submit_create_form">
+                <form id="create_form" action="{{route("Invoices.store")}}" method="post" data-type="create" v-on:submit="submit_form">
                     @csrf
                     <div class="form-row border rounded pb-2">
                         <div class="col-12 position-relative form_label_container">
@@ -61,7 +61,14 @@
                         </div>
                         <div class="form-group col-md-12 col-lg-2">
                             <label class="col-form-label iran_yekan black_color" for="new_invoice_total_amount_process">میزان کارکرد</label>
-                            <input class="form-control iran_yekan text-center number_format_dec" type="text" name="quantity" v-model="new_invoice_quantity" v-on:input="new_invoice_total_amount_process">
+                            <div class="input-group">
+                                <input class="form-control iran_yekan text-center number_format_dec" type="text" name="quantity" v-model="new_invoice_quantity" v-on:input="new_invoice_total_amount_process">
+                                <div class="input-group-prepend" onclick="$('#contract_information').modal('show')">
+                                    <span class="input-group-text" id="basic-addon1">
+                                        <i title="مشاهده جزئیات کارکرد پیمان" class="fa fa-search fa-1_6x search_handle"></i>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group col-md-12 col-lg-2">
                             <label class="col-form-label iran_yekan black_color" for="new_invoice_unit">واحد</label>
@@ -200,7 +207,7 @@
                     </td>
                     <td>
                         @if($invoice->automation->previous_role_id == \Illuminate\Support\Facades\Auth::user()->role->id)
-                            <form id="delete_form_{{$invoice->id}}" class="d-inline-block" action="{{route("Invoices.destroy",$invoice->id)}}" method="post" v-on:submit="submit_delete_form">
+                            <form id="delete_form_{{$invoice->id}}" class="d-inline-block" action="{{route("Invoices.destroy",$invoice->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                                 @csrf
                                 @method('delete')
                                 <button class="index_form_submit_button" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>
@@ -219,5 +226,68 @@
             @endforelse
             </tbody>
         </table>
+    </div>
+@endsection
+@section('modal_alerts')
+    <div class="modal fade iran_yekan" id="contract_information" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">جزئیات پیمان</h6>
+                </div>
+                <div class="modal-body" style="max-height: 80vh;overflow-y: auto">
+                    <div class="table-responsive">
+                        <table class="table table-borderless table-striped table-light table-hover">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th class="text-center">ردیف</th>
+                                <th class="text-center">وضعیت</th>
+                                <th class="text-center">تاریخ</th>
+                                <th class="text-center">کارکرد</th>
+                                <th class="text-center">جمع کل</th>
+                                <th class="text-center">پرداختی</th>
+                                <th class="text-center">باقیمانده</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="row in contract_info" :key="row.row">
+                                <td>@{{ row.row }}</td>
+                                <td>@{{ row.number }}</td>
+                                <td>@{{ row.date }}</td>
+                                <td>@{{ row.quantity }}</td>
+                                <td>@{{ row.total }}</td>
+                                <td>@{{ row.payment }}</td>
+                                <td v-bind:style="parseFloat(row.remain.replaceAll(',','')) > 0 ? {'color':'red'}:{'color':'green'}">@{{ row.remain }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex flex-column justify-content-center align-items-center bg-dark white_color p-2">
+                        <div class="d-flex flex-row justify-content-around align-items-center text-center w-100">
+                            <span class="iran_yekan w-50">
+                                جمع کل کارکرد
+                                <span class="iran_yekan" v-text="contract_info_total.unit"></span>
+                            </span>
+                            <h5 class="iran_yekan mb-0 d-inline-block w-50" style="color: #fff300" v-text="contract_info_total.total_quantity"></h5>
+                        </div>
+                        <div class="d-flex flex-row justify-content-around align-items-center text-center w-100 mt-2">
+                            <span class="iran_yekan w-50">جمع کل وضعیت</span>
+                            <h5 class="iran_yekan mb-0 d-inline-block w-50" style="color: #fff300" v-text="contract_info_total.total_sum"></h5>
+                        </div>
+                        <div class="d-flex flex-row justify-content-around align-items-center text-center w-100 mt-2">
+                            <span class="iran_yekan w-50">جمع کل پرداختی</span>
+                            <h5 class="iran_yekan mb-0 d-inline-block w-50" style="color: #fff300" v-text="contract_info_total.total_payed"></h5>
+                        </div>
+                        <div class="d-flex flex-row justify-content-around align-items-center text-center w-100 mt-2">
+                            <span class="iran_yekan w-50">جمع کل باقیمانده</span>
+                            <h5 class="iran_yekan mb-0 d-inline-block w-50" v-bind:style="parseFloat(contract_info_total.total_remain.replaceAll(',','')) > 0 ? {'color':'#ff3939'}:{'color':'#31f842'}" v-text="contract_info_total.total_remain"></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection

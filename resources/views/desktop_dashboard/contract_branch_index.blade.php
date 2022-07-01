@@ -37,7 +37,7 @@
                         <i class="fa fa-pen index_edit_icon" data-route="{{route("ContractBranches.update",$branch->id)}}" data-value="{{$branch->branch}}" v-on:click="static_data_edit_modal"></i>
                     </td>
                     <td>
-                        <form id="delete_form_{{$branch->id}}" class="d-inline-block" action="{{route("ContractBranches.destroy",$branch->id)}}" method="post" v-on:submit="submit_delete_form">
+                        <form id="delete_form_{{$branch->id}}" class="d-inline-block" action="{{route("ContractBranches.destroy",$branch->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                             @csrf
                             @method('delete')
                             <button class="index_form_submit_button" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>
@@ -75,7 +75,7 @@
                     <div class="form-row">
                         <div class="form-group col-12">
                             <label class="form-check-label p-0">عنوان رشته</label>
-                            <form id="create_form" action="{{route("ContractBranches.store")}}" method="post" v-on:submit="submit_create_form">
+                            <form id="create_form" action="{{route("ContractBranches.store")}}" method="post" data-type="create" v-on:submit="submit_form">>
                                 @csrf
                                 <input type="text" class="form-control" id="branch_add" name="branch">
                             </form>
@@ -99,7 +99,7 @@
                     <div class="form-row">
                         <div class="form-group col-12">
                             <label class="form-check-label p-0">عنوان رشته</label>
-                            <form id="update_form" action="" method="post" v-on:submit="submit_update_form">
+                            <form id="update_form" action="" method="post" data-type="update" v-on:submit="submit_form">
                                 @csrf
                                 @method('put')
                                 <input type="text" class="form-control" id="branch_edit" name="branch" v-model="edit_input_data">

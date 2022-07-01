@@ -1,15 +1,9 @@
 @extends('phone_dashboard.p_dashboard')
-@section('styles')
-    <link href="{{asset("/css/persianDatepicker-default.css")}}" rel="stylesheet">
-@endsection
-@section('scripts')
-    <script type="text/javascript" src="{{asset("/js/persianDatepicker.min.js")}}" defer></script>
-@endsection
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center">{{"ویرایش پروژه ".$project->name}}</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center">{{"ویرایش پروژه ".$project->name}}</span>
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("Projects.update",$project->id)}}" method="post" v-on:submit="submit_update_form" enctype="multipart/form-data">
+    <form id="update_form" action="{{route("Projects.update",$project->id)}}" method="post" data-type="update" v-on:submit="submit_form" enctype="multipart/form-data">
         @csrf
         @method('put')
         <div class="form-row">
@@ -121,7 +115,7 @@
                                 <i class="fa fa-download white_color border p-2 doc_icon"></i>
                             </a>
                         </div>
-                        <form id="delete_form" action="{{route("DestroyProjectDoc")}}" method="post" v-on:submit="submit_delete_form">
+                        <form id="delete_form" action="{{route("DestroyProjectDoc")}}" method="post" data-type="delete" v-on:submit="submit_form">
                             @csrf
                             @method('delete')
                             <input type="text" hidden value="{{$project->id}}" name="id">

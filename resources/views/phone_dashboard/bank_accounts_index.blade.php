@@ -4,7 +4,7 @@
 @section('scripts')
 @endsection
 @section('page_title')
-    <span class="laleh external_page_title_text text-muted text-center"> مشاهده لیست حساب های بانکی و ویرایش</span>
+    <span class="iran_yekan external_page_title_text text-muted text-center"> مشاهده لیست حساب های بانکی و ویرایش</span>
 @endsection
 @section('content')
     <div class="row pt-1 pb-3">
@@ -57,7 +57,7 @@
                         <a class="index_action" href="{{route("BankAccounts.edit",$bank_account->id)}}"><i class="fa fa-pen index_edit_icon"></i></a>
                     </td>
                     <td>
-                        <form id="delete_form_{{$bank_account->id}}" class="d-inline-block" action="{{route("BankAccounts.destroy",$bank_account->id)}}" method="post" v-on:submit="submit_delete_form">
+                        <form id="delete_form_{{$bank_account->id}}" class="d-inline-block" action="{{route("BankAccounts.destroy",$bank_account->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                             @csrf
                             @method('delete')
                             <button class="index_form_submit_button" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>

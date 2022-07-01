@@ -3,7 +3,7 @@
     {{"ویرایش عنوان فرعی منو - ".$menu_item->name}}
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("MenuItems.update",$menu_item->id)}}" method="post" v-on:submit="submit_update_form" enctype="multipart/form-data">
+    <form id="update_form" action="{{route("MenuItems.update",$menu_item->id)}}" method="post" data-type="update" v-on:submit="submit_form" enctype="multipart/form-data">
         @csrf
         @method('put')
         <div class="form-row">
@@ -59,6 +59,16 @@
                 </label>
                 <input type="text" class="form-control text-center @error('route') is-invalid @enderror ltr" id="route" name="route" value="{{$menu_item->route}}">
                 @error('route')
+                <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group col-md-12 col-lg-3">
+                <label class="col-form-label iran_yekan black_color" for="priority">
+                    اولویت
+                    <strong class="red_color">*</strong>
+                </label>
+                <input type="number" class="form-control text-center @error('priority') is-invalid @enderror" id="priority" name="priority" value="{{old("priority")}}">
+                @error('priority')
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
                 @enderror
             </div>

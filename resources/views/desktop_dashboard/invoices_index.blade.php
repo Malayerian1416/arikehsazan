@@ -49,7 +49,7 @@
                         <a class="index_action" href="{{route("Projects.edit",$project->id)}}"><i class="fa fa-pen index_edit_icon"></i></a>
                     </td>
                     <td>
-                        <form id="delete_form_{{$project->id}}" class="d-inline-block" action="{{route("Projects.destroy",$project->id)}}" method="post" v-on:submit="submit_delete_form">
+                        <form id="delete_form_{{$project->id}}" class="d-inline-block" action="{{route("Projects.destroy",$project->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                             @csrf
                             @method('delete')
                             <button class="index_form_submit_button" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>

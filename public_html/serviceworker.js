@@ -1,4 +1,4 @@
-const CACHE_VERSION = 3.3;
+const CACHE_VERSION = 11.6;
 const file_ext = [".jpg",".png",".svg",".bmp",".ttf",".eot",".woff",".woff2","css",".js",".map"];
 let Cache = 'static-cache-v' + CACHE_VERSION;
 let strategy = "cache-first";
@@ -31,6 +31,8 @@ const filesToCache = [
     `/img/logo.png?v=${CACHE_VERSION}`,
     `/img/mainlogo.png?v=${CACHE_VERSION}`,
     `/img/mobile_logo.png?v=${CACHE_VERSION}`,
+    `/img/notification_badge.png?v=${CACHE_VERSION}`,
+    `/img/new_notification.png?v=${CACHE_VERSION}`,
 ];
 self.addEventListener("install", event => {
     this.skipWaiting();
@@ -82,22 +84,24 @@ self.addEventListener('fetch', (event) => {
 });
 
 self.addEventListener("notificationclick",(event) => {
-    event.waitUntil(Client.openWindow("/Dashboard/Phone/InvoiceAutomation/Automation"));
+    event.waitUntil(() => {self.clients.openWindow(event.notification.data.action_route);event.notification.close();});
 });
 
-self.addEventListener('push', function (e) {
-    if (!(self.Notification && self.Notification.permission === 'granted')) {
-        //notifications aren't supported or permission not granted!
-        return;
-    }
-
-    if (e.data) {
-        var msg = e.data.json();
-        console.log(msg)
-        e.waitUntil(self.registration.showNotification(msg.title, {
-            body: msg.body,
-            icon: msg.icon,
-            actions: msg.actions
-        }));
-    }
-});
+self.addEventListener('push', (event) => {
+    let msg = event.data.json();
+    event.waitUntil(
+        self.clients.matchAll({ type: 'window' }).then(function(clientList) {
+            const client = clientList.find(c => c.visibilityState === 'visible') // <- This validation
+            if (event.data && !client) {
+                event.waitUntil(self.registration.showNotification(msg.title, {
+                    body: msg.body,
+                    icon: msg.icon,
+                    badge: msg.badge,
+                    data: msg.data,
+                    tag: 'push',
+                    renotify: true
+                }));
+            }
+        })
+    )
+})

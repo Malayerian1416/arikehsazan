@@ -17,7 +17,7 @@
             </button>
         </div>
     @endif
-    <form @if($invoice->automation->next_role_id != 0) id="create_form" action="{{route("InvoiceAutomation.automate_sending",$invoice->id)}}" method="post" v-on:submit="submit_create_form" @else id="pay_form" action="{{route("InvoiceAutomation.payment_process",$invoice->id)}}" method="post" v-on:submit="submit_pay_form" enctype="multipart/form-data" @endif>
+    <form @if($invoice->automation->next_role_id != 0) id="create_form" action="{{route("InvoiceAutomation.automate_sending",$invoice->id)}}" method="post" data-type="create" v-on:submit="submit_form" @else id="pay_form" action="{{route("InvoiceAutomation.payment_process",$invoice->id)}}" method="post" data-type="pay" v-on:submit="submit_form" enctype="multipart/form-data" @endif>
         @csrf
         <div class="form-row border rounded pb-2">
             <div class="col-12 position-relative form_label_container">
@@ -454,7 +454,7 @@
                 <span v-show="button_not_loading">تایید و ارسال</span>
             </button>
         @endif
-        <form id="refer_form" action="{{route("InvoiceAutomation.refer",$invoice->id)}}" v-on:submit="submit_refer_form" method="post">
+        <form id="refer_form" action="{{route("InvoiceAutomation.refer",$invoice->id)}}" data-type="refer" v-on:submit="submit_form" method="post">
             @csrf
             <button type="submit" form="refer_form" class="btn btn-outline-danger iran_yekan mr-2 submit_button">
                 <i v-show="button_loading" class="button_loading fa fa-spinner fa-spin mr-2"></i>
@@ -691,7 +691,7 @@
     <div class="modal fade iran_yekan" id="enter_new_invoice_amounts" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form id="new_invoice_amounts_form" action="{{route("InvoiceAutomation.amounts",$invoice->id)}}" method="post" v-on:submit="submit_create_form">
+                <form id="new_invoice_amounts_form" action="{{route("InvoiceAutomation.amounts",$invoice->id)}}" method="post" data-type="create" v-on:submit="submit_form">
                     @csrf
                     <div class="modal-header">
                         <h6 class="modal-title">{{"ثبت مقادیر جدید برای صورت وضعیت"}}</h6>

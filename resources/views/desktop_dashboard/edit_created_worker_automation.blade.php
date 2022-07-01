@@ -11,7 +11,7 @@
     ایجاد پرداختی کارگری جدید
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("WorkerPayments.update",$worker_automation->id)}}" method="post" v-on:submit="submit_update_form">
+    <form id="update_form" action="{{route("WorkerPayments.update",$worker_automation->id)}}" method="post" data-type="update" v-on:submit="submit_form">
         @csrf
         @method('put')
         <div class="form-row">

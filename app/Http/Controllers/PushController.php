@@ -10,10 +10,8 @@ use Illuminate\Support\Facades\Notification;
 
 class PushController extends Controller
 {
-    /**
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function store(Request $request){
+    public function store(Request $request): \Illuminate\Http\JsonResponse
+    {
         $this->validate($request,[
             'endpoint'    => 'required',
             'keys.auth'   => 'required',
@@ -29,7 +27,7 @@ class PushController extends Controller
     }
     public function push(): \Illuminate\Http\RedirectResponse
     {
-        Notification::send(User::all(),new PushNewInvoice);
+        Notification::send(User::query()->where("role_id","=",3)->get(),new PushNewInvoice);
         return redirect()->back();
     }
 }

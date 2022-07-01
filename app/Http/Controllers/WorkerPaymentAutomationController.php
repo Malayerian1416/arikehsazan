@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\InvoiceEvent;
 use App\Events\NewWorkerAutomation;
+use App\Events\WorkerEvent;
 use App\Http\Requests\WorkerPaymenProcesstRequest;
 use App\Http\Requests\WorkerPaymentRequest;
 use App\Models\BankAccount;
@@ -14,6 +16,8 @@ use App\Models\InvoiceAutomationAmounts;
 use App\Models\InvoiceFlow;
 use App\Models\Project;
 use App\Models\WorkerPaymentAutomation;
+use App\Notifications\PushMessageInvoice;
+use App\Notifications\PushMessageWorker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -61,8 +65,11 @@ class WorkerPaymentAutomationController extends Controller
             $validated["user_id"] = Auth::id();
             $worker_automation = WorkerPaymentAutomation::query()->create($validated);
             $worker_automation->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
+            $worker_automation->comments()->create(["user_id" => Auth::id(),"comment" => $validated["description"]]);
             DB::commit();
-            event(new NewWorkerAutomation($worker_automation));
+            $message = "درخواست پرداخت جدید کارگری به اتوماسیون شما ارسال شده است";
+            $this->send_push_notification(PushMessageWorker::class,$message,"role_id",$worker_automation->current_role_id);
+            $this->send_event_notification(WorkerEvent::class,$worker_automation,$message);
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
@@ -93,7 +100,9 @@ class WorkerPaymentAutomationController extends Controller
             $worker_automation->update($validated);
             $worker_automation->signs()->where("user_id","=",Auth::id())->first()->touch();
             DB::commit();
-            event(new NewWorkerAutomation($worker_automation));
+            $message = "درخواست پرداخت جدید کارگری پس از ویرایش به اتوماسیون شما ارسال شده است";
+            $this->send_push_notification(PushMessageWorker::class,$message,"role_id",$worker_automation->current_role_id);
+            $this->send_event_notification(WorkerEvent::class,$worker_automation,$message);
             return redirect()->back()->with(["result" => "updated"]);
         }
         catch (Throwable $ex){
@@ -120,7 +129,7 @@ class WorkerPaymentAutomationController extends Controller
         Gate::authorize("automation","WorkerPayments");
         try {
             $worker_payments = WorkerPaymentAutomation::query()->with([
-                "project" => function($query){$query->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());});},"contractor","user","signs"])
+                "project" => function($query){$query->whereHas("permitted_user",function ($query){$query->where("users.id","=",Auth::id());});},"contractor","user","signs.user.role","comments.user.role"])
                 ->where("current_role_id", "=", Auth::user()->role->id)->where("is_finished", "<>", 1)
                 ->orderBy("created_at", "DESC")->get();
             $sent_worker_payments = WorkerPaymentAutomation::query()->whereHas("signs",function ($query){$query->where("user_id",Auth::id());})->with(["contractor","user","signs","project","payments"])->get();
@@ -133,19 +142,42 @@ class WorkerPaymentAutomationController extends Controller
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
         }
     }
-    public function automate_sending($id): \Illuminate\Http\RedirectResponse
+    public function automate_sending(Request $request,$id): \Illuminate\Http\RedirectResponse
     {
         Gate::authorize("send","WorkerPayments");
         try {
             DB::beginTransaction();
             $worker_automation = WorkerPaymentAutomation::query()->findOrFail($id);
+            $request->input("amount") != null ? $worker_automation->update(["amount" => $request->amount]) : '';
+            $request->input("comment") != null ? $worker_automation->comments()->create(["user_id" => Auth::id(),"comment" => $request->comment]) : '';
             $invoice_automation = InvoiceFlow::automate();
             $worker_automation->update($invoice_automation);
             if ($worker_automation->signs->where("user_id","=",Auth::id())->isEmpty())
                 $worker_automation->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
             DB::commit();
-            event(new NewWorkerAutomation($worker_automation));
+            $message = "درخواست پرداخت جدید کارگری به اتوماسیون شما ارسال شده است";
+            $this->send_push_notification(PushMessageWorker::class,$message,"role_id",$worker_automation->current_role_id);
+            $this->send_event_notification(WorkerEvent::class,$worker_automation,$message);
             return redirect()->back()->with(["result" => "saved"]);
+        }
+        catch (Throwable $ex){
+            DB::rollBack();
+            return redirect()->back()->with(["action_error" => $ex->getMessage()]);
+        }
+    }
+    public function refer(Request $request,$id): \Illuminate\Http\RedirectResponse
+    {
+        Gate::authorize("refer","WorkerPayments");
+        try {
+            DB::beginTransaction();
+            $worker_automation = WorkerPaymentAutomation::query()->findOrFail($id);
+            InvoiceFlow::worker_refer($id);
+            $request->input("refer_comment") != null ? $worker_automation->comments()->create(["user_id" => Auth::id(),"comment" => $request->refer_comment]):'';
+            DB::commit();
+            $message = "درخواست پرداخت وضعیت پرداختی کارگری به اتوماسیون شما ارجاع شده است";
+            $this->send_push_notification(PushMessageWorker::class,$message,"role_id",$worker_automation->current_role_id);
+            $this->send_event_notification(WorkerEvent::class,$worker_automation,$message);
+            return redirect()->back()->with(["result" => "referred"]);
         }
         catch (Throwable $ex){
             DB::rollBack();
@@ -271,6 +303,8 @@ class WorkerPaymentAutomationController extends Controller
                 "receipt_scan" => $request->hasFile('payment_receipt_scan') ? 1 : 0
             ]);
             DB::commit();
+            $message = "درخواست پرداخت کارگری به نام ".$worker_automation->contractor->name." پرداخت شد";
+            $this->send_push_notification(PushMessageWorker::class,$message,"id",$worker_automation->user_id);
             return redirect()->route("WorkerPayments.automation")->with(["result" => "payed","print" => $worker_automation->id]);
         }
         catch (Throwable $ex){

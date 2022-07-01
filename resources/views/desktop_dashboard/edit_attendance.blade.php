@@ -3,7 +3,7 @@
     {{"ویرایش حضور و غیاب ".$attendance->staff->name}}
 @endsection
 @section('content')
-    <form id="update_form" action="{{route("Attendances.update",$attendance->id)}}" method="post" v-on:submit="submit_update_form">
+    <form id="update_form" action="{{route("Attendances.update",$attendance->id)}}" method="post" data-type="update" v-on:submit="submit_form">
         @csrf
         @method('put')
         <input type="hidden" value="" id="type" name="type">

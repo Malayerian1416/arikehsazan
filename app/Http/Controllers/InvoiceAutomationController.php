@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\InvoiceEvent;
 use App\Events\NewInvoiceAutomation;
 use App\Http\Requests\InvoicePaymentRequest;
 use App\Models\BankAccount;
@@ -11,10 +12,14 @@ use App\Models\Invoice;
 use App\Models\InvoiceAutomation;
 use App\Models\InvoiceAutomationAmounts;
 use App\Models\InvoiceFlow;
+use App\Models\User;
+use App\Notifications\PushMessageInvoice;
+use App\Notifications\PushNewInvoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Jenssegers\Agent\Agent;
 use Throwable;
@@ -152,7 +157,9 @@ class InvoiceAutomationController extends Controller
             if ($invoice->signs()->where("user_id","=",Auth::id())->count() == 0)
                 $invoice->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
             DB::commit();
-            event(new NewInvoiceAutomation($invoice->automation));
+            $message = "درخواست پرداخت وضعیت جدید پیمانکاری به اتوماسیون شما ارسال شده است";
+            $this->send_push_notification(PushMessageInvoice::class,$message,"role_id",$invoice->automation->current_role_id);
+            $this->send_event_notification(InvoiceEvent::class,$invoice->automation,$message);
             return redirect()->route("InvoiceAutomation.automation")->with(["result" => "sent"]);
         }
         catch (Throwable $ex){
@@ -165,8 +172,12 @@ class InvoiceAutomationController extends Controller
         Gate::authorize("refer","InvoiceAutomation");
         try {
             DB::beginTransaction();
+            $invoice = Invoice::query()->findOrFail($id);
             InvoiceFlow::refer($id);
             DB::commit();
+            $message = "درخواست پرداخت وضعیت پیمانکاری به اتوماسیون شما ارجاع شده است";
+            $this->send_push_notification(PushMessageInvoice::class,$message,"role_id",$invoice->automation->current_role_id);
+            $this->send_event_notification(InvoiceEvent::class,$invoice->automation,$message);
             return redirect()->route("InvoiceAutomation.automation")->with(["result" => "referred"]);
         }
         catch (Throwable $ex){
@@ -287,6 +298,9 @@ class InvoiceAutomationController extends Controller
                 "receipt_scan" => $request->hasFile('payment_receipt_scan') ? 1 : 0
             ]);
             DB::commit();
+            $message = "درخواست پرداخت وضعیت پیمانکاری شماره ".$invoice->number." پیمان ".$invoice->contract->name." متعلق به پیمانکار ".
+                $invoice->contract->contractor->name." پرداخت شد";
+            $this->send_push_notification(PushMessageInvoice::class,$message,"id",$invoice->user_id);
             return redirect()->route("InvoiceAutomation.automation")->with(["result" => "payed"]);
         }
         catch (Throwable $ex){

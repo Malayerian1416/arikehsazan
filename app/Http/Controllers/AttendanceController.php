@@ -18,12 +18,28 @@ use Illuminate\Http\Request;
 class AttendanceController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $attendances = Attendance::with(["location","user","staff"])->get();
+        $paginate = false;
+        if ($request->has("staff_id") && $request->has("year") && $request->has("month"))
+            $attendances = Attendance::with(["location","user","staff"])->where("staff_id","=",$request->staff_id)
+                ->where("year","=",$request->year)->where("month","=",$request->month)->orderBy("timestamp")->get();
+        else {
+            $attendances = Attendance::with(["location", "user", "staff"])->orderBy("timestamp")->paginate(30, ['*'], 'attendance_page');
+            $paginate = true;
+        }
         $locations = Location::all();
         $users = User::query()->where("is_admin" , 0)->get();
-        return view("{$this->agent}.attendance_index",["locations" => $locations, "users" => $users, "attendances" => $attendances]);
+        return view("{$this->agent}.attendance_index",[
+            "locations" => $locations,
+            "users" => $users,
+            "attendances" => $attendances,
+            "jalali_month_names" => $this->jalali_month_names(),
+            "paginate" => $paginate,
+            "staff_id" => $request->has("staff_id") ? $request->staff_id : '',
+            "year" => $request->has("year") ? $request->year : '',
+            "month" => $request->has("month") ? $request->month : '',
+        ]);
     }
 
 
@@ -44,9 +60,9 @@ class AttendanceController extends Controller
             $date_array = explode("/",$validated["date"]);
             $converted_date = Verta::getGregorian($date_array[0],$date_array[1],$date_array[2]);
             $validated["timestamp"] = Carbon::parse(implode("-",$converted_date)." {$time}")->toDateTimeString();
-            $validated["year"] = $date_array[0];
-            $validated["month"] = $date_array[1];
-            $validated["day"] = $date_array[2];
+            $validated["year"] = intval($date_array[0]);
+            $validated["month"] = intval($date_array[1]);
+            $validated["day"] = intval($date_array[2]);
             unset($validated["date"]);
             Attendance::query()->create($validated);
             DB::commit();
@@ -91,9 +107,9 @@ class AttendanceController extends Controller
             $date_array = explode("/",$validated["date"]);
             $converted_date = Verta::getGregorian($date_array[0],$date_array[1],$date_array[2]);
             $validated["timestamp"] = Carbon::parse(implode("-",$converted_date)." {$time}")->toDateTimeString();
-            $validated["year"] = $date_array[0];
-            $validated["month"] = $date_array[1];
-            $validated["day"] = $date_array[2];
+            $validated["year"] = intval($date_array[0]);
+            $validated["month"] = intval($date_array[1]);
+            $validated["day"] = intval($date_array[2]);
             unset($validated["date"]);
             $attendance->update($validated);
             DB::commit();
@@ -147,9 +163,9 @@ class AttendanceController extends Controller
             $date_array = explode("/",verta()->format("Y/n/d"));
             $converted_date = Verta::getGregorian($date_array[0],$date_array[1],$date_array[2]);
             $validated["timestamp"] = Carbon::parse(implode("-",$converted_date)." {$time}")->toDateTimeString();
-            $validated["year"] = $date_array[0];
-            $validated["month"] = $date_array[1];
-            $validated["day"] = $date_array[2];
+            $validated["year"] = intval($date_array[0]);
+            $validated["month"] = intval($date_array[1]);
+            $validated["day"] = intval($date_array[2]);
             Attendance::query()->create($validated);
             DB::commit();
             return redirect()->back()->with(["result" => "saved"]);

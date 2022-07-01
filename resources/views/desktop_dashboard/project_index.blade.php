@@ -16,7 +16,7 @@
                 </h6>
             </div>
             <div class="col-12 hide_section @if($errors->any()) active @endif">
-                <form id="create_form" action="{{route("Projects.store")}}" method="post" v-on:submit="submit_create_form" enctype="multipart/form-data">
+                <form id="create_form" action="{{route("Projects.store")}}" method="post" data-type="create" v-on:submit="submit_form" enctype="multipart/form-data">
                     @csrf
                     <div class="form-row">
                         <div class="form-group col-md-12 col-lg-4 col-xl-3">
@@ -166,7 +166,7 @@
                     @endcan
                     @can('destroy','Projects')
                         <td>
-                            <form id="delete_form_{{$project->id}}" class="d-inline-block" action="{{route("Projects.destroy",$project->id)}}" method="post" v-on:submit="submit_delete_form">
+                            <form id="delete_form_{{$project->id}}" class="d-inline-block" action="{{route("Projects.destroy",$project->id)}}" method="post" data-type="delete" v-on:submit="submit_form">
                                 @csrf
                                 @method('delete')
                                 <button class="index_form_submit_button" form="delete_form_{{$project->id}}" type="submit"><i class="fa fa-trash index_delete_icon"></i></button>
