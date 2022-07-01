@@ -11,7 +11,7 @@
     </title>
     @laravelPWA
     <link href="{{asset("/css/app.css?v=".$company_information->app_ver)}}" rel="stylesheet">
-    <link href="{{asset("/css/p_dashboard.css?v=".$company_information->app_ver.time())}}" rel="stylesheet">
+    <link href="{{asset("/css/p_dashboard.css?v=".$company_information->app_ver)}}" rel="stylesheet">
     <link href="{{asset("/css/persianDatepicker-default.css")}}" rel="stylesheet">
     @yield('styles')
 </head>

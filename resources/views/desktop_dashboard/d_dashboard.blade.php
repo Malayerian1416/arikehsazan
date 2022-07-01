@@ -11,7 +11,7 @@
     </title>
     @laravelPWA
     <link href="{{asset("/css/app.css?v=".$company_information->app_ver)}}" rel="stylesheet">
-    <link href="{{asset("/css/d_dashboard.css?v=".$company_information->app_ver.time())}}" rel="stylesheet">
+    <link href="{{asset("/css/d_dashboard.css?v=".$company_information->app_ver)}}" rel="stylesheet">
     <link href="{{asset("/css/persianDatepicker-default.css?v=".$company_information->app_ver)}}" rel="stylesheet">
     @yield('styles')
 </head>
@@ -284,8 +284,8 @@
 <script src="{{asset("js/app.js?v=".$company_information->app_ver)}}"></script>
 <script src="{{asset("/js/numeral.js?v=".$company_information->app_ver)}}"></script>
 <script src="{{asset("/js/persianDatepicker.min.js?v=".$company_information->app_ver)}}"></script>
-<script src="{{asset("/js/d_dashboard.js?v=".$company_information->app_ver.time())}}"></script>
-<script src="{{asset("/js/kernel.js?v=".$company_information->app_ver.time())}}" defer></script>
+<script src="{{asset("/js/d_dashboard.js?v=".$company_information->app_ver)}}"></script>
+<script src="{{asset("/js/kernel.js?v=".$company_information->app_ver)}}" defer></script>
 @yield('scripts')
 <div id="menu_search" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
