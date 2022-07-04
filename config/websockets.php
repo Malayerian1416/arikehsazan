@@ -25,7 +25,7 @@ return [
         [
             'id' => env('PUSHER_APP_ID'),
             'name' => env('PUSHER_APP_NAME'),
-            'key' => 'masoud1364',
+            'key' => env('PUSHER_APP_KEY'),
             'secret' => env('PUSHER_APP_SECRET'),
             'enable_client_messages' => false,
             'enable_statistics' => true,
@@ -108,10 +108,10 @@ return [
      * You can see all available options at: http://php.net/manual/en/context.ssl.php
      */
     'ssl' => [
-        'local_cert' => env('SSL_CERT', null),
-        'local_pk' => env('SSL_PK', null),
-        'passphrase' => env('JWT_SECRET', null),
-        'verify_peer' => false,
+//        'local_cert' => 'cert.crt',
+//        'local_pk' => 'certkey.key',
+//        'passphrase' => null,
+////        'verify_peer' => false,
     ],
 
     /*

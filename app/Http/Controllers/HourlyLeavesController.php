@@ -58,9 +58,10 @@ class HourlyLeavesController extends Controller
                     Storage::disk('hourly_leave_docs')->put($hourly_leave->id,$file);
             }
             $hourly_leave->automation()->create(LeaveFlow::automate());
+            $hourly_leave->automation()->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
             $message = "درخواست مرخصی جدید به صندوق اتوماسیون شما ارسال شده است";
             $this->send_push_notification(PushMessageLeave::class,$message,"role_id",$hourly_leave->automation->current_role_id);
-            //$this->send_event_notification(LeaveEvent::class,$hourly_leave->automation,$message);
+            $this->send_event_notification(LeaveEvent::class,$hourly_leave->automation,$message);
             DB::commit();
             return redirect()->route("HourlyLeaves.index")->with(["result" => "saved"]);
         }
@@ -106,7 +107,7 @@ class HourlyLeavesController extends Controller
             $hourly_leave->automation()->update(LeaveFlow::automate());
             $message = "درخواست مرخصی جدید پس از ویرایش به صندوق اتوماسیون شما ارسال شده است";
             $this->send_push_notification(PushMessageLeave::class,$message,"role_id",$hourly_leave->automation->current_role_id);
-            //$this->send_event_notification(LeaveEvent::class,$hourly_leave->automation,$message);
+            $this->send_event_notification(LeaveEvent::class,$hourly_leave->automation,$message);
             DB::commit();
             return redirect()->route("HourlyLeaves.index")->with(["result" => "updated"]);
         }

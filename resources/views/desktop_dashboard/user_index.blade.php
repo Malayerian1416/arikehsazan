@@ -467,7 +467,7 @@
                         <a class="index_action" href="{{route("Users.edit",$user->id)}}"><i class="fa fa-pen index_edit_icon"></i></a>
                     </td>
                     <td>
-                        <form id="activation_form_{{$user->id}}" action="{{route("Users.activation",$user->id)}}" method="post" v-on:submit="submit_activation_form" data-status="{{$user->is_active}}">
+                        <form id="activation_form_{{$user->id}}" action="{{route("Users.activation",$user->id)}}" method="post" data-type="active" v-on:submit="submit_form" data-status="{{$user->is_active}}">
                             @csrf
                             @method('put')
                             @if($user->is_active == 0)

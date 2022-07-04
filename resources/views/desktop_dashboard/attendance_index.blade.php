@@ -12,7 +12,7 @@
                 </h6>
             </div>
             <div class="col-12 hide_section @if($errors->any()) active @endif">
-                <form id="create_form" action="{{route("Attendances.store")}}" method="post" v-on:submit="submit_attendance_form">
+                <form id="create_form" action="{{route("Attendances.store")}}" method="post" data-type="attendance" v-on:submit="submit_form">
                     @csrf
                     <input type="hidden" value="" id="type" name="type">
                     <div class="form-row">

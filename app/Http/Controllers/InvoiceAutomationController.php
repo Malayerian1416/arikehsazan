@@ -159,7 +159,7 @@ class InvoiceAutomationController extends Controller
             DB::commit();
             $message = "درخواست پرداخت وضعیت جدید پیمانکاری به اتوماسیون شما ارسال شده است";
             $this->send_push_notification(PushMessageInvoice::class,$message,"role_id",$invoice->automation->current_role_id);
-            //$this->send_event_notification(InvoiceEvent::class,$invoice->automation,$message);
+            $this->send_event_notification(InvoiceEvent::class,$invoice->automation,$message);
             return redirect()->route("InvoiceAutomation.automation")->with(["result" => "sent"]);
         }
         catch (Throwable $ex){
@@ -177,7 +177,7 @@ class InvoiceAutomationController extends Controller
             DB::commit();
             $message = "درخواست پرداخت وضعیت پیمانکاری به اتوماسیون شما ارجاع شده است";
             $this->send_push_notification(PushMessageInvoice::class,$message,"role_id",$invoice->automation->current_role_id);
-            //$this->send_event_notification(InvoiceEvent::class,$invoice->automation,$message);
+            $this->send_event_notification(InvoiceEvent::class,$invoice->automation,$message);
             return redirect()->route("InvoiceAutomation.automation")->with(["result" => "referred"]);
         }
         catch (Throwable $ex){

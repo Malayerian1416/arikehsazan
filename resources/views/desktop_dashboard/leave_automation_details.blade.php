@@ -161,6 +161,7 @@
         </button>
         @if($main_role == auth()->user()->role->id)
             @if($type == "Hourly" && $leave->arrival != null || $type == "Daily")
+                @can("approve","LeaveAutomation")
                 <form id="approve_form" data-type="approve" action="{{route("LeaveAutomation.approve",$leave->automation->id)}}" method="post" v-on:submit="submit_form">
                     @csrf
                     <button type="submit" form="approve_form" class="btn btn-outline-success iran_yekan mr-2 submit_button">
@@ -169,8 +170,10 @@
                         <span v-show="button_not_loading">تایید و اتمام</span>
                     </button>
                 </form>
+                @endcan
             @endif
         @else
+            @can("send","LeaveAutomation")
             @if($type == "Hourly" && $leave->arrival != null || $type == "Daily")
                 <button type="submit" form="send_form" class="btn btn-outline-success iran_yekan mr-2 submit_button">
                     <i v-show="button_loading" class="button_loading fa fa-spinner fa-spin mr-2"></i>
@@ -178,7 +181,9 @@
                     <span v-show="button_not_loading">تایید و ارسال</span>
                 </button>
             @endif
+            @endcan
         @endif
+        @can("reject","LeaveAutomation")
         <form id="reject_form" data-type="reject" action="{{route("LeaveAutomation.reject",$leave->automation->id)}}" method="post" v-on:submit="submit_form">
             @csrf
             <button type="submit" form="reject_form" class="btn btn-outline-warning iran_yekan mr-2 submit_button">
@@ -187,6 +192,8 @@
                 <span v-show="button_not_loading">عدم تایید و اتمام</span>
             </button>
         </form>
+        @endcan
+        @can("refer","LeaveAutomation")
         <form id="refer_form" data-type="refer" action="{{route("LeaveAutomation.refer",$leave->automation->id)}}" method="post" v-on:submit="submit_form">
             @csrf
             <button type="submit" form="refer_form" class="btn btn-outline-danger iran_yekan mr-2 submit_button">
@@ -195,6 +202,7 @@
                 <span v-show="button_not_loading">ارجاع</span>
             </button>
         </form>
+        @endcan
         <a href="{{route("idle")}}">
             <button type="button" class="btn btn-outline-light iran_yekan">
                 <i class="fa fa-backspace button_icon"></i>

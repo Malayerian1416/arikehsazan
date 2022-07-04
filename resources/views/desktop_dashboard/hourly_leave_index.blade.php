@@ -306,8 +306,10 @@
                         <span>
                             @if($leave->automation->current_role_id <> 0)
                                 {{\App\Models\Role::query()->findOrFail($leave->automation->current_role_id)->name}}
-                            @else
+                            @elseif($leave->automation->is_finished)
                                 {{"تکمیل شده"}}
+                            @else
+                                {{"ارجاع شده"}}
                             @endif
                         </span>
                         </td>

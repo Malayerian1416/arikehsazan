@@ -57,7 +57,7 @@ class DailyLeavesController extends Controller
             DB::commit();
             $message = "درخواست مرخصی جدید به صندوق اتوماسیون شما ارسال شده است";
             $this->send_push_notification(PushMessageLeave::class,$message,"role_id",$daily_leave->automation->current_role_id);
-            //$this->send_event_notification(LeaveEvent::class,$daily_leave->automation,$message);
+            $this->send_event_notification(LeaveEvent::class,$daily_leave->automation,$message);
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
@@ -110,7 +110,7 @@ class DailyLeavesController extends Controller
             DB::commit();
             $message = "درخواست مرخصی جدید پس از ویرایش به صندوق اتوماسیون شما ارسال شده است";
             $this->send_push_notification(PushMessageLeave::class,$message,"role_id",$daily_leave->automation->current_role_id);
-            //$this->send_event_notification(LeaveEvent::class,$daily_leave->automation,$message);
+            $this->send_event_notification(LeaveEvent::class,$daily_leave->automation,$message);
             return redirect()->route("DailyLeaves.index")->with(["result" => "updated"]);
         }
         catch (Throwable $ex){

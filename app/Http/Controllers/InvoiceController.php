@@ -93,7 +93,7 @@ class InvoiceController extends Controller
             DB::commit();
             $message = "درخواست پرداخت وضعیت جدید پیمانکاری به اتوماسیون شما ارسال شده است";
             $this->send_push_notification(PushMessageInvoice::class,$message,"role_id",$invoice->automation->current_role_id);
-            //$this->send_event_notification(InvoiceEvent::class,$invoice->automation,$message);
+            $this->send_event_notification(InvoiceEvent::class,$invoice->automation,$message);
             return redirect()->back()->with(["result" => "saved"]);
         }
         catch (Throwable $ex){
@@ -161,7 +161,7 @@ class InvoiceController extends Controller
             DB::commit();
             $message = "درخواست پرداخت وضعیت جدید پیمانکاری پس از ویرایش به اتوماسیون شما ارسال شده است";
             $this->send_push_notification(PushMessageInvoice::class,$message,"role_id",$invoice->automation->current_role_id);
-            //$this->send_event_notification(InvoiceEvent::class,$invoice->automation,$message);
+            $this->send_event_notification(InvoiceEvent::class,$invoice->automation,$message);
             return redirect()->back()->with(["result" => "updated"]);
         }
         catch (Throwable $ex){

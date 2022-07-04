@@ -181,13 +181,10 @@ Route::group(['prefix'=>'Dashboard/'. Helper::platform(), 'middleware'=>['auth',
             Artisan::call('websockets:serve');
         })->name("serve_websocket");
         Route::get('/clear', function () {
-            Artisan::call('cache:clear');
-            Artisan::call('route:clear');
-            Artisan::call('config:clear');
-            Artisan::call('view:clear');
+            Artisan::call('optimize:clear');
         })->name("clear_cache");
         Route::get('/run-schedule', function(){
-            Artisan::call('schedule:work');
+            Artisan::call('schedule:run');
         })->name("run_schedule");
     });
 });
