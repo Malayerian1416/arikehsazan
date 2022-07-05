@@ -164,16 +164,7 @@
         </table>
     </div>
 @endsection
-@section('page_footer')
-    <div class="form-row text-center p-3 d-flex flex-row justify-content-center">
-        <a href="{{route("idle")}}">
-            <button type="button" class="btn btn-outline-light iran_yekan">
-                <i class="fa fa-backspace button_icon"></i>
-                <span>خروج</span>
-            </button>
-        </a>
-    </div>
-@endsection
+
 @section('modal_alerts')
     <div class="modal fade iran_yekan" id="contact_information" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">

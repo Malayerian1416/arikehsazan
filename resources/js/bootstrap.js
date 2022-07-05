@@ -42,4 +42,3 @@ window.Echo = new Echo({
         headers: { "X-CSRF-Token": token },
     }
 });
-Pusher.logToConsole = true;

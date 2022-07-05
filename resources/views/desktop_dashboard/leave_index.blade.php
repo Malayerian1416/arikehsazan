@@ -6,10 +6,10 @@
     @can('create','Attendances')
         <div class="row pt-1 pb-3">
             <div class="col-12 hide_section_container">
-                <h6>
-                    <i class="fa fa-plus-square fa-2x hide_section_icon" style="vertical-align: middle"></i>
-                    <span class="iran_yekan hide_section_title">ایجاد</span>
-                </h6>
+                <button class="btn btn-outline-success">
+                    <i class="fa fa-plus-square fa-1_4x mr-2 hide_section_icon" style="vertical-align: middle"></i>
+                    <span class="iran_yekan hide_section_title">تعریف جدید</span>
+                </button>
             </div>
             <div class="col-12 hide_section @if($errors->any()) active @endif">
                 <form id="create_form" action="{{route("Leaves.store")}}" data-type="create" method="post" v-on:submit="submit_form">
@@ -191,7 +191,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title">مرخصی روزانه</h6>
+                    <h6 class="modal-title" v-text="'مرخصی ' + leave_type"></h6>
                 </div>
                 <div class="modal-body">
                     <div class="row no-gutters iran_yekan">

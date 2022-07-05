@@ -26,7 +26,7 @@ class RoleController extends Controller
         try {
             $menu_headers = MenuHeader::query()->with(["items.actions","items.children"])->get();
             $roles = Role::query()->with("user")->get();
-            return view("desktop_dashboard.role_index", ["roles" => $roles, "menu_headers" => $menu_headers]);
+            return view("{$this->agent}.role_index", ["roles" => $roles, "menu_headers" => $menu_headers]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
@@ -39,7 +39,7 @@ class RoleController extends Controller
             Gate::authorize("create","Roles");
         try {
             $menu_headers = MenuHeader::query()->with(["items.actions","items.children"])->get();
-            return view("desktop_dashboard.create_new_role", ["menu_headers" => $menu_headers]);
+            return view("{$this->agent}.create_new_role", ["menu_headers" => $menu_headers]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);
@@ -77,7 +77,7 @@ class RoleController extends Controller
         try {
             $menu_headers = MenuHeader::query()->with(["items.actions","items.children"])->get();
             $role = Role::query()->with("menu_items.actions")->findOrFail($id);
-            return view("desktop_dashboard.edit_role", ["role" => $role, "menu_headers" => $menu_headers]);
+            return view("{$this->agent}.edit_role", ["role" => $role, "menu_headers" => $menu_headers]);
         }
         catch (Throwable $ex){
             return redirect()->back()->with(["action_error" => $ex->getMessage()]);

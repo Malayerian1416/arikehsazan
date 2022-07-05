@@ -64,11 +64,6 @@
             <i v-show="button_not_loading" class="fa fa-edit button_icon"></i>
             <span v-show="button_not_loading">ارسال و ویرایش</span>
         </button>
-        <a href="{{route("idle")}}">
-            <button type="button" class="btn btn-outline-light iran_yekan">
-                <i class="fa fa-backspace button_icon"></i>
-                <span>خروج</span>
-            </button>
-        </a>
+
     </div>
 @endsection

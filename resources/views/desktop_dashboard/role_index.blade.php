@@ -10,10 +10,10 @@
     @if(auth()->user()->is_admin)
         <div class="row pt-1 pb-3">
             <div class="col-12 hide_section_container">
-                <h6>
-                    <i class="fa fa-plus-square fa-2x hide_section_icon" style="vertical-align: middle"></i>
-                    <span class="iran_yekan hide_section_title">تعریف سمت جدید</span>
-                </h6>
+                <button class="btn btn-outline-success">
+                    <i class="fa fa-plus-square fa-1_4x mr-2 hide_section_icon" style="vertical-align: middle"></i>
+                    <span class="iran_yekan hide_section_title">تعریف جدید</span>
+                </button>
             </div>
             <div class="col-12 hide_section @if($errors->has(["name","role_menu"]))) active @endif">
                 <form id="create_form" action="{{route("Roles.store")}}" method="post" data-type="create" v-on:submit="submit_form">
@@ -107,8 +107,8 @@
     @can('create','Roles')
         <div class="row pt-1 pb-3">
             <div class="col-12 hide_section_container">
-                <h6>
-                    <i class="fa fa-plus-square fa-2x hide_section_icon" style="vertical-align: middle"></i>
+                <button class="btn btn-outline-success">
+                    <i class="fa fa-plus-square fa-1_4x mr-2 hide_section_icon" style="vertical-align: middle"></i>
                     <span class="iran_yekan hide_section_title">تعریف سمت جدید</span>
                 </h6>
             </div>

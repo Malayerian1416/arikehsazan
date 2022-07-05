@@ -1,8 +1,4 @@
 @extends('desktop_dashboard.d_dashboard')
-@section('styles')
-@endsection
-@section('scripts')
-@endsection
 @section('page_title')
     مشاهده لیست حساب های بانکی و ویرایش
 @endsection
@@ -10,10 +6,10 @@
     @can('create','BankAccounts')
         <div class="row pt-1 pb-3">
             <div class="col-12 hide_section_container">
-                <h6>
-                    <i class="fa fa-plus-square fa-2x hide_section_icon" style="vertical-align: middle"></i>
-                    <span class="iran_yekan hide_section_title">تعریف حساب بانکی جدید</span>
-                </h6>
+                <button class="btn btn-outline-success">
+                    <i class="fa fa-plus-square fa-1_4x mr-2 hide_section_icon" style="vertical-align: middle"></i>
+                    <span class="iran_yekan hide_section_title">تعریف جدید</span>
+                </button>
             </div>
             <div class="col-12 hide_section @if($errors->has(["name","branch","branch_code","account_number","card_number","sheba_number","balance"])) active @endif">
                 <form id="create_form" action="{{route("BankAccounts.store")}}" method="post" data-type="create" v-on:submit="submit_form">

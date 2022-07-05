@@ -31,7 +31,7 @@ class HourlyLeavesController extends Controller
             else {
                 $hourly_leaves = HourlyLeave::query()->with(["user","automation","location"])->whereHas("staff",function ($query){
                 $query->where("staff_id","=",Auth::id());
-                })->get();
+                })->whereHas("automation")->get();
                 return view("{$this->agent}.hourly_leave_index",["locations" => $locations,"hourly_leaves" => $hourly_leaves]);
             }
         }
@@ -57,8 +57,11 @@ class HourlyLeavesController extends Controller
                 foreach ($request->file('leave_docs') as $file)
                     Storage::disk('hourly_leave_docs')->put($hourly_leave->id,$file);
             }
-            $hourly_leave->automation()->create(LeaveFlow::automate());
-            $hourly_leave->automation()->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
+            $automate = LeaveFlow::automate();
+            $hourly_leave->automation()->create($automate);
+            if ($automate["is_finished"] == 1)
+                $hourly_leave->update(["is_approved" => 1]);
+            $hourly_leave->automation->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
             $message = "درخواست مرخصی جدید به صندوق اتوماسیون شما ارسال شده است";
             $this->send_push_notification(PushMessageLeave::class,$message,"role_id",$hourly_leave->automation->current_role_id);
             $this->send_event_notification(LeaveEvent::class,$hourly_leave->automation,$message);
@@ -104,7 +107,10 @@ class HourlyLeavesController extends Controller
                 foreach ($request->file('leave_docs') as $file)
                     Storage::disk('hourly_leave_docs')->put($hourly_leave->id,$file);
             }
-            $hourly_leave->automation()->update(LeaveFlow::automate());
+            $automate = LeaveFlow::automate();
+            $hourly_leave->automation()->update($automate);
+            if ($automate["is_finished"] == 1)
+                $hourly_leave->update(["is_approved" => 1]);
             $message = "درخواست مرخصی جدید پس از ویرایش به صندوق اتوماسیون شما ارسال شده است";
             $this->send_push_notification(PushMessageLeave::class,$message,"role_id",$hourly_leave->automation->current_role_id);
             $this->send_event_notification(LeaveEvent::class,$hourly_leave->automation,$message);

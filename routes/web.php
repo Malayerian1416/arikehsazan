@@ -188,9 +188,3 @@ Route::group(['prefix'=>'Dashboard/'. Helper::platform(), 'middleware'=>['auth',
         })->name("run_schedule");
     });
 });
-Route::get("/set",function (){
-    $i = 01;
-    for ($j = 1;$j < 8000;$j++){
-        \Illuminate\Support\Facades\DB::table("attendances")->where("day","=","0$j")->update(["day" => $j]);
-    }
-});

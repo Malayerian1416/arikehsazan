@@ -23,7 +23,7 @@ class DailyLeavesController extends Controller
             $calender = $this->calender(30);
             $daily_leaves = DailyLeave::query()->with(["user","days","automation"])->whereHas("staff",function ($query){
                 $query->where("staff_id","=",Auth::id());
-            })->get();
+            })->whereHas("automation")->get();
             return view("{$this->agent}.daily_leave_index",["daily_leaves" => $daily_leaves,"calender" => $calender]);
         }
         catch (Throwable $ex){
@@ -49,11 +49,15 @@ class DailyLeavesController extends Controller
                     return redirect()->back()->with(["action_error" => "تاریخ " . $date . " به عنوان مرخصی برای شما ثبت شده است"]);
                 }
             }
-            $daily_leave->automation()->create(LeaveFlow::automate());
+            $automate = LeaveFlow::automate();
+            $daily_leave->automation()->create($automate);
+            if ($automate["is_finished"] == 1)
+                $daily_leave->update(["is_approved" => 1]);
             if ($request->hasFile('leave_docs')){
                 foreach ($request->file('leave_docs') as $file)
                     Storage::disk('daily_leave_docs')->put($daily_leave->id,$file);
             }
+            $daily_leave->automation->signs()->create(["user_id" => Auth::id(),"sign" => Auth::user()->sign]);
             DB::commit();
             $message = "درخواست مرخصی جدید به صندوق اتوماسیون شما ارسال شده است";
             $this->send_push_notification(PushMessageLeave::class,$message,"role_id",$daily_leave->automation->current_role_id);
@@ -102,7 +106,10 @@ class DailyLeavesController extends Controller
                     return redirect()->back()->with(["action_error" => "تاریخ " . $date . " به عنوان مرخصی برای شما ثبت شده است"]);
                 }
             }
-            $daily_leave->automation()->update(LeaveFlow::automate());
+            $automate = LeaveFlow::automate();
+            $daily_leave->automation()->update($automate);
+            if ($automate["is_finished"] == 1)
+                $daily_leave->update(["is_approved" => 1]);
             if ($request->hasFile('leave_docs')){
                 foreach ($request->file('leave_docs') as $file)
                     Storage::disk('daily_leave_docs')->put($daily_leave->id,$file);

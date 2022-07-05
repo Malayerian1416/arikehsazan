@@ -1,16 +1,9 @@
-@extends('desktop_dashboard.d_dashboard')
-@section('styles')
-    <link href="{{asset("/css/persianDatepicker-default.css")}}" rel="stylesheet">
-@endsection
-@section('scripts')
-    <script type="text/javascript" src="{{asset("/js/persianDatepicker.min.js")}}" defer></script>
-    <script type="text/javascript" src="{{asset("/js/jquery.mask.js")}}" defer></script>
-@endsection
+@extends('phone_dashboard.p_dashboard')
 @section('page_title')
-    ایجاد پیمانکار جدید
+    <span class="iran_yekan external_page_title_text text-muted text-center">ایجاد کارگر جدید</span>
 @endsection
 @section('content')
-    <form id="create_form" action="{{route("Contractors.store")}}" method="post" data-type="create" v-on:submit="submit_form" enctype="multipart/form-data">
+    <form id="create_form" action="{{route("Workers.store")}}" method="post" data-type="create" v-on:submit="submit_form" enctype="multipart/form-data">
         @csrf
         <div class="form-row border rounded pb-2">
             <div class="col-12 position-relative form_label_container">
@@ -22,8 +15,7 @@
                     <strong class="red_color">*</strong>
                 </label>
                 <select class="form-control iran_yekan text-center @error('type') is-invalid @enderror" id="type" name="type">
-                    <option value="0">پیمانکار</option>
-                    <option value="1">کارگر</option>
+                    <option selected value="1">کارگر</option>
                 </select>
                 @error('type')
                 <span class="invalid-feedback iran_yekan small_font" role="alert">{{ $message }}</span>
@@ -151,12 +143,6 @@
             <i v-show="button_not_loading" class="fa fa-edit button_icon"></i>
             <span v-show="button_not_loading">ارسال و ذخیره</span>
         </button>
-        <a href="{{route("idle")}}">
-            <button type="button" class="btn btn-outline-light iran_yekan">
-                <i class="fa fa-backspace button_icon"></i>
-                <span>بستن</span>
-            </button>
-        </a>
     </div>
 @endsection
 @section('modal_alerts')

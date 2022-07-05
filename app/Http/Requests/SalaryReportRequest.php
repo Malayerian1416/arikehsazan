@@ -35,7 +35,7 @@ class SalaryReportRequest extends FormRequest
     public function messages()
     {
         return [
-            "staff_id.required" => "انتخاب کارمند الزامی می باشد",
+            "staff_id.required" => "انتخاب پرسنل الزامی می باشد",
             "from_date.required" => "انتخاب تاریخ ابتدا الزامی می باشد",
             "to_date.required" => "انتخاب تاریخ انتها الزامی می باشد",
             "from_date.jdate" => "تاریخ ابتدا در فرمت صحیح نمی باشد",

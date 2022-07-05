@@ -1,11 +1,4 @@
 @extends('desktop_dashboard.d_dashboard')
-@section('styles')
-    <link href="{{asset("/css/persianDatepicker-default.css")}}" rel="stylesheet">
-@endsection
-@section('scripts')
-    <script type="text/javascript" src="{{asset("/js/persianDatepicker.min.js")}}" defer></script>
-    <script type="text/javascript" src="{{asset("/js/jquery.mask.js")}}" defer></script>
-@endsection
 @section('page_title')
     ایجاد کارگر جدید
 @endsection
