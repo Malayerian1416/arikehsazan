@@ -160,6 +160,11 @@
                     </form>
                 </div>
                 <div class="page_content_body">
+                    @error('any')
+                    <button class="btn btn-sm btn-outline-danger" data-modal_name="errors_modal" v-on:click="show_modal">
+                        <i class="fa fa-exclamation-triangle fa-1_4x"></i>
+                    </button>
+                    @enderror
                     @if(session()->has("action_error"))
                         <div class="iran_yekan alert alert-danger alert-dismissible fade show" role="alert">
                             <h6 style="font-weight: 700">
@@ -183,6 +188,31 @@
         @endif
     </div>
     @yield('modal_alerts')
+    <div class="modal fade iran_yekan" id="errors_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">خطای اجرایی</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="iran_yekan alert alert-danger alert-dismissible fade show" role="alert">
+                        <h6 style="font-weight: 700">
+                            <i class="fa fa-times-circle" style="color: #ff0000;min-width: 30px;vertical-align: middle;text-align:center;font-size: 1.5rem"></i>
+                            در هنگام انجام عملیات، خطای زیر رخ داده است :
+                        </h6>
+                        <ul>
+                            @foreach($errors as $error)
+                                <li>{{$error}}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @if(session()->has('result'))
     @if(session("result") == "saved")

@@ -45,7 +45,7 @@
                                 <th scope="col">توسط</th>
                                 <th scope="col">تاریخ ثبت</th>
                                 <th scope="col">تاریخ ویرایش</th>
-                                @can('send','WorkerPayments')
+                                @can('details','WorkerPayments')
                                     <th scope="col">جزئیات</th>
                                 @endcan
                                 @can('pay','WorkerPayments')
@@ -201,12 +201,16 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" form="send_form" class="btn btn-success">تایید و ارسال</button>
-                    <form id="refer_form" action="" data-type="refer" method="post" v-on:submit="submit_form">
-                        @csrf
-                        <input type="hidden" id="refer_comment" name="refer_comment" v-model="worker_comment"/>
-                        <button type="submit" form="refer_form" class="btn btn-danger">عدم تایید و ارجاع</button>
-                    </form>
+                    @can('send','WorkerPayments')
+                        <button type="submit" form="send_form" class="btn btn-success">تایید و ارسال</button>
+                    @endcan
+                    @can('refer','WorkerPayments')
+                        <form id="refer_form" action="" data-type="refer" method="post" v-on:submit="submit_form">
+                            @csrf
+                            <input type="hidden" id="refer_comment" name="refer_comment" v-model="worker_comment"/>
+                            <button type="submit" form="refer_form" class="btn btn-danger">عدم تایید و ارجاع</button>
+                        </form>
+                    @endcan
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
                 </div>
             </div>

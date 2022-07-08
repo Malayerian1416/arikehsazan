@@ -894,7 +894,8 @@ const app = new Vue({
                         self.new_invoice_amount = response["data"]["contract"]["amount"];
                         self.invoice_total_previous_quantity = response["data"]["contract"]["automation_amounts_sum_quantity"] ? response["data"]["contract"]["automation_amounts_sum_quantity"] : 0;
                         self.contract_info = response["data"]["report"]["details"];
-                        self.contract_info_total = response["data"]["report"]["totals"];
+                        if(response["data"]["report"].length > 0)
+                            self.contract_info_total = response["data"]["report"]["totals"];
                     });
             }
         },

@@ -9,6 +9,7 @@ use App\Models\Attendance;
 use App\Models\HourlyLeave;
 use App\Models\LeaveFlow;
 use App\Models\Location;
+use App\Models\User;
 use App\Notifications\PushMessageLeave;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -160,9 +161,24 @@ class HourlyLeavesController extends Controller
             if ($location){
                 DB::beginTransaction();
                 $hourly_leave = HourlyLeave::query()->findOrFail($id);
+                $staff = User::query()->findOrFail(Auth::id());
+                $staff_shift = $staff->work_shift;
                 $hourly_leave->update(["arrival" => verta()->format("H:i"), "location_id" => $location->id, "current_status" => 0]);
                 $departure_hour = verta($hourly_leave->departure)->format("H");
                 $departure_minute = verta($hourly_leave->departure)->format("i");
+                if (strtotime(date("H:i")) >= strtotime($staff_shift->departure)){
+                    Attendance::query()->create([
+                        "staff_id" => Auth::id(),
+                        "user_id" => Auth::id(),
+                        "location_id" => $hourly_leave->location_id ?: 1,
+                        "type" => "absence",
+                        "year" => verta()->format("Y"),
+                        "month" => verta()->format("n"),
+                        "day" => verta()->format("j"),
+                        "time" => $hourly_leave->departure,
+                        "timestamp" => date("Y-m-d {$departure_hour}:{$departure_minute}:00")
+                    ]);
+                }
                 Attendance::query()->create([
                     "staff_id" => Auth::id(),
                     "user_id" => Auth::id(),

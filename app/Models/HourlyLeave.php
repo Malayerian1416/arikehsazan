@@ -32,7 +32,7 @@ class HourlyLeave extends Model
         $information["flag"] = false;
         $result = self::query()->where("current_status","=",1)
             ->where("month","=",verta()->format("n"))->where("day","=",verta()->format("d"))->whereHas("automation",function ($query){
-                $query->where("current_role_id" , "<>" ,0)->where("next_role_id" , "<>" ,0)->where("is_finished","=",0);
+                $query->where("current_role_id" , "<>" ,0)->where("is_finished","=",0);
             })->first();
         if ($result){
             $information["flag"] = true;

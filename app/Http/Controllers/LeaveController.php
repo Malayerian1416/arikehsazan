@@ -43,6 +43,8 @@ class LeaveController extends Controller
             if ($request->input("staff_id") && $request->input("data")){
                 DB::beginTransaction();
                 $staff_id = $request->input("staff_id");
+                $staff = User::query()->findOrFail($staff_id);
+                $staff_shift = $staff->work_shift;
                 foreach ($request->input("data") as $data){
                     $data = json_decode($data,true);
                     $date = explode("/",$data["leave_date"]);
@@ -72,6 +74,19 @@ class LeaveController extends Controller
                                 "is_approved" => 1,
                                 "current_status" => 0
                             ]);
+                            if (strtotime($hourly_leave->arrival) >= strtotime($staff_shift->departure)){
+                                Attendance::query()->create([
+                                    "staff_id" => $staff_id,
+                                    "user_id" => Auth::id(),
+                                    "location_id" => $hourly_leave->location_id ?: 1,
+                                    "type" => "absence",
+                                    "year" => intval($date[0]),
+                                    "month" => intval($date[1]),
+                                    "day" => intval($date[2]),
+                                    "time" => $hourly_leave->departure,
+                                    "timestamp" => date("y-m-d H:i",strtotime($timestamp." $hourly_leave->departure"))
+                                ]);
+                            }
                             Attendance::query()->create([
                                 "staff_id" => $staff_id,
                                 "user_id" => Auth::id(),
@@ -91,7 +106,7 @@ class LeaveController extends Controller
                                 "year" => intval($date[0]),
                                 "month" => intval($date[1]),
                                 "day" => intval($date[2]),
-                                "time" => verta()->format("H:i"),
+                                "time" => $hourly_leave->arrival,
                                 "timestamp" => date("y-m-d H:i",strtotime($timestamp." $hourly_leave->arrival"))
                             ]);
                             break;
@@ -102,7 +117,7 @@ class LeaveController extends Controller
                 return redirect()->back()->with(["result" => "saved"]);
             }
             else
-                return redirect()->back()->withErrors(["action_error" => "انتخاب کارمند و درج حداقل یه نوع مرخصی الزامی می باشد."]);
+                return redirect()->back()->with(["action_error" => "انتخاب پرسنل و درج حداقل یه نوع مرخصی الزامی می باشد."]);
         }
         catch (Throwable $ex){
             DB::rollBack();
