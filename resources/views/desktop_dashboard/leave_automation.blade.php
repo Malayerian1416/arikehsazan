@@ -86,10 +86,11 @@
                             </thead>
                             <tbody>
                             @forelse($leave_automations_outbox as $leave_automation)
-                                <tr class="@if($leave_automation->is_read == 0) bold_font black_color @else text-muted @endif" data-details_route="{{route("LeaveAutomation.details",[$leave_automation->automationable->id,$leave_automation->automationable_type == "App\Models\DailyLeave"?"Daily":"Hourly"])}}" v-on:dblclick="invoice_details_navigation">
-                                    <td><span>{{$leave_automation->id}}</span></td>
-                                    <td><span>{{$leave_automation->automationable->staff->name}}</span></td>
-                                    <td>
+                                @if($leave_automation->automationable)
+                                    <tr data-details_route="{{route("LeaveAutomation.details",[$leave_automation->automationable->id,$leave_automation->automationable_type == "App\Models\DailyLeave"?"Daily":"Hourly"])}}">
+                                        <td><span>{{$leave_automation->id}}</span></td>
+                                        <td><span>{{$leave_automation->automationable->staff->name}}</span></td>
+                                        <td>
                                         <span>
                                             @if($leave_automation->automationable_type == 'App\Models\DailyLeave')
                                                 {{"روزانه"}}
@@ -99,9 +100,9 @@
                                                 {{"نامشخص"}}
                                             @endif
                                         </span>
-                                    </td>
-                                    <td><span >{{$leave_automation->automationable->user->name}}</span></td>
-                                    <td>
+                                        </td>
+                                        <td><span >{{$leave_automation->automationable->user->name}}</span></td>
+                                        <td>
                                         <span>
                                             @if($leave_automation->is_finished)
                                                 @if($leave_automation->automationable->is_approved)
@@ -113,8 +114,8 @@
                                                 {{"در جریان"}}
                                             @endif
                                         </span>
-                                    </td>
-                                    <td>
+                                        </td>
+                                        <td>
                                         <span>
                                             @if($leave_automation->current_role_id <> 0)
                                                 {{\App\Models\Role::query()->findOrFail($leave_automation->current_role_id)->name}}
@@ -122,9 +123,10 @@
                                                 {{"تکمیل شده"}}
                                             @endif
                                         </span>
-                                    </td>
-                                    <td><span>{{verta($leave_automation->created_at)->format("Y/n/d")}}</span></td>
-                                    <td><span>{{verta($leave_automation->updated_at)->format("Y/n/d")}}</span></td>
+                                        </td>
+                                        <td><span>{{verta($leave_automation->created_at)->format("Y/n/d")}}</span></td>
+                                        <td><span>{{verta($leave_automation->updated_at)->format("Y/n/d")}}</span></td>
+                                    @endif
                                 </tr>
                             @empty
                             @endforelse

@@ -155,7 +155,7 @@ class LeaveController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): \Illuminate\Http\RedirectResponse
     {
         Gate::authorize("edit","Leaves");
             switch ($request->leave_type){
@@ -168,12 +168,12 @@ class LeaveController extends Controller
                         "leave_date.required" => "درج تاریخ الزامی می باشد",
                         "leave_date.jdate" => "فرمت تاریخ صحیح نمی باشد",
                     ]);
+                    $request["user_id"] = Auth::id();
+                    $timestamp = $this->get_gregorian_timestamp($request->leave_date);
                     $date = explode("/",$request->leave_date);
                     $request["year"] = intval($date[0]);
                     $request["month"] = intval($date[1]);
                     $request["day"] = intval($date[2]);
-                    $request["user_id"] = Auth::id();
-                    $timestamp = implode("-",Verta::getGregorian(intval($date[0]),intval($date[1]),intval($date[2])));
                     $leave_day = LeaveDay::query()->findOrFail($id);
                     $leave_day->update([
                         "year" => intval($date[0]),
@@ -217,30 +217,33 @@ class LeaveController extends Controller
                     $presence = Attendance::query()->where("staff_id","=",$request->staff_id)->where("type","=","presence")
                         ->where("year","=",intval($date[0]))->where("month","=",intval($date[1]))->where("day","=",intval($date[2]))
                         ->where("time","=",$hourly_leave->arrival)->first();
-                    if ($absence && $presence)
-                        $hourly_leave->update($request->toArray());
-                    $absence->update([
-                        "staff_id" => $request->staff_id,
-                        "user_id" => Auth::id(),
-                        "location_id" => $hourly_leave->location_id ?: 1,
-                        "type" => "absence",
-                        "year" => intval($date[0]),
-                        "month" => intval($date[1]),
-                        "day" => intval($date[2]),
-                        "time" => $hourly_leave->departure,
-                        "timestamp" => date("Y-m-d H:i",strtotime($timestamp." $hourly_leave->departure"))
-                    ]);
-                    $presence->update([
-                        "staff_id" => $request->staff_id,
-                        "user_id" => Auth::id(),
-                        "location_id" => $hourly_leave->location_id ?: 1,
-                        "type" => "presence",
-                        "year" => intval($date[0]),
-                        "month" => intval($date[1]),
-                        "day" => intval($date[2]),
-                        "time" => $hourly_leave->arrival,
-                        "timestamp" => date("Y-m-d H:i",strtotime($timestamp." $hourly_leave->arrival"))
-                    ]);
+                    $hourly_leave->update($request->toArray());
+                    if ($absence) {
+                        $absence->update([
+                            "staff_id" => $request->staff_id,
+                            "user_id" => Auth::id(),
+                            "location_id" => $hourly_leave->location_id ?: 1,
+                            "type" => "absence",
+                            "year" => intval($date[0]),
+                            "month" => intval($date[1]),
+                            "day" => intval($date[2]),
+                            "time" => $hourly_leave->departure,
+                            "timestamp" => date("Y-m-d H:i", strtotime($timestamp . " $hourly_leave->departure"))
+                        ]);
+                    }
+                    if ($presence) {
+                        $presence->update([
+                            "staff_id" => $request->staff_id,
+                            "user_id" => Auth::id(),
+                            "location_id" => $hourly_leave->location_id ?: 1,
+                            "type" => "presence",
+                            "year" => intval($date[0]),
+                            "month" => intval($date[1]),
+                            "day" => intval($date[2]),
+                            "time" => $hourly_leave->arrival,
+                            "timestamp" => date("Y-m-d H:i", strtotime($timestamp . " $hourly_leave->arrival"))
+                        ]);
+                    }
                     if ($request->hasFile('leave_docs')){
                         foreach ($request->file('leave_docs') as $file)
                             Storage::disk('hourly_leave_docs')->put($hourly_leave->id,$file);

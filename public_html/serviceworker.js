@@ -1,4 +1,4 @@
-const CACHE_VERSION = 2.11;
+const CACHE_VERSION = 2.12;
 const file_ext = [".jpg",".png",".svg",".bmp",".ttf",".eot",".woff",".woff2","css",".js",".map"];
 let Cache = 'static-cache-v' + CACHE_VERSION;
 let strategy = "cache-first";

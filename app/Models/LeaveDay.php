@@ -9,7 +9,7 @@ class LeaveDay extends Model
 {
     use HasFactory;
     protected $table = "leave_days";
-    protected $fillable = ["daily_leave_id","year","month","day"];
+    protected $fillable = ["daily_leave_id","year","month","day","timestamp"];
 
     public function daily_leave(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

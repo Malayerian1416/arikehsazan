@@ -116,6 +116,13 @@ class Controller extends BaseController
     public function get_gregorian_timestamp($date){
         $date = explode("/",$date);
         $date = Verta::getGregorian($date[0],$date[1],$date[2]);
-        return date(implode("-",$date)." 00:00:00");
+        return date(implode("-",$date));
+    }
+    public function create_jalali_date($date): string
+    {
+        $date = explode("/",$date);
+        $date = Verta::createJalaliDate($date[0],$date[1],$date[2]);
+        $date->addDay();
+        return $date->format("Y/n/j");
     }
 }

@@ -146,6 +146,7 @@
                     <th scope="col">تاریخ</th>
                     <th scope="col">روز هفته</th>
                     <th scope="col">حضور/غیاب</th>
+                    <th scope="col">محل کار</th>
                     <th scope="col">مجموع</th>
                     <th scope="col">کارکرد</th>
                     <th scope="col">مرخصی</th>
@@ -186,6 +187,7 @@
                                 @else
                                     <td><span>ندارد</span></td>
                                 @endif
+                                <td><span>{{$result["location"]}}</span></td>
                                 <td><span>{{$result["total_work_duration"]}}</span></td>
                                 <td><span>{{$result["operation"]}}</span></td>
                                 <td><span>{{$result["total_hourly_leave_duration"]}}</span></td>
@@ -225,7 +227,7 @@
                             <tr style="background: {{$result["color"]}}">
                                 <td><span>{{$result["date"]}}</span></td>
                                 <td><span>{{$result["day"]}}</span></td>
-                                <td colspan="9">{{$result["err_message"]}}</td>
+                                <td colspan="10">{{$result["err_message"]}}</td>
                                 <td><span>{{$result["attendance"]}}</span></td>
                             </tr>
                         @endif

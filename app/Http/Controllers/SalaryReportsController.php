@@ -34,7 +34,7 @@ class SalaryReportsController extends Controller
             $validated = $request->validated();
             $holidays = $request->has("holidays") ? $validated["holidays"] : [];
             $staff = User::query()->findOrFail($validated["staff_id"]);
-            $results = Attendance::get_working_days($staff->id,$this->get_gregorian_timestamp($validated["from_date"]),$this->get_gregorian_timestamp($validated["to_date"]),$validated["work_shift_id"],$holidays);
+            $results = Attendance::get_working_days($staff->id,$this->get_gregorian_timestamp($validated["from_date"]),$this->get_gregorian_timestamp($this->create_jalali_date($validated["to_date"])),$validated["work_shift_id"],$holidays);
             if ($results){
                 $total_wage = 0;
                 $total_days = count($results);

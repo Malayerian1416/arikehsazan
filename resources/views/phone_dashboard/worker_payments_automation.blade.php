@@ -61,7 +61,7 @@
                                     <td><span>{{verta($worker_payment->updated_at)->format("Y/n/d")}}</span></td>
                                     @can('details','WorkerPayments')
                                         <td>
-                                            <button class="btn btn-sm btn-info iran_yekan" data-route="{{route("WorkerPayments.automate_sending",$worker_payment->id)}}" data-refer="{{route("WorkerPayments.refer",$worker_payment->id)}}" data-id="{{$worker_payment->id}}" v-on:click="worker_payment_automation_details">مشاهده</button>
+                                            <button class="btn btn-sm btn-info iran_yekan" data-route="{{route("WorkerPayments.automate_sending",$worker_payment->id)}}" data-refer="{{route("WorkerPayments.refer",$worker_payment->id)}}" data-pay="{{route("WorkerPayments.payment",$worker_payment->id)}}" data-id="{{$worker_payment->id}}" v-on:click="worker_payment_automation_details">مشاهده</button>
                                         </td>
                                     @endcan
                                     @can('pay','WorkerPayments')
@@ -189,12 +189,22 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" form="send_form" class="btn btn-success">تایید و ارسال</button>
-                    <form id="refer_form" action="" data-type="refer" method="post" v-on:submit="submit_form">
-                        @csrf
-                        <input type="hidden" id="refer_comment" name="refer_comment" v-model="worker_comment"/>
-                        <button type="submit" form="refer_form" class="btn btn-danger">عدم تایید و ارجاع</button>
-                    </form>
+                    @can('pay','WorkerPayments')
+                        <form id="pay_window_form" action="" method="get">
+                            @csrf
+                            <button type="submit" form="pay_window_form" class="btn btn-success">پرداخت</button>
+                        </form>
+                    @endcan
+                    @can('send','WorkerPayments')
+                        <button type="submit" form="send_form" class="btn btn-success">تایید و ارسال</button>
+                    @endcan
+                    @can('refer','WorkerPayments')
+                        <form id="refer_form" action="" data-type="refer" method="post" v-on:submit="submit_form">
+                            @csrf
+                            <input type="hidden" id="refer_comment" name="refer_comment" v-model="worker_comment"/>
+                            <button type="submit" form="refer_form" class="btn btn-danger">عدم تایید و ارجاع</button>
+                        </form>
+                    @endcan
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
                 </div>
             </div>

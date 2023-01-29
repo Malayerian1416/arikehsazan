@@ -234,3 +234,55 @@
         </table>
     </div>
 @endsection
+@section('modal_alerts')
+    <div class="modal fade iran_yekan" id="bank_information" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">ثبت اطلاعات بانکی جدید</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row no-gutters">
+                        <div class="col-12">
+                            <label class="col-form-label iran_yekan black_color" for="bank_name">
+                                نام بانک
+                                <strong class="red_color">*</strong>
+                            </label>
+                            <select class="form-control iran_yekan text-center select_picker" title="انتخاب کنید" data-size="5" data-live-search="true" v-model="bank_name">
+                                @forelse($banks as $bank)
+                                    <option value="{{$bank->name}}">{{$bank->name}}</option>
+                                @empty
+                                @endforelse
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="col-form-label iran_yekan black_color" for="bank_card_number">
+                                شماره کارت بانکی
+                                <strong class="red_color">*</strong>
+                            </label>
+                            <input type="text" class="form-control iran_yekan text-center masked" data-mask="0000-0000-0000-0000" v-model="bank_card_number">
+                        </div>
+                        <div class="col-12">
+                            <label class="col-form-label iran_yekan black_color" for="bank_account_number">
+                                شماره حساب بانکی
+                                <strong class="red_color">*</strong>
+                            </label>
+                            <input type="text" class="form-control iran_yekan text-center masked" data-mask="000000000000000000000000000000" v-model="bank_account_number">
+                        </div>
+                        <div class="col-12">
+                            <label class="col-form-label iran_yekan black_color" for="bank_sheba_number">
+                                شماره شبا بانکی(بدون IR)
+                                <strong class="red_color">*</strong>
+                            </label>
+                            <input type="text" class="form-control iran_yekan text-center masked" data-mask="IR00-0000-0000-0000-0000-0000-00" v-model="bank_sheba_number">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" v-on:click="add_bank_information">ثـبـت</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection

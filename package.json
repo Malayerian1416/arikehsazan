@@ -40,6 +40,7 @@
         "laravel-echo": "^1.11.3",
         "leaflet": "^1.7.1",
         "leaflet-draw": "^1.0.4",
+        "numeral": "^2.0.6",
         "owl.carousel": "^2.3.4",
         "persian-datepicker": "^0.5.11",
         "pusher-js": "^7.0.3"

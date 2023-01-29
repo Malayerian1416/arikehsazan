@@ -48,9 +48,6 @@
                                 @can('details','WorkerPayments')
                                     <th scope="col">جزئیات</th>
                                 @endcan
-                                @can('pay','WorkerPayments')
-                                    <th scope="col">تایید و پرداخت</th>
-                                @endcan
                             </tr>
                             </thead>
                             <tbody>
@@ -63,18 +60,7 @@
                                     <td><span>{{verta($worker_payment->updated_at)->format("Y/n/d")}}</span></td>
                                     @can('details','WorkerPayments')
                                         <td>
-                                            <button class="btn btn-sm btn-info iran_yekan" data-route="{{route("WorkerPayments.automate_sending",$worker_payment->id)}}" data-refer="{{route("WorkerPayments.refer",$worker_payment->id)}}" data-id="{{$worker_payment->id}}" v-on:click="worker_payment_automation_details">مشاهده</button>
-                                        </td>
-                                    @endcan
-                                    @can('pay','WorkerPayments')
-                                        <td>
-                                            @if($worker_payment->next_role_id == 0)
-                                                <a class="index_action" role="button" href="{{route("WorkerPayments.payment",$worker_payment->id)}}">
-                                                    <i class="fa fa-search index_edit_icon"></i>
-                                                </a>
-                                            @else
-                                                <i class="fa fa-times-circle index_delete_icon red_color"></i>
-                                            @endif
+                                            <button class="btn btn-sm btn-info iran_yekan" data-route="{{route("WorkerPayments.automate_sending",$worker_payment->id)}}" data-refer="{{route("WorkerPayments.refer",$worker_payment->id)}}" data-pay="{{route("WorkerPayments.payment",$worker_payment->id)}}" data-id="{{$worker_payment->id}}" v-on:click="worker_payment_automation_details">مشاهده</button>
                                         </td>
                                     @endcan
                                 </tr>
@@ -180,7 +166,7 @@
                             </div>
                             <div class="col-12">
                                 <label class="col-form-label iran_yekan black_color" for="bank_name">مبلغ</label>
-                                <input type="text" id="amount" name="amount" class="form-control text-center">
+                                <input type="text" id="amount" name="amount" class="form-control text-center number_format">
                             </div>
                             <div class="col-12">
                                 <label class="col-form-label iran_yekan black_color" for="bank_name">ثبت توضیحات</label>
@@ -201,6 +187,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    @can('pay','WorkerPayments')
+                        <form id="pay_window_form" action="" method="get">
+                            @csrf
+                            <button type="submit" form="pay_window_form" class="btn btn-success">پرداخت</button>
+                        </form>
+                    @endcan
                     @can('send','WorkerPayments')
                         <button type="submit" form="send_form" class="btn btn-success">تایید و ارسال</button>
                     @endcan

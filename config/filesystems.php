@@ -124,6 +124,12 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
+        'system_log' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/system_log'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
     ],
 
     /*

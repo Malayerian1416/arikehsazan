@@ -74,7 +74,7 @@ class PrintController extends Controller
             $holidays = $request->has("holidays") ? $validated["holidays"] : [];
             $staff = User::query()->findOrFail($validated["staff_id"]);
             $results = Attendance::get_working_days($staff->id, $this->get_gregorian_timestamp($validated["from_date"]), $this->get_gregorian_timestamp($validated["to_date"]), $validated["work_shift_id"], $holidays);
-            if ($results) {
+            if ($results){
                 $total_wage = 0;
                 $total_days = count($results);
                 $total_Presence_day = 0;
@@ -85,6 +85,7 @@ class PrintController extends Controller
                 $total_leaves = 0;
                 $total_overtime_work = 0;
                 $total_absence = 0;
+                $counter = 0;
                 $total_absence_day_illegal = 0;
                 foreach ($results as $result) {
                     if ($result["status"] == 0) {
@@ -120,6 +121,7 @@ class PrintController extends Controller
                         $total_delay += $result["delay_amount"];
                         $total_acceleration += $result["acceleration_amount"];
                         $total_absence += $result["absence_amount"];
+                        $counter++;
                     }
                 }
                 $total_payable = ($total_wage + $total_overtime_work) - ($total_delay + $total_acceleration + $total_absence);
@@ -129,10 +131,10 @@ class PrintController extends Controller
                     "total_Presence_day" => $total_Presence_day,
                     "total_holidays" => $total_holidays,
                     "total_absence_day" => $total_absence_day,
-                    "total_absence_day_illegal" => $total_absence_day_illegal,
                     "total_delay" => number_format($total_delay),
                     "total_acceleration" => number_format($total_acceleration),
                     "total_leaves" => $total_leaves,
+                    "total_absence_day_illegal" => $total_absence_day_illegal,
                     "total_overtime_work" => number_format($total_overtime_work),
                     "total_absence" => number_format($total_absence),
                     "total_payable" => number_format($total_payable)

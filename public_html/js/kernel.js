@@ -1366,6 +1366,7 @@ const app = new Vue({
             $("#automation_details").modal("show");
             $("#send_form").prop("action",e.currentTarget.dataset.route);
             $("#refer_form").prop("action",e.currentTarget.dataset.refer);
+            $("#pay_window_form").prop("action",e.currentTarget.dataset.pay);
         }
     }
 });

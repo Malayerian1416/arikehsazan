@@ -43,15 +43,15 @@ class Attendance extends Model
     }
     public static function get_working_days($id,$from,$to,$shift_id,$holidays): array
     {
+        $jalali_from = verta($from);
+        $jalali_to = verta($to);
         $days_of_week = [0=>"شنبه",1=>"یکشنبه",2=>"دوشنبه",3=>"سه شنبه",4=>"چهارشنبه",5=>"پنجشنبه",6=>"جمعه"];
         $staff = User::query()->findOrFail($id);
         $shift = WorkShift::query()->findOrFail($shift_id);
-        $working_days = $staff->attendances()->where("timestamp",">=",$from)->where("timestamp","<=",$to)->orderBy("time")->orderBy("day")->orderBy("month")->orderBy("year")->get();
-        $daily_leaves = $staff->leave_days()->where("timestamp",">=",$from)->where("timestamp","<=",$to)->get();
-        $hourly_leaves = $staff->hourly_leaves()->where("timestamp",">=",$from)->where("timestamp","<=",$to)->get();
+        $working_days = $staff->attendances()->with("location")->orderBy("day")->orderBy("time")->orderBy("month")->orderBy("year")->where("timestamp",">=",$from)->where("timestamp","<",$to)->get();
+        $daily_leaves = $staff->leave_days()->where("timestamp",">=",$from)->where("timestamp","<",$to)->get();
+        $hourly_leaves = $staff->hourly_leaves()->where("timestamp",">=",$from)->where("timestamp","<",$to)->get();
         $result = [];
-        $jalali_from = verta($from);
-        $jalali_to = verta($to);
         $date_diff = $jalali_from->diffDays($jalali_to);
         $payable_work_time = payable_time($shift->duration);
         $hourly_wage = ceil($staff->daily_wage / $payable_work_time);
@@ -59,9 +59,9 @@ class Attendance extends Model
         $acceleration_rate = $staff->acceleration_rate * $hourly_wage;
         $absence_rate = $staff->absence_rate * $hourly_wage;
         $overtime_rate = $staff->overtime_rate * $hourly_wage;
-        for($i = 0;$i <= $date_diff;$i++){
+        for($i = 0;$i <= $date_diff - 1;$i++){
             $holiday = $jalali_from->isFriday() || in_array($jalali_from->format("Y/m/d"),$holidays);
-            $is_in_working_day = $working_days->where("year","=",intval($jalali_from->format("Y")))->where("month","=",intval($jalali_from->format("n")))->where("day","=",intval($jalali_from->format("d")))->where("type","=","presence")->first();
+            $is_in_working_day = $working_days->where("year","=",intval($jalali_from->format("Y")))->where("month","=",intval($jalali_from->format("n")))->where("day","=",intval($jalali_from->format("d")))->first();
             $date = $jalali_from->format("Y/m/d");
             $day_of_week = $days_of_week[$jalali_from->dayOfWeek];
             $status = 0;
@@ -78,10 +78,18 @@ class Attendance extends Model
             $total_leave_days = 0;
             $color = "#e9e9e9";
             $attendance = "حاضر";
+            $location = '';
             if ($is_in_working_day){
+                $is_in_daily_leaves = $daily_leaves
+                    ->where("year", "=", intval($jalali_from->format("Y")))
+                    ->where("month", "=", intval($jalali_from->format("n")))
+                    ->where("day", "=", intval($jalali_from->format("j")))->first();
                 $day_attendances = $working_days->where("year","=",intval($jalali_from->format("Y")))->where("month","=",intval($jalali_from->format("n")))->where("day","=",intval($jalali_from->format("d")));
                 $presence_count = $day_attendances->where("type","=","presence")->count();
                 $absence_count = $day_attendances->where("type","=","absence")->count();
+                $sample = $working_days->where("year","=",intval($jalali_from->format("Y")))->where("month","=",intval($jalali_from->format("n")))->where("day","=",intval($jalali_from->format("d")))->where("type","=","presence")->first();
+                if ($sample != null && $sample->location != null)
+                    $location = $sample->location->name;
                 if ($presence_count == $absence_count) {
                     foreach ($day_attendances as $day)
                         $attendances[] = ["type" => $day->type, "time" => $day->time];
@@ -97,6 +105,14 @@ class Attendance extends Model
                         $operation = $total_work_duration = strtotime($shift->departure) - strtotime($shift->arrival);
                         $operation = gmdate("H:i",$operation);
                         $attendance = "بدون شیفت";
+                    }
+                    elseif ($is_in_daily_leaves && $is_in_daily_leaves->daily_leave->is_approved == 1){
+                        $total_free_overtime_work_duration = $total_work_duration;
+                        $operation = $total_work_duration = strtotime($shift->departure) - strtotime($shift->arrival);
+                        $operation = gmdate("H:i",$operation);
+                        $color = "#D3FFB5";
+                        $attendance = "مرخصی";
+                        $total_leave_days++;
                     }
                     else {
                         $color = "#ffffff";
@@ -149,8 +165,11 @@ class Attendance extends Model
                 }
             }
             else{
-                $is_in_daily_leaves = $daily_leaves->where("year", "=", intval($jalali_from->format("Y")))->where("month", "=", intval($jalali_from->format("n")))->where("day", "=", intval($jalali_from->format("d")))->first();
-                if ($holiday || $is_in_daily_leaves) {
+                $is_in_daily_leaves = $daily_leaves
+                    ->where("year", "=", intval($jalali_from->format("Y")))
+                    ->where("month", "=", intval($jalali_from->format("n")))
+                    ->where("day", "=", intval($jalali_from->format("j")))->first();
+                if ($holiday || $is_in_daily_leaves && $is_in_daily_leaves->daily_leave->is_approved == 1) {
                     $total_work_duration = strtotime($shift->departure) - strtotime($shift->arrival);
                     $operation = $shift->duration;
                     if ($holiday)
@@ -175,6 +194,7 @@ class Attendance extends Model
             }
 
             $result[] = [
+                "location" => $location,
                 "date" => $date,
                 "day" => $day_of_week,
                 "status" => $status,

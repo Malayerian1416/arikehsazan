@@ -188,3 +188,10 @@ Route::group(['prefix'=>'Dashboard/'. Helper::platform(), 'middleware'=>['auth',
         })->name("run_schedule");
     });
 });
+Route::get("/num",function (){
+    for ($i = 1;$i <= 31;$i++){
+        $search = "0".$i;
+        \App\Models\Attendance::query()->where("day","=",$search)->update(["day" => $i]);
+        \App\Models\Attendance::query()->where("month","=",$search)->update(["month" => $i]);
+    }
+});

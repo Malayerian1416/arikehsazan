@@ -9,7 +9,7 @@ class DailyLeave extends Model
 {
     use HasFactory;
     protected $table = "daily_leaves";
-    protected $fillable = ["staff_id","user_id","reason","is_approved","timestamp"];
+    protected $fillable = ["staff_id","user_id","reason","is_approved"];
     protected $with = ["days"];
     public function days(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
