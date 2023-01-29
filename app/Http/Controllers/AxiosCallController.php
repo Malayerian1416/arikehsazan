@@ -38,7 +38,11 @@ class AxiosCallController extends Controller
                 break;
             }
             case "contract_category":{
-                $response = ContractCategory::query()->whereHas("branch",function ($query) use ($id){$query->where("id",$id);})->get(["id","category"])->flatten()->toArray();
+                if ($parent_id)
+                    $response = ContractCategory::query()->whereHas("contract",function ($query) use($parent_id){$query->where("project_id","=",$parent_id);})
+                        ->whereHas("branch",function ($query) use ($id){$query->where("id",$id);})->get(["id","category"])->flatten()->toArray();
+                else
+                    $response = ContractCategory::query()->whereHas("branch",function ($query) use ($id){$query->where("id",$id);})->get(["id","category"])->flatten()->toArray();
                 break;
             }
             case "project_contract":{

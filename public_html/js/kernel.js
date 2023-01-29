@@ -614,7 +614,7 @@ const app = new Vue({
             if (target.value) {
                 self.related_data_select = '';
                 self.related_data_search_loading = true;
-                const values = {"id": target.value, "type": target.dataset.type};
+                const values = {"id": target.value, "type": target.dataset.type, "parent_id": self.parent_id};
                 axios.post("/related_data_search", values)
                     .then(response =>
                     {

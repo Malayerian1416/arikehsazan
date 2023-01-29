@@ -96,6 +96,16 @@
             <i class="fa fa-user fa-3x w-100 p-3 text-center"></i>
             <span class="account_info_item iran_yekan black_color border-bottom w-100 p-1">{{$user->name}}</span>
             <span class="account_info_item iran_yekan black_color border-bottom w-100 p-1">{{$user->role->name}}</span>
+            <div class="account_info_item black_color border-bottom w-100 p-1">
+                <span class="iran_sans text-muted mb-2" style="font-weight: normal">مرخصی استفاده شده</span>
+                <h6 class="iran_yekan m-0" style="font-weight: bold">
+                    {{ $total_leave["days"] . " روز"}}
+                    و
+                    {{ $total_leave["hours"] . " ساعت"}}
+                    و
+                    {{ $total_leave["minutes"] . " دقیقه"}}
+                </h6>
+            </div>
             <form action="{{route("logout")}}" method="post" class="p-3">
                 @csrf
                 <button type="button" title="ریست گذرواژه" class="account_info_item btn btn-outline-secondary">

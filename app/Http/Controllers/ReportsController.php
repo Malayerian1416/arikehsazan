@@ -257,8 +257,8 @@ class ReportsController extends Controller
                 $results = $results->where("created_at","<=",$to_date);
             $projects = Project::get_permissions([]);
             $contract_branches = ContractBranch::all();
-            $contract_categories = ContractBranch::query()->findOrFail($contract_branch_id)->categories()->get(["id","category"])->flatten()->toArray();
-            $contracts = ContractCategory::query()->findOrFail($contract_category_id)->contract()->get(["id","name"])->flatten()->toArray();
+            $contract_categories = ContractBranch::query()->findOrFail($contract_branch_id)->categories()->whereHas("contract",function ($query) use($project_id){$query->where("project_id","=",$project_id);})->get(["id","category"])->flatten()->toArray();
+            $contracts = ContractCategory::query()->findOrFail($contract_category_id)->contract()->where("project_id","=",$project_id)->get(["id","name"])->flatten()->toArray();
             return view("{$this->agent}.contract_reports",[
                 "projects" => $projects,
                 "contract_branches" => $contract_branches,

@@ -80,8 +80,14 @@
                         </h5>
                         <span class="user_role iran_sans text-muted mb-2">{{$user->role->name}}</span>
                         <div>
-                            <h6 class="iran_yekan m-0" style="font-weight: bold">0 روز</h6>
-                            <span class="iran_sans text-muted" style="font-weight: normal">مرخصی استفاده شده</span>
+                            <span class="iran_sans text-muted mb-2" style="font-weight: normal">مرخصی استفاده شده</span>
+                            <h6 class="iran_yekan m-0" style="font-weight: bold">
+                                {{ $total_leave["days"] . " روز"}}
+                                و
+                                {{ $total_leave["hours"] . " ساعت"}}
+                                و
+                                {{ $total_leave["minutes"] . " دقیقه"}}
+                            </h6>
                         </div>
                         <progress id="progress" value="0" max="36"></progress>
                     </div>
